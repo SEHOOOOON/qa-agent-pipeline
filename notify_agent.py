@@ -128,7 +128,7 @@ def format_slack_payload(report_data):
                     "type": "section",
                     "text": {
                         "type": "mrkdwn", 
-                        "text": f"{icon} *[{tc_id}] {title}*\n`Severity: High` | `Type: Issue`\n`└─ Error: {i[\'reason\']}`"
+                        "text": f"{icon} *[{tc_id}] {title}*\n```└─ 상세 사유: {i['reason']}```"
                     }
                 })
 
@@ -157,7 +157,7 @@ def format_slack_payload(report_data):
             {"type": "mrkdwn", "text": f"*실행 일시:*\n{kst_str}"},
             {"type": "mrkdwn", "text": "*자동화 엔진:*\nPlaywright v1.40+"},
             {"type": "mrkdwn", "text": "*총 소요 시간:*\n약 33.4s"},
-            
+            {"type": "mrkdwn", "text": f"*성공률 (Pass Rate):*\n{pass_rate:.1f}%"},
             {"type": "mrkdwn", "text": f"*TCM 대시보드:*\n<{notion_url}|Notion Database 열기 ↗>"}
         ]
     })
