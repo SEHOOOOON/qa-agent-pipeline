@@ -298,11 +298,41 @@ def send_to_notion(report_data):
             }
         }
         
-        res = requests.post("https://api.notion.com/v1/pages", headers=headers, json={"parent": {"database_id": database_id}, "properties": properties})
-        if res.status_code == 200:
-            success_count += 1
-        else:
-            print(f"❌ 노션 적재 실패 ({tc_id}): {res.text}")
+        # 중복 방지를 위한 Upsert (검색 후 수정 또는 생성)
+        query_payload = {
+            "filter": {
+                "property": "TC-ID",
+                "title": {
+                    "equals": tc_id
+                }
+            }
+        }
+        try:
+            query_res = requests.post(f"https://api.notion.com/v1/databases/{database_id}/query", headers=headers, json=query_payload)
+            
+            if query_res.status_code == 200:
+                results = query_res.json().get("results", [])
+                if results:
+                    # 1. 이미 존재하면 PATCH (업데이트)
+                    page_id = results[0]["id"]
+                    res = requests.patch(f"https://api.notion.com/v1/pages/{page_id}", headers=headers, json={"properties": properties})
+                    if res.status_code == 200:
+                        success_count += 1
+                    else:
+                        print(f"❌ 노션 업데이트 실패 ({tc_id}): {res.text}")
+                    continue
+                    
+            # 2. 없으면 POST (신규 생성)
+            payload = {
+                "parent": {"database_id": database_id},
+                "properties": properties
+            }
+            res = requests.post("https://api.notion.com/v1/pages", headers=headers, json=payload)
+            
+            if res.status_code == 200:
+                success_count += 1
+            else:
+                print(f"❌ 노션 적재 실패 ({tc_id}): {res.text}")
         except Exception as e:
             print(f"❌ 노션 API 에러: {e}")
             
