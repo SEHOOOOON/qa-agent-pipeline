@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QA Engineer 포트폴리오</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* Classic Professional Dark Theme (GitHub/Vercel Vibe) */
+      --bg-primary: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-tertiary: #21262d;
+      
+      --text-primary: #c9d1d9;
+      --text-title: #ffffff;
+      --text-muted: #8b949e;
+      --text-dim: #7a828e;
+      
+      /* Calm Accents */
+      --accent-primary: #2f81f7; 
+      --accent-primary-bg: rgba(47, 129, 247, 0.1);
+      
+      --accent-green: #238636; 
+      --accent-green-bg: rgba(35, 134, 54, 0.1);
+      
+      --border-color: #30363d;
+      --border-highlight: #8b949e;
+      
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--bg-primary); color: var(--text-primary); font-family: var(--font-sans); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { color: var(--accent-primary); text-decoration: none; transition: all 0.2s ease; }
+    a:hover { text-decoration: underline; }
+
+    .container { max-width: 1440px; margin: 0 auto; padding: 0 40px; }
+    header { padding: 80px 0 60px; border-bottom: 1px solid var(--border-color); }
+    section { padding: 60px 0; border-bottom: 1px solid var(--border-color); }
+    section:last-child { border-bottom: none; }
+
+    .badge-container { display: flex; gap: 12px; margin-bottom: 24px; }
+    .badge { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 6px; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500; background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color); }
+    .badge.highlight { background: var(--accent-primary-bg); color: var(--accent-primary); border-color: rgba(47, 129, 247, 0.4); }
+
+    h1 { font-size: 2.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 16px; letter-spacing: -0.02em; color: var(--text-title); }
+    .hero-subtitle { font-size: 1.125rem; color: var(--text-muted); max-width: 700px; line-height: 1.7; }
+    
+    h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 32px; color: var(--text-title); display: flex; align-items: center; gap: 10px; }
+    h2::before { content: '■'; color: var(--accent-primary); font-size: 1rem; }
+
+    /* =========================================
+       EXACT MATCH: Career Timeline Layout 
+       ========================================= */
+    .career-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; }
+    
+    /* Left: Timeline */
+    .tl { padding-left: 20px; border-left: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 20px; }
+    .tl-item { position: relative; cursor: pointer; }
+    .tl-dot { position: absolute; left: -25px; top: 6px; width: 9px; height: 9px; border-radius: 50%; background: var(--accent-primary); border: 2px solid var(--bg-primary); transition: box-shadow 0.2s; }
+    .tl-item:hover .tl-dot { box-shadow: 0 0 0 3px rgba(47, 129, 247, 0.25); }
+    
+    .tl-header { display: flex; align-items: center; justify-content: space-between; }
+    .tl-yr { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent-primary); opacity: 0.9; margin-bottom: 2px; }
+    .tl-name { font-size: 1.1rem; font-weight: 700; color: var(--text-title); margin-bottom: 2px; letter-spacing: -0.02em; }
+    .tl-role { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); margin-bottom: 2px; }
+    .tl-desc { font-size: 0.85rem; color: var(--text-primary); line-height: 1.6; }
+    
+    .tl-expand-icon { font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent-primary); opacity: 0.5; transition: all 0.2s; }
+    .tl-item:hover .tl-expand-icon { opacity: 1; }
+    
+    /* Timeline Detail (Accordion) */
+    .tl-detail { display: none; margin-top: 12px; padding: 16px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.85rem; color: var(--text-primary); line-height: 1.7; }
+    .tl-detail ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .tl-detail ul li { display: flex; gap: 6px; }
+    .tl-detail ul li::before { content: '→'; color: var(--accent-primary); font-family: var(--font-mono); font-size: 0.8rem; opacity: 0.8; margin-top: 1px; }
+    
+    .tl-item.open .tl-detail { display: block; }
+    .tl-item.open .tl-expand-icon { transform: rotate(180deg); opacity: 1; }
+
+    /* Right: Stats & Tags */
+    .career-right { display: flex; flex-direction: column; gap: 16px; }
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .stat-card { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 16px; text-align: center; }
+    .stat-num { font-family: var(--font-mono); font-size: 1.5rem; font-weight: 500; color: var(--accent-primary); line-height: 1; }
+    .stat-num.g { color: var(--accent-green); }
+    .stat-lbl { font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; }
+    
+    .career-tags { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 16px; }
+    .career-tags-title { font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-primary); letter-spacing: 0.1em; margin-bottom: 12px; opacity: 0.8; }
+    .tag-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag-pill { font-family: var(--font-mono); font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(47, 129, 247, 0.3); color: var(--accent-primary); background: rgba(47, 129, 247, 0.05); }
+
+
+    /* Cards (Achievements) */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .card { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 24px; }
+    .card-title { font-size: 0.85rem; font-family: var(--font-mono); color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .card-value { font-size: 1.15rem; font-weight: 600; margin-bottom: 12px; color: var(--text-title); }
+    .card-desc { font-size: 0.9rem; color: var(--text-primary); line-height: 1.6; }
+
+    /* Pipeline Architecture */
+    .pipeline { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 40px; position: relative; }
+    .pipeline-step { display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 32px; position: relative; padding-left: 32px; }
+    .pipeline-step:last-child { margin-bottom: 0; }
+    .pipeline::before { content: ''; position: absolute; top: 40px; bottom: 40px; left: 44.5px; width: 2px; background: var(--border-color); z-index: 0; }
+    .step-dot { position: absolute; left: 9px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent-primary); box-shadow: 0 0 0 4px var(--bg-secondary); z-index: 1; }
+    .step-dot.terminal { background: var(--text-muted); }
+    .step-title { font-size: 1rem; font-weight: 600; color: var(--text-title); margin-bottom: 6px; }
+    .agent-tag { font-family: var(--font-mono); font-size: 0.75rem; background: var(--bg-tertiary); color: var(--text-primary); padding: 2px 6px; border-radius: 4px; margin-right: 8px; border: 1px solid var(--border-color); }
+    .step-gate { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent-green); background: var(--accent-green-bg); padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(35, 134, 54, 0.4); display: inline-block; margin-top: 8px; }
+    .step-gate::before { content: '↳ Gate: '; opacity: 0.7; }
+
+    /* Proof Section (Screenshots) */
+    .proof-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px; }
+    .proof-card { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
+    .proof-image-placeholder { background: var(--bg-tertiary); height: 180px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--border-color); font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-muted); }
+    .proof-content { padding: 20px; }
+    .proof-title { font-size: 1rem; font-weight: 600; color: var(--text-title); margin-bottom: 8px; }
+    .proof-desc { font-size: 0.9rem; color: var(--text-primary); line-height: 1.6; }
+
+    footer { padding: 60px 0; text-align: center; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid var(--border-color); margin-top: 40px; }
+
+    @media (max-width: 768px) {
+      .career-grid { grid-template-columns: 1fr; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .proof-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="badge-container">
+        <a href="https://SEHOOOOON.github.io/qa-agent-pipeline/virtual-controller.html" class="badge highlight">🔥 포트폴리오 뷰어</a>
+        <a href="https://github.com/SEHOOOOON/qa-agent-pipeline" class="badge">GitHub Repository</a>
+      </div>
+      <h1>Multi-Agent 기반<br>QA 자동화 파이프라인</h1>
+      <p class="hero-subtitle">
+        기획서 분석부터 테스트 시나리오 설계, UI 자동화 테스트, 결함 리포팅까지<br>
+        QA 전 과정을 5개의 특화된 AI 에이전트로 무인 자동화한 프로젝트입니다.
+      </p>
+    </header>
+
+    <section>
+      <h2>👨‍💻 경력 요약</h2>
+      
+      <!-- 2-Column Career Grid (Reference Style) -->
+      <div class="career-grid">
+        
+        <!-- Left: Timeline -->
+        <div class="tl">
+          
+          <div class="tl-item open" onclick="this.classList.toggle('open')">
+            <div class="tl-dot"></div>
+            <div class="tl-yr">2021.05 - 현재</div>
+            <div class="tl-header">
+              <div class="tl-name">A Tech Corporation</div>
+              <div class="tl-expand-icon">▼</div>
+            </div>
+            <div class="tl-role">QA Part Leader / Senior Engineer</div>
+            <div class="tl-desc">사내 테스트 프로세스 고도화 및 품질 거버넌스 확립</div>
+            
+            <div class="tl-detail">
+              <ul>
+                <li><span>5-Agent 기반 자동화 테스트 파이프라인 전사 도입 리딩</span></li>
+                <li><span>Playwright를 활용한 신규 관제 시스템 E2E 테스트 커버리지 85% 달성</span></li>
+                <li><span>Slack 및 Notion API 연동을 통해 결함 추적 리포팅 완전 무인화 셋업</span></li>
+                <li><span>코드 리뷰 및 테스트 케이스 논리적 결함 사전 검증(Gate) 아키텍처 설계</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="tl-item" onclick="this.classList.toggle('open')">
+            <div class="tl-dot"></div>
+            <div class="tl-yr">2018.10 - 2021.04</div>
+            <div class="tl-header">
+              <div class="tl-name">B Mobility Startup</div>
+              <div class="tl-expand-icon">▼</div>
+            </div>
+            <div class="tl-role">QA Engineer</div>
+            <div class="tl-desc">결제 및 정산 시스템 테스트 자동화 도입</div>
+            
+            <div class="tl-detail">
+              <ul>
+                <li><span>모빌리티 결제 및 정산 API 백엔드 정합성 테스트 주도 (Postman, Python)</span></li>
+                <li><span>Cypress 기반 프론트엔드 E2E 테스트 환경 구축 및 GitHub Actions CI/CD 연동</span></li>
+                <li><span>매주 발생하는 정기 배포의 리그레션 테스트 시간을 12시간에서 2시간으로 단축</span></li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: Stats & Tags -->
+        <div class="career-right">
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-num">5+</div>
+              <div class="stat-lbl">Years Experience</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num g">3</div>
+              <div class="stat-lbl">Automated Projects</div>
+            </div>
+          </div>
+          <div class="career-tags">
+            <div class="career-tags-title">CORE SKILLS</div>
+            <div class="tag-pills">
+              <div class="tag-pill">Playwright</div>
+              <div class="tag-pill">Python</div>
+              <div class="tag-pill">CI/CD</div>
+              <div class="tag-pill">Agentic QA</div>
+              <div class="tag-pill">API Testing</div>
+              <div class="tag-pill">Jira/Notion</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section>
+      <h2>📊 핵심 기술 성과</h2>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Target System</div>
+          <div class="card-value">B2B 웹 관제 시스템</div>
+          <div class="card-desc">16대의 장치를 제어하는 가상 관제 대시보드 검증 (virtual-controller.html)</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Core Tech</div>
+          <div class="card-value">Playwright & Python</div>
+          <div class="card-desc">프론트엔드 UI 조작 및 레지스터 정합성 E2E 테스트 시나리오 자동 검증</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Architecture</div>
+          <div class="card-value">5 Multi-Agent System</div>
+          <div class="card-desc">5개의 특화된 LLM 에이전트가 분석, 설계, 실행, 리포팅 등 각 단계별 업무 수행</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Integrations</div>
+          <div class="card-value">Slack & Notion API</div>
+          <div class="card-desc">테스트 결과를 실시간 메신저 알림으로 전송 및 노션 DB에 무인 자동 기록</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>🔄 QA 자동화 파이프라인 구조</h2>
+      <div class="pipeline">
+        <div class="pipeline-step">
+          <div class="step-dot terminal"></div>
+          <div class="step-title">기획서 및 요구사항 입력</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-dot"></div>
+          <div class="step-title"><span class="agent-tag">Agent 1</span> 기획서 분석 및 예외 케이스 도출</div>
+          <div class="step-gate">정보 누락 및 모호성 검증 통과</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-dot"></div>
+          <div class="step-title"><span class="agent-tag">Agent 2</span> 분석된 스펙 기반 테스트 케이스(TC) 설계</div>
+          <div class="step-gate">Sub-Agent를 통한 TC 논리 오류 사전 검증</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-dot"></div>
+          <div class="step-title"><span class="agent-tag">Agent 3</span> Playwright 기반 UI 테스트 자동 실행</div>
+          <div class="step-gate">H/W 네트워크 지연과 S/W 결함 자동 분류</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-dot"></div>
+          <div class="step-title"><span class="agent-tag">Agent 4</span> 테스트 결과 분석 및 Slack/Notion 자동 리포팅</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-dot terminal"></div>
+          <div class="step-title">결함 추적 및 테스트 자동화 사이클 완료</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Proof Section (For future screenshots) -->
+    <section>
+      <h2>📸 주요 산출물 및 시연 자료</h2>
+      <p style="color: var(--text-muted); margin-bottom: 24px;">추후 아래 영역에 자동화 스크립트 시연 영상과 리포팅 스크린샷이 첨부될 예정입니다.</p>
+      <div class="proof-grid">
+        <div class="proof-card">
+          <div class="proof-image-placeholder">
+            [ Playwright 시연 GIF 영역 ]
+          </div>
+          <div class="proof-content">
+            <div class="proof-title">1. Playwright E2E 테스트 자동 실행</div>
+            <div class="proof-desc">Agent 3가 작성한 스크립트를 바탕으로 관제 시스템 대시보드를 자동 제어하는 모습입니다.</div>
+          </div>
+        </div>
+        <div class="proof-card">
+          <div class="proof-image-placeholder">
+            [ Slack/Notion 리포팅 스크린샷 영역 ]
+          </div>
+          <div class="proof-content">
+            <div class="proof-title">2. 결함 리포트 자동 발송</div>
+            <div class="proof-desc">Agent 4가 테스트 결과를 요약하여 Slack으로 전송하고 Notion DB에 기록한 산출물입니다.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p>Built with Agentic AI Automation · Playwright · Slack/Notion API</p>
+    </footer>
+  </div>
+
+</body>
+</html>
