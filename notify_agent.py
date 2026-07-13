@@ -19,7 +19,7 @@ sys.stdout.reconfigure(encoding='utf-8')
 # [제품 결함]과 [요구사항 확인 필요]를 분리하여 Slack Webhook으로 쏘는 역할.
 # =============================================================================
 
-RESULTS_PATH = Path(__file__).parent / "qa_results.json"
+RESULTS_PATH = Path(__file__).parent / "reports" / "qa_results.json"
 
 def parse_report():
     if not RESULTS_PATH.exists():
@@ -29,20 +29,25 @@ def parse_report():
     with open(RESULTS_PATH, "r", encoding="utf-8") as f:
         data = json.load(f)
     
-    # 1. 요약 통계 추출
-    summary = {"passed": 0, "failed": 0, "hw_failed": 0, "total": 0}
+    summary = {"passed": 0, "failed": 0, "skipped": 0, "total": 0}
     
     all_tests = []
-    defects = []
-    ambiguities = []
-    env_errors = []
-    hw_issues = []
+    defects = []          # 1. 제품 결함 후보
+    ambiguities = []      # 2. 기획·요구사항 확인 필요
+    env_issues = []       # 3. 테스트 환경·시뮬레이터 문제
+    code_issues = []      # 4. 자동화 코드 문제
+    not_executed = []     # 5. 조건 부족으로 미실행
 
     for run in data:
-        summary["total"] += 1
-        res = run.get("result", "")
         test_id = run.get("test_id", "")
         desc = run.get("description", "")
+        
+        # TC-00 (사전 환경 점검)은 제품 TC 수치에서 제외
+        if "tc00" in test_id.lower() or "tc-00" in desc.lower():
+            continue
+
+        summary["total"] += 1
+        res = run.get("result", "")
         reason_text = run.get("failure_reason", "")
         
         item = {"test": test_id, "desc": desc, "reason": reason_text, "result": res}
@@ -50,27 +55,29 @@ def parse_report():
 
         if res == "passed":
             summary["passed"] += 1
-        elif res == "failed":
-            if "요구사항" in reason_text:
-                summary["failed"] += 1
+        elif res == "skipped":
+            summary["skipped"] += 1
+            if "2. 기획" in reason_text:
                 ambiguities.append(item)
-            elif "제품 결함" in reason_text:
-                summary["failed"] += 1
-                defects.append(item)
-            elif "H/W 장비 점검" in reason_text:
-                summary["hw_failed"] += 1
-                hw_issues.append(item)
             else:
-                summary["failed"] += 1
-                env_errors.append(item)
+                not_executed.append(item)
+        elif res == "failed":
+            summary["failed"] += 1
+            if "1. 제품 결함" in reason_text:
+                defects.append(item)
+            elif "3. 테스트 환경" in reason_text:
+                env_issues.append(item)
+            else:
+                code_issues.append(item)
 
     return {
         "summary": summary,
         "all_tests": all_tests,
         "defects": defects,
         "ambiguities": ambiguities,
-        "env_errors": env_errors,
-        "hw_issues": hw_issues
+        "env_issues": env_issues,
+        "code_issues": code_issues,
+        "not_executed": not_executed
     }
 
 def format_slack_payload(report_data):
@@ -81,10 +88,10 @@ def format_slack_payload(report_data):
     total = summary["total"]
     
     # 의사결정 도우미 (Release Recommendation)
-    if report_data["defects"] or report_data["hw_issues"]:
-        release_status = "🔴 *HOLD (배포 반려)* - 치명적 제품 결함 또는 H/W 이슈 존재"
-    elif report_data["ambiguities"]:
-        release_status = "🟡 *PASS WITH REVIEW* - 기획 확인 후 배포 가능"
+    if report_data["defects"] or report_data["code_issues"] or report_data["env_issues"]:
+        release_status = "🔴 *HOLD (배포 반려)* - 치명적 제품 결함 또는 스크립트/환경 이슈 존재"
+    elif report_data["ambiguities"] or report_data["not_executed"]:
+        release_status = "🟡 *PASS WITH REVIEW* - 기획 확인 및 미실행 항목 검토 후 배포 가능"
     else:
         release_status = "🟢 *PASS (배포 승인)* - 크리티컬 결함 없음"
         
@@ -104,8 +111,9 @@ def format_slack_payload(report_data):
             "type": "section",
             "fields": [
                 {"type": "mrkdwn", "text": f"*총 테스트 수:*\n{total}건"},
-                {"type": "mrkdwn", "text": f"*S/W Pass:*\n✅ {summary['passed']}건"},
-                {"type": "mrkdwn", "text": f"*S/W Fail:*\n🚨 {summary['failed']}건"}
+                {"type": "mrkdwn", "text": f"*✅ S/W Pass:*\n{summary['passed']}건"},
+                {"type": "mrkdwn", "text": f"*🚨 S/W Fail:*\n{summary['failed']}건"},
+                {"type": "mrkdwn", "text": f"*⚠️ Skipped:*\n{summary['skipped']}건"}
             ]
         },
         {"type": "divider"}
@@ -132,9 +140,11 @@ def format_slack_payload(report_data):
                     }
                 })
 
-    add_terminal_defect(blocks, report_data["defects"], "🐛 *[조치 필요] 제품 결함 (Product Defect)*\n_소프트웨어 상의 명확한 버그입니다. 즉각적인 수정이 필요합니다._", "🚨")
-    add_terminal_defect(blocks, report_data["ambiguities"], "⚠️ *[확인 필요] 요구사항 모호성 감지 (Requirement Ambiguity)*\n_자동화 테스트 중 기획서 스펙 누락으로 판단할 수 없는 항목이 발견되었습니다. 기획팀 확인을 요청합니다._", "⚠️")
-    add_terminal_defect(blocks, report_data["hw_issues"], "🔌 *[장비 점검] 하드웨어 무응답 이슈 (H/W Timeout)*\n_테스트 중 H/W 장비가 S/W의 제어 명령에 응답하지 않아 발생한 실패입니다._", "🔌")
+    add_terminal_defect(blocks, report_data["defects"], "🐛 *1. 제품 결함 후보 (Product Defect Candidate)*\n_소프트웨어 상의 명확한 버그입니다. 즉각적인 수정이 필요합니다._", "🚨")
+    add_terminal_defect(blocks, report_data["ambiguities"], "⚠️ *2. 기획·요구사항 확인 필요 (Requirement Review Needed)*\n_스펙 누락으로 판단할 수 없는 항목이 발견되었습니다._", "⚠️")
+    add_terminal_defect(blocks, report_data["env_issues"], "🔌 *3. 테스트 환경·시뮬레이터 문제 (Test Env / Simulator Issue)*\n_가상 백엔드 등 테스트 환경 이슈로 실패했습니다._", "🔌")
+    add_terminal_defect(blocks, report_data["code_issues"], "🤖 *4. 자동화 코드 문제 (Automation Code Issue)*\n_DOM 요소를 찾지 못하는 등 Playwright 코드 이슈입니다._", "🤖")
+    add_terminal_defect(blocks, report_data["not_executed"], "⏭️ *5. 조건 부족으로 미실행 (Not Executed)*\n_Precondition 불만족으로 스킵된 테스트입니다._", "⏭️")
     
     # ---------------------------------------------------------
     # 고급 QA 매트릭스 및 에이전트 파이프라인 오딧 추가 (프로덕션 리포트용)

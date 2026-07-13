@@ -44,20 +44,20 @@ from playwright.sync_api import Page, expect
 # ============================================================
 # 【QA Custom Exceptions (Failure Classification)】
 # ============================================================
-class RequirementAmbiguityError(Exception):
-    """기획서나 요구사항 명세에 기준이 모호하여 검증(Assert)을 수행할 수 없을 때 발생하는 커스텀 에러."""
+class SimulatorTimeoutError(Exception):
+    """시뮬레이터 응답 타임아웃 에러"""
     pass
 
-class HardwareIssueError(Exception):
-    """실제 하드웨어(장비)의 동작 불량 또는 통신 지연(Timeout)으로 인한 에러를 명시합니다."""
-    pass
+# (생략) - 중간 코드는 그대로 두고 TC-07, TC-08만 수정합니다.
+# 하지만 start_line과 end_line을 맞추기 위해 전체를 덮어쓰는게 안전할 수 있습니다. 
+# 파일 끝부분만 교체하겠습니다.
 
 # ============================================================
 # 【설정 상수】
 # ============================================================
 
 # 테스트 대상 HTML 파일 절대 경로 → file:// URI 자동 변환
-가상 관제 시스템_URL = (Path(__file__).parent / "virtual-controller.html").as_uri()
+VIRTUAL_CONTROLLER_URL = (Path(__file__).parent.parent / "virtual-controller.html").as_uri()
 
 # appendQALog 내부 50ms setTimeout + DOM 렌더링 레이턴시 + 여유 마진
 LOG_RENDER_TIMEOUT = 4000
@@ -89,8 +89,8 @@ def load_clean_simulator(page: Page) -> None:
     ※ 새 탭을 열지 않고 현재 탭 안에서만 작동하므로 브라우저 컨텍스트가 유지됨
     """
     # 최초 진입: 아직 시뮬레이터 URL이 아닌 경우 goto로 이동
-    if 가상 관제 시스템_URL not in page.url:
-        page.goto(가상 관제 시스템_URL, wait_until="domcontentloaded")
+    if VIRTUAL_CONTROLLER_URL not in page.url:
+        page.goto(VIRTUAL_CONTROLLER_URL, wait_until="domcontentloaded")
         page.wait_for_selector("#device-card-1", timeout=5000)
         return  # 최초 로드는 기본값이 초기 상태이므로 Reset 불필요
 
@@ -213,7 +213,7 @@ def get_log_text(page: Page, has_text: str) -> str:
 # ============================================================
 def test_tc00_pre_environment_check(page: Page):
     """[TC-00] 사전 환경 검증 (Pre-check) | 테스트 실행 전 가상 환경 및 레지스터 로드 상태 검증"""
-    page.goto(가상 관제 시스템_URL, wait_until="domcontentloaded")
+    page.goto(VIRTUAL_CONTROLLER_URL, wait_until="domcontentloaded")
     
     # 1. UI 렌더링 검증 (첫 번째 장치 카드가 보일 때까지 대기)
     expect(page.locator("#device-card-1")).to_be_visible(timeout=5000)
@@ -612,8 +612,9 @@ def test_tc06_temp_upper_limit_boundary(page: Page):
 def test_tc07_alarm_ui_ambiguity_classification(page: Page):
     """[TC-07] 요구사항 모호성 | 알람(CH05) 발생 시 카드 색상 변경 기준 부재로 인한 Assert 불가"""
     load_clean_simulator(page)
-    open_qa_drawer(page)
+    # QA Drawer가 덮기 전에 장치를 먼저 선택합니다.
     select_device_card(page, 5)
+    open_qa_drawer(page)
     
     # 에러 주입
     page.click("button:has-text('CH05 과열 에러')")
@@ -622,21 +623,20 @@ def test_tc07_alarm_ui_ambiguity_classification(page: Page):
     # 여기서 기획의 공백(Ambiguity) 발생
     # 기획서에는 "알람 시 에러 상태로 변경된다"라고만 되어 있고,
     # 카드의 배경색이 빨간색이 되어야 하는지, 테두리만 바뀌어야 하는지 스펙이 없음.
-    raise RequirementAmbiguityError(
-        "CH05 알람 발생 시 장치 카드 배경/UI 표시 색상 기획이 누락되어 Assert 불가."
-    )
+    pytest.skip("2. 기획·요구사항 확인 필요: CH05 알람 발생 시 장치 카드 배경/UI 표시 색상 기획이 누락되어 Assert 불가.")
 
 
 # ============================================================
 # 【TC-08】하드웨어 통신 타임아웃
 # ============================================================
 def test_tc08_hardware_timeout_exclusion(page: Page):
-    """[TC-08] H/W 이슈 | 제어 명령 후 하드웨어 레지스터 미반응 (Timeout)"""
+    """[TC-08] 테스트 환경 이슈 | 제어 명령 후 시뮬레이터 미반응 (Mocked Timeout)"""
     load_clean_simulator(page)
-    open_qa_drawer(page)
+    # QA Drawer가 덮기 전에 장치를 먼저 선택합니다.
     select_device_card(page, 1)
+    open_qa_drawer(page)
 
-    # 5초간 기다렸으나 H/W(가상 백엔드)에서 상태 갱신이 올라오지 않는 상황을 시뮬레이션
-    raise HardwareIssueError(
-        "UI에서 전원 켜기 제어를 시도했으나, 5000ms 내에 H/W 장비로부터 ACK 상태 응답을 받지 못했습니다."
+    # 5초간 기다렸으나 가상 백엔드에서 상태 갱신이 올라오지 않는 상황을 시뮬레이션
+    raise SimulatorTimeoutError(
+        "3. 테스트 환경·시뮬레이터 문제: UI에서 전원 켜기 제어를 시도했으나, 5000ms 내에 가상 백엔드로부터 응답을 받지 못했습니다."
     )

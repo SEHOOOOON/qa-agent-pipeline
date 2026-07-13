@@ -3,7 +3,7 @@
 
 import pytest
 import json
-from test_controller import RequirementAmbiguityError, HardwareIssueError
+from test_controller import SimulatorTimeoutError
 
 # Global test results collector
 qa_results = []
@@ -31,18 +31,19 @@ def pytest_runtest_makereport(item, call):
         
         # Failure Classification
         report.failure_reason = ""
-        if report.failed and call.excinfo:
-            exc_type = call.excinfo.type
-            if exc_type.__name__ == 'RequirementAmbiguityError':
-                report.failure_reason = "⚠️ 요구사항 확인 필요 (Requirement Ambiguity)"
-            elif exc_type.__name__ == 'HardwareIssueError':
-                report.failure_reason = "🔌 H/W 장비 점검 (Hardware Issue)"
-            elif exc_type is AssertionError:
-                report.failure_reason = "🐛 제품 결함 확보 (Product Defect)"
-            elif "TimeoutError" in exc_type.__name__:
-                report.failure_reason = "⚠️ 환경/스크립트 오류 (Timeout/Env)"
+        if report.outcome == "skipped":
+            if "기획" in str(report.longrepr) or "요구사항" in str(report.longrepr):
+                report.failure_reason = "2. 기획·요구사항 확인 필요"
             else:
-                report.failure_reason = "❓ 미기입 에러 (Unknown Error)"
+                report.failure_reason = "5. 조건 부족으로 미실행"
+        elif report.failed and call.excinfo:
+            exc_type = call.excinfo.type
+            if exc_type.__name__ == 'SimulatorTimeoutError':
+                report.failure_reason = "3. 테스트 환경·시뮬레이터 문제"
+            elif exc_type is AssertionError:
+                report.failure_reason = "1. 제품 결함 후보"
+            else:
+                report.failure_reason = "4. 자동화 코드 문제"
 
         # Save to global array for JSON export
         qa_results.append({
@@ -53,7 +54,7 @@ def pytest_runtest_makereport(item, call):
         })
 
 def pytest_sessionfinish(session, exitstatus):
-    with open("qa_results.json", "w", encoding="utf-8") as f:
+    with open("reports/qa_results.json", "w", encoding="utf-8") as f:
         json.dump(qa_results, f, ensure_ascii=False, indent=2)
 
 # -- 3. Add Columns headers -----------------------------------------
@@ -68,12 +69,14 @@ def pytest_html_results_table_row(report, cells):
     
     # 실패 분류에 따른 색상 스타일링
     color_style = ""
-    if "요구사항" in failure_reason:
-        color_style = "color: #db6d28; font-weight: bold;" # Orange
-    elif "제품 결함" in failure_reason:
+    if "1. 제품 결함 후보" in failure_reason:
         color_style = "color: #f85149; font-weight: bold;" # Red
-    elif "스크립트" in failure_reason:
+    elif "2. 기획" in failure_reason:
+        color_style = "color: #db6d28; font-weight: bold;" # Orange
+    elif "3. 테스트 환경" in failure_reason or "4. 자동화 코드" in failure_reason:
         color_style = "color: #d29922; font-weight: bold;" # Yellow
+    elif "5. 조건 부족" in failure_reason:
+        color_style = "color: #8b949e; font-style: italic;" # Gray
     
     cells.insert(2, f'<td class="col-description">{description}</td>')
     cells.insert(3, f'<td class="col-failure-reason" style="{color_style}">{failure_reason}</td>')
