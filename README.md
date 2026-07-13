@@ -39,10 +39,10 @@ AI를 활용하면 테스트케이스를 빠르게 만들 수 있었지만, 요�
 
 | 항목 | 상세 | 설명 |
 |------|------|------|
-| **테스트 대상** | **B2B 웹 관제 시스템** | 16대의 장치를 제어하는 가상 관제 대시보드 검증 |
-| **적용 기술** | **Playwright, Python** | 프론트엔드 UI 조작 및 E2E 테스트 시나리오 자동 검증 |
-| **자동화 구조** | **5 Multi-Agent** | 5개의 특화 LLM 에이전트가 각 단계별 QA 업무 수행 |
-| **업무 연동** | **Slack / Notion API** | 테스트 결과를 실시간 메신저 알림 및 노션 DB에 자동 기록 |
+| **테스트 대상** | **B2B 웹 모의 관제 시스템** | 16대의 장치를 제어하는 가상 관제 대시보드 검증 |
+| **검증 전략** | **UI/Register 이중 검증** | Playwright를 통해 화면 표출 상태와 내부 가상 레지스터 상태를 교차 검증 |
+| **거버넌스 구조** | **QA Checkpoint** | Agent가 결과를 생성하고, 단계별 품질 통제소(Checkpoint)가 기준 미달 산출물을 차단 |
+| **파이프라인 연동** | **Pytest / Slack / Notion** | 5가지 원인으로 분류된 테스트 결과를 Slack으로 전송하고 Notion DB에 기록 |
 
 </div>
 
@@ -50,17 +50,17 @@ AI를 활용하면 테스트케이스를 빠르게 만들 수 있었지만, 요�
 
 ## 🔄 QA 자동화 파이프라인
 ```text
-기획서 및 요구사항 입력
-     ↓
-[Agent 1] 기획서 분석 및 예외 케이스 도출
-     ↓  (Gate 1: 정보 누락 및 모호성 검증 통과)
-[Agent 2] 분석된 스펙 기반 테스트 케이스(TC) 설계
-     ↓  (Gate 2: Sub-Agent를 통한 TC 논리 오류 사전 검증)
-[Agent 3] Playwright 기반 UI 테스트 자동 실행
-     ↓  (Gate 3: H/W 네트워크 지연과 S/W 결함 자동 분류)
-[Agent 4] 테스트 결과 분석 및 Slack/Notion 자동 리포팅
-     ↓
-결함 추적 및 테스트 자동화 파이프라인 사이클 완료
+요구사항과 참고 문서
+  ↓
+Agent 1 · 요구사항 정제
+  ↓ Checkpoint 1 · 요구사항 충분성 검증
+Agent 2 · 테스트케이스 설계
+  ↓ Checkpoint 2 · TC 품질 적합성 검증
+Agent 3 · Playwright 자동화 실행
+  ↓ Checkpoint 3 · 실행 결과 신뢰성 검증
+Agent 4 · 결과 분석 및 보고
+  ↓ Checkpoint 4 · 보고 결과 일관성 검증
+Slack 알림 · Notion TC 목록 · 실행 리포트
 ```
 
 ---
@@ -69,11 +69,12 @@ AI를 활용하면 테스트케이스를 빠르게 만들 수 있었지만, 요�
 ## 📂 저장소 구조
 ```text
 qa-agent-pipeline/
-├── 📁 docs/                    # 각 Agent별 지시문(프롬프트) 및 산출물 샘플
+├── 📁 docs/                    # 각 Agent별 지시문(프롬프트), 산출물 샘플 및 추적성 매트릭스
 ├── 📁 tests/                   # Playwright 기반 E2E 자동화 스크립트 (test_controller.py 등)
-├── 📁 reports/                 # 테스트 자동화 결과 리포트 (qa_results.json 등)
-├── virtual-controller.html     # 테스트 대상 가상 웹 애플리케이션
-└── notify_agent.py             # Slack 및 Notion API 연동 리포팅 봇
+├── 📁 reports/                 # 테스트 자동화 결과 리포트 및 JSON 데이터
+├── virtual-controller.html     # 테스트 대상 가상 모의 관제 웹 시스템
+├── notify_agent.py             # Slack 및 Notion API 연동 리포팅 봇
+└── ARCHITECTURE_TRADEOFFS.md   # 알려진 한계점 및 아키텍처 트레이드오프 회고록
 ```
 
 ---
