@@ -1,7 +1,8 @@
 <div align="center">
 
-[![Portfolio](https://img.shields.io/badge/포트폴리오_보기-a855f7?style=for-the-badge&labelColor=08060f)](https://SEHOOOOON.github.io/qa-agent-pipeline/virtual-controller.html)
-[![GitHub](https://img.shields.io/badge/GitHub-SEHOOOOON-181717?style=for-the-badge&logo=github)](https://github.com/SEHOOOOON)
+[![포트폴리오 웹페이지](https://img.shields.io/badge/포트폴리오_웹페이지_보기-a855f7?style=for-the-badge&labelColor=08060f)](https://SEHOOOOON.github.io/qa-agent-pipeline/)
+[![가상 관제 화면](https://img.shields.io/badge/가상_모의_관제_화면-58A6FF?style=for-the-badge&labelColor=08060f)](https://SEHOOOOON.github.io/qa-agent-pipeline/virtual-controller.html)
+[![GitHub](https://img.shields.io/badge/GitHub_Repository-181717?style=for-the-badge&logo=github)](https://github.com/SEHOOOOON/qa-agent-pipeline)
 
 **Multi-Agent 기반 QA 자동화 파이프라인**  
 기획서 분석부터 테스트 시나리오 설계, UI 자동화 테스트, 결함 리포팅까지  
