@@ -2066,22 +2066,22 @@
   <script>
     // 16 Indoor Units Mock DB (IDU-00 to IDU-15)
     const devices = [
-      { id: 1, name: 'IDU-00', status: 'STOP', currentTemp: 25.5, setTemp: 19, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
-      { id: 2, name: 'IDU-01', status: 'STOP', currentTemp: 26.5, setTemp: 19, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
-      { id: 3, name: 'IDU-02', status: 'STOP', currentTemp: 29.0, setTemp: 26, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
-      { id: 4, name: 'IDU-03', status: 'OPERATION', currentTemp: 26.0, setTemp: 20, mode: 'COOL', fanSpeed: 'MED', locked: false, errorCode: null }, // default active operation
-      { id: 5, name: 'IDU-04', status: 'STOP', currentTemp: 26.0, setTemp: 24, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
-      { id: 6, name: 'IDU-05', status: 'STOP', currentTemp: 26.0, setTemp: 26, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
-      { id: 7, name: 'IDU-06', status: 'STOP', currentTemp: 25.5, setTemp: 23, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
-      { id: 8, name: 'IDU-07', status: 'STOP', currentTemp: 26.5, setTemp: 26, mode: 'AUTO', fanSpeed: 'LOW', locked: false, errorCode: null },
-      { id: 9, name: 'IDU-08', status: 'STOP', currentTemp: 24.0, setTemp: 24, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
-      { id: 10, name: 'IDU-09', status: 'STOP', currentTemp: 24.5, setTemp: 24, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
-      { id: 11, name: 'IDU-10', status: 'STOP', currentTemp: 29.5, setTemp: 25, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
-      { id: 12, name: 'IDU-11', status: 'STOP', currentTemp: 29.5, setTemp: 26, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
-      { id: 13, name: 'IDU-12', status: 'STOP', currentTemp: 25.0, setTemp: 22, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
-      { id: 14, name: 'IDU-13', status: 'STOP', currentTemp: 25.0, setTemp: 22, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
-      { id: 15, name: 'IDU-14', status: 'STOP', currentTemp: 25.0, setTemp: 22, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
-      { id: 16, name: 'IDU-15', status: 'STOP', currentTemp: 25.0, setTemp: 22, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null }
+      { id: 1, name: 'IDU-00', status: 'STOP', currentTemp: 25.0, setTemp: 24, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
+      { id: 2, name: 'IDU-01', status: 'STOP', currentTemp: 25.0, setTemp: 24, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
+      { id: 3, name: 'IDU-02', status: 'STOP', currentTemp: 25.0, setTemp: 24, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
+      { id: 4, name: 'IDU-03', status: 'STOP', currentTemp: 25.0, setTemp: 24, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
+      { id: 5, name: 'IDU-04', status: 'STOP', currentTemp: 25.0, setTemp: 24, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
+      { id: 6, name: 'IDU-05', status: 'STOP', currentTemp: 25.0, setTemp: 24, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
+      { id: 7, name: 'IDU-06', status: 'STOP', currentTemp: 25.0, setTemp: 24, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
+      { id: 8, name: 'IDU-07', status: 'STOP', currentTemp: 25.0, setTemp: 24, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
+      { id: 9, name: 'IDU-08', status: 'STOP', currentTemp: 25.0, setTemp: 24, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
+      { id: 10, name: 'IDU-09', status: 'STOP', currentTemp: 25.0, setTemp: 24, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
+      { id: 11, name: 'IDU-10', status: 'STOP', currentTemp: 25.0, setTemp: 24, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
+      { id: 12, name: 'IDU-11', status: 'STOP', currentTemp: 25.0, setTemp: 24, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
+      { id: 13, name: 'IDU-12', status: 'STOP', currentTemp: 25.0, setTemp: 24, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
+      { id: 14, name: 'IDU-13', status: 'STOP', currentTemp: 25.0, setTemp: 24, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
+      { id: 15, name: 'IDU-14', status: 'STOP', currentTemp: 25.0, setTemp: 24, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null },
+      { id: 16, name: 'IDU-15', status: 'STOP', currentTemp: 25.0, setTemp: 24, mode: 'COOL', fanSpeed: 'LOW', locked: false, errorCode: null }
     ];
 
     let selectedUnitId = 4;
