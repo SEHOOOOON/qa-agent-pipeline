@@ -50,7 +50,10 @@ def parse_report():
         res = run.get("result", "")
         reason_text = run.get("failure_reason", "")
         
-        item = {"test": test_id, "desc": desc, "reason": reason_text, "result": res}
+        # 슬랙/노션 표시용: "1. ", "2. ", "3. " 같은 접두어 제거
+        display_reason = re.sub(r'^\d+\.\s*', '', reason_text)
+        
+        item = {"test": test_id, "desc": desc, "reason": display_reason, "result": res}
         all_tests.append(item)
 
         if res == "passed":
