@@ -59,26 +59,27 @@
 .tc-row:hover { background: rgba(88,166,255,.05); }
 .tc-details { display: none; background: rgba(8,12,19,.5); }
 .tc-details.open { display: table-row; }
-.badge-pass { color: #d8b4fe; background: rgba(168,85,247,.15); padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; border: 1px solid rgba(168,85,247,.2); }
-.badge-edge { color: #f9a8d4; background: rgba(236,72,153,.15); padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; border: 1px solid rgba(236,72,153,.2); }
-.badge-fail { color: #fca5a5; background: rgba(239,68,68,.15); padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; border: 1px solid rgba(239,68,68,.2); }
-.result-pass { color: #93c5fd; background: rgba(59,130,246,.15); padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; border: 1px solid rgba(59,130,246,.2); }
-.result-blocked { color: #fdba74; background: rgba(249,115,22,.15); padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; border: 1px solid rgba(249,115,22,.2); }
-.result-review { color: #86efac; background: rgba(34,197,94,.15); padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; border: 1px solid rgba(34,197,94,.2); }
+.badge-pass { color: #d8b4fe; background: rgba(168,85,247,.15); padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; border: 1px solid rgba(168,85,247,.2); white-space: nowrap; }
+.badge-edge { color: #f9a8d4; background: rgba(236,72,153,.15); padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; border: 1px solid rgba(236,72,153,.2); white-space: nowrap; }
+.badge-fail { color: #fca5a5; background: rgba(239,68,68,.15); padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; border: 1px solid rgba(239,68,68,.2); white-space: nowrap; }
+.result-pass { color: #93c5fd; background: rgba(59,130,246,.15); padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; border: 1px solid rgba(59,130,246,.2); white-space: nowrap; }
+.result-blocked { color: #fdba74; background: rgba(249,115,22,.15); padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; border: 1px solid rgba(249,115,22,.2); white-space: nowrap; }
+.result-review { color: #86efac; background: rgba(34,197,94,.15); padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; border: 1px solid rgba(34,197,94,.2); white-space: nowrap; }
+.tc-table td:nth-child(1) { font-size: 11px !important; white-space: nowrap; }
 </style>
 <div style="background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px;">
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
     <div style="display: flex; gap: 8px;">
-      <button class="btn primary" style="font-size: 11px; padding: 5px 12px; min-height: 28px;" onclick="filterTcTable('all', this)">전체</button>
-      <button class="btn" style="font-size: 11px; padding: 5px 12px; min-height: 28px;" onclick="filterTcTable('해피패스', this)">해피패스</button>
-      <button class="btn" style="font-size: 11px; padding: 5px 12px; min-height: 28px;" onclick="filterTcTable('엣지케이스', this)">엣지케이스</button>
-      <button class="btn" style="font-size: 11px; padding: 5px 12px; min-height: 28px;" onclick="filterTcTable('예외/결함', this)">예외/결함</button>
+      <button class="btn primary" style="font-size: 11px; padding: 5px 12px; min-height: 28px; color: #e2e8f0;" onclick="filterTcTable('all', this)">전체</button>
+      <button class="btn" style="font-size: 11px; padding: 5px 12px; min-height: 28px; color: #94a3b8;" onclick="filterTcTable('해피패스', this)">해피패스</button>
+      <button class="btn" style="font-size: 11px; padding: 5px 12px; min-height: 28px; color: #94a3b8;" onclick="filterTcTable('엣지케이스', this)">엣지케이스</button>
+      <button class="btn" style="font-size: 11px; padding: 5px 12px; min-height: 28px; color: #94a3b8;" onclick="filterTcTable('예외/결함', this)">예외/결함</button>
     </div>
     <div style="color: var(--blue); font-size: 12px; font-weight: 700;">! 각 TC 행을 클릭하면 전제조건·스텝·기대 결과 상세를 확인할 수 있습니다</div>
   </div>
   <div style="overflow-x: auto;">
     <table class="tc-table">
-      <thead><tr><th style="width:7%">TC-ID</th><th style="width:8%">구분</th><th style="width:33%">테스트 제목</th><th style="width:8%">실행 결과</th><th style="width:8%">우선 순위</th><th style="width:20%">결과</th><th style="width:16%">최근 수정 일시</th></tr></thead>
+      <thead><tr><th style="width:8%; white-space:nowrap;">TC-ID</th><th style="width:9%; white-space:nowrap;">구분</th><th style="width:32%">테스트 제목</th><th style="width:11%; white-space:nowrap;">실행 결과</th><th style="width:7%; white-space:nowrap;">우선 순위</th><th style="width:18%">결과</th><th style="width:15%">최근 수정 일시</th></tr></thead>
       <tbody>
         <tr class="tc-row" onclick="this.nextElementSibling.classList.toggle('open')">
           <td style="color: #e2e8f0; font-weight:600;"><i style="font-size:10px;margin-right:4px;">📄</i>TC-01</td><td><span class="badge-pass">해피패스</span></td><td style="color: #e2e8f0;">장치 #1 선택 → HEAT 모드 + 24°C 적용 → QA 로그 및 장치 카드 동기화 검증</td><td><span class="result-pass">Pass</span></td><td style="color: #d6d3d1; font-size: 11px; font-weight:700;">P1</td><td style="color:#e2e8f0;">정상 동작</td><td style="color:#94a3b8; font-size:11px;">2026년 7월 14일 오후 9:44</td>
@@ -132,15 +133,16 @@
       </tbody>
     </table>
   </div>
-  <div style="text-align: center; margin-top: 20px;">
-    <a href="https://app.notion.com/p/39b860adf55080739733c692ef637d4d?v=39b860adf55080758f77000c2be92a57" target="_blank" class="btn" style="padding: 8px 16px;">🔗 실제 노션 페이지에서 전체 9개 TC 보기 (새 탭 열기)</a>
-  </div>
 </div>
 <script>
 function filterTcTable(type, btn) {
   const btns = btn.parentElement.querySelectorAll('.btn');
-  btns.forEach(b => b.classList.remove('primary'));
+  btns.forEach(b => {
+    b.classList.remove('primary');
+    b.style.color = '#94a3b8';
+  });
   btn.classList.add('primary');
+  btn.style.color = '#e2e8f0';
 
   const rows = document.querySelectorAll('#notion-integration tbody tr.tc-row');
   rows.forEach(row => {
