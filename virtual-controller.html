@@ -2050,7 +2050,7 @@
       <span style="font-size:13px;">🖥️</span>
       <span class="hw-zone-header-title">H/W Device Simulator — Register Memory View</span>
       <span class="hw-zone-header-badge">BASE ADDR: 0xA000</span>
-      <span class="hw-zone-header-badge">PROTOCOL: RS-485 / ModBus-RTU</span>
+      <span class="hw-zone-header-badge">PROTOCOL: Simulated Register Model</span>
       <span class="hw-zone-header-badge" id="hw-last-sync-badge">대기 중...</span>
       <span class="hw-zone-header-sync">
         <span class="hw-sync-dot"></span>
@@ -3306,7 +3306,7 @@
   <div class="agent-modal-backdrop" id="agent1-req-modal">
     <div class="agent-modal-card" style="width:580px;" onclick="event.stopPropagation()">
       <div class="agent-modal-header" style="background: linear-gradient(135deg,#1e1b4b,#312e81); border-bottom:1px solid #4338ca;">
-        <h3 style="color:#a5b4fc;">🔷 에이전트 1번 — 요구사항 정의 & 프론트 엔지니어링</h3>
+        <h3 style="color:#a5b4fc;">🔷 에이전트 1번 — 요구사항 정제</h3>
         <button class="agent-modal-close" onclick="closeAgent1Modal()">&times;</button>
       </div>
       <div class="agent-modal-body" style="background:#0f0f1a; padding:20px; display:flex; flex-direction:column; gap:16px;">
@@ -3314,7 +3314,7 @@
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
           <div>
             <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">시스템명</label>
-            <input id="req-system" type="text" value="가상 가상 관제 시스템 가상 B2B 공조 제어 시스템" style="width:100%; background:#1e293b; border:1px solid #334155; border-radius:6px; color:#e2e8f0; padding:7px 10px; font-size:0.75rem; box-sizing:border-box;">
+            <input id="req-system" type="text" value="가상 관제 시스템 B2B 공조 제어" style="width:100%; background:#1e293b; border:1px solid #334155; border-radius:6px; color:#e2e8f0; padding:7px 10px; font-size:0.75rem; box-sizing:border-box;">
           </div>
           <div>
             <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">버전</label>
@@ -3359,7 +3359,7 @@
   <div class="agent-modal-backdrop" id="agent3-runner-modal">
     <div class="agent-modal-card" style="width:660px; max-height:85vh;" onclick="event.stopPropagation()">
       <div class="agent-modal-header" style="background:linear-gradient(135deg,#064e3b,#065f46); border-bottom:1px solid #059669;">
-        <h3 style="color:#6ee7b7;">⚡ 에이전트 3번 — Playwright 자동화 테스트 실행</h3>
+        <h3 style="color:#6ee7b7;">⚡ 에이전트 3번 — Playwright 워크플로우 시뮬레이션 (Demo)</h3>
         <button class="agent-modal-close" onclick="closeAgent3Modal()">&times;</button>
       </div>
       <div class="agent-modal-body" style="background:#070f0a; padding:16px; display:flex; flex-direction:column; gap:12px;">
@@ -3922,10 +3922,10 @@
           if (idx === cicdStages.length - 1) {
             setTimeout(() => {
               document.getElementById('cicd-jira-area').style.display = 'block';
-              appendCICDLog('🎫 Jira 티켓 등록 완료: 가상 관제 시스템-BUG-001, 가상 관제 시스템-BUG-002', '#fbbf24');
+              appendCICDLog('🎫 Notion TCM 적재 완료: 결함 리포트 9건 동기화', '#fbbf24');
               appendCICDLog('📨 Slack 채널 알림 발송 완료: #hvac-qa-alerts', '#60a5fa');
-              setTowerStatus('CI/CD 완료 (대기)', '#34d399');
-              appendQALog('GATEWAY', '[에이전트 4번 (CI/CD)] Jira 연동 및 최종 빌드 관제 결과 전송 완료.', 'info');
+              setTowerStatus('리포팅 완료 (대기)', '#34d399');
+              appendQALog('GATEWAY', '[에이전트 4번 (리포팅)] Slack 및 Notion 결함 리포트 동기화 완료.', 'info');
               isCICDRunning = false;
             }, 500);
           }
@@ -3957,7 +3957,7 @@
       setTimeout(() => {
         flashNode('agent-2-btn');
         openAgentModal();
-        appendQALog('SYSTEM', `[에이전트 2번 (품질체크)] ${tcData.length}대 E2E 테스트 시나리오 명세 작성 완료.`, 'info');
+        appendQALog('SYSTEM', `[에이전트 2번 (TC 설계)] ${tcData.length}대 E2E 테스트 시나리오 명세 작성 완료.`, 'info');
       }, 1500);
 
       setTimeout(() => { closeAgentModal(); }, 3200);
@@ -3971,12 +3971,12 @@
         appendQALog('GATEWAY', `[에이전트 3번 (자동화)] Playwright E2E 검증 실행 완료. (성공:${passCount}, 결함:2)`, 'info');
       }, 3600);
 
-      // Step 4: Agent 4 (CI/CD)
+      // Step 4: Agent 4 (CI/CD -> Reporting)
       setTimeout(() => {
         flashNode('agent-4-btn');
-        setTowerStatus('Jira / 알림 연동 중', '#fbbf24');
-        showToast('[CI/CD 배포] CI/CD 및 Jira 결함 등록 완료', false);
-        appendQALog('GATEWAY', '[에이전트 4번 (CI/CD)] 최종 릴리즈 리포팅 및 Slack 알림 송출 완료.', 'info');
+        setTowerStatus('Slack / Notion 연동 중', '#fbbf24');
+        showToast('[리포팅] Slack 및 Notion 결함 리포트 동기화 완료', false);
+        appendQALog('GATEWAY', '[에이전트 4번 (리포팅)] 최종 릴리즈 리포팅 및 Slack/Notion 적재 완료.', 'info');
       }, 5000);
 
       // Finish
