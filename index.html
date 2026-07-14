@@ -69,10 +69,10 @@
 <div style="background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px;">
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
     <div style="display: flex; gap: 8px;">
-      <button class="btn primary" style="font-size: 11px; padding: 5px 12px; min-height: 28px;">전체</button>
-      <button class="btn" style="font-size: 11px; padding: 5px 12px; min-height: 28px;">해피패스</button>
-      <button class="btn" style="font-size: 11px; padding: 5px 12px; min-height: 28px;">네거티브</button>
-      <button class="btn" style="font-size: 11px; padding: 5px 12px; min-height: 28px;">엣지케이스</button>
+      <button class="btn primary" style="font-size: 11px; padding: 5px 12px; min-height: 28px;" onclick="filterTcTable('all', this)">전체</button>
+      <button class="btn" style="font-size: 11px; padding: 5px 12px; min-height: 28px;" onclick="filterTcTable('해피패스', this)">해피패스</button>
+      <button class="btn" style="font-size: 11px; padding: 5px 12px; min-height: 28px;" onclick="filterTcTable('엣지케이스', this)">엣지케이스</button>
+      <button class="btn" style="font-size: 11px; padding: 5px 12px; min-height: 28px;" onclick="filterTcTable('예외/결함', this)">예외/결함</button>
     </div>
     <div style="color: var(--blue); font-size: 12px; font-weight: 700;">! 각 TC 행을 클릭하면 전제조건·스텝·기대 결과 상세를 확인할 수 있습니다</div>
   </div>
@@ -135,7 +135,26 @@
   <div style="text-align: center; margin-top: 20px;">
     <a href="https://app.notion.com/p/39b860adf55080739733c692ef637d4d?v=39b860adf55080758f77000c2be92a57" target="_blank" class="btn" style="padding: 8px 16px;">🔗 실제 노션 페이지에서 전체 9개 TC 보기 (새 탭 열기)</a>
   </div>
-</div></div></section>
+</div>
+<script>
+function filterTcTable(type, btn) {
+  const btns = btn.parentElement.querySelectorAll('.btn');
+  btns.forEach(b => b.classList.remove('primary'));
+  btn.classList.add('primary');
+
+  const rows = document.querySelectorAll('#notion-integration tbody tr.tc-row');
+  rows.forEach(row => {
+    const detailsRow = row.nextElementSibling;
+    if (type === 'all' || row.innerText.includes(type)) {
+      row.style.display = 'table-row';
+    } else {
+      row.style.display = 'none';
+      detailsRow.classList.remove('open');
+    }
+  });
+}
+</script>
+</div></section>
 <section><div class="wrap"><div class="shead"><div><span class="label">08 · 한계점</span><h2>현재 확인된 한계점</h2></div><p>V1의 구조적 제약과 실제 제품 환경으로 확대하기 전에 보완해야 할 내용을 정리했습니다.</p></div><div class="limits"><article class="limit"><b>01</b><h3>가상 환경 중심 검증</h3><p>실제 H/W·ModBus 통신이 아닌 브라우저 내부 상태와 시뮬레이터 화면을 검증합니다.</p></article><article class="limit"><b>02</b><h3>실행 증거 보완 중</h3><p>실제 Run 결과, Screenshot과 상태값 저장 구조를 최종 정리하고 있습니다.</p></article><article class="limit"><b>03</b><h3>AI 검토의 한계</h3><p>AI가 만든 결과를 AI만으로 검토하지 않고 규칙 기반 검사와 실제 실행을 함께 사용해야 합니다.</p></article><article class="limit"><b>04</b><h3>호출 비용과 처리 시간</h3><p>모든 Agent 분석을 매번 수행하면 실행 시간과 모델 호출 비용이 증가할 수 있습니다.</p></article></div></div></section>
 <section><div class="wrap"><div class="shead"><div><span class="label">09 · 고도화 계획</span><h2>향후 고도화 방향</h2></div><p>단일 TC 정의, 실행 결과 데이터 구조와 추적성 자동 검증을 중심으로 보완합니다.</p></div><div class="road"><article class="roaditem"><h3>단일 TC 정의 파일</h3><p>문서·Notion·코드에서 같은 ID와 품질 기준 사용</p></article><article class="roaditem"><h3>실행 결과 자동 판정</h3><p>환경 점검·기대값 확인·증거 완전성 기록</p></article><article class="roaditem"><h3>추적성 자동 검사</h3><p>요구사항·품질 기준·TC·함수·실행 결과 연결 누락 검출</p></article></div></div></section>
 <section><div class="wrap"><div class="shead"><div><span class="label">10 · 프로젝트 역량</span><h2>적용 기술과 QA 역량</h2></div><p>중앙제어 도메인 경험을 품질 기준 정의, 요구사항 정제, TC 설계, 자동화 실행과 결과 분석으로 연결했습니다.</p></div><div class="grid2"><article class="card"><h3>기술 스택</h3><div class="skills"><span class="skill">Playwright</span><span class="skill">Python</span><span class="skill">Pytest</span><span class="skill">Slack</span><span class="skill">Notion</span></div></article><article class="card"><h3>핵심 QA 역량</h3><p>근거 있는 기대결과, 일관된 품질 기준, 테스트 독립성, 실행 증거와 실패 원인 분류를 구조화합니다.</p></article></div></div></section>
