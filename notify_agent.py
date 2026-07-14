@@ -273,7 +273,8 @@ def send_to_notion(report_data):
         priority = "P1" if category in ["해피패스", "네거티브"] else "P2"
         
         # 2. 실행 결과 및 결과 메시지 매핑
-        if res == "passed":
+        result_str = test["result"]  # 루프 변수 'res'와 충돌 방지를 위해 result_str 사용
+        if result_str == "passed":
             status_name = "Pass"
             result_msg = "정상 동작"
         else:
@@ -281,8 +282,10 @@ def send_to_notion(report_data):
             if "요구사항" in reason:
                 status_name = "Review Needed"
                 priority = "P2"
-            elif "장비 점검" in reason:
-                status_name = "Blocker"
+            elif "환경·시뮬레이터" in reason or "테스트 환경" in reason:
+                # ENV-001 유형 (Simulator Timeout 등)
+                status_name = "Blocked"
+                priority = "P2"
             else:
                 status_name = "Fail"
                 priority = "P1"
@@ -325,11 +328,11 @@ def send_to_notion(report_data):
                 if results:
                     # 1. 이미 존재하면 PATCH (업데이트)
                     page_id = results[0]["id"]
-                    res = requests.patch(f"https://api.notion.com/v1/pages/{page_id}", headers=headers, json={"properties": properties})
-                    if res.status_code == 200:
+                    http_res = requests.patch(f"https://api.notion.com/v1/pages/{page_id}", headers=headers, json={"properties": properties})
+                    if http_res.status_code == 200:
                         success_count += 1
                     else:
-                        print(f"❌ 노션 업데이트 실패 ({tc_id}): {res.text}")
+                        print(f"❌ 노션 업데이튨 실패 ({tc_id}): {http_res.text}")
                     continue
                     
             # 2. 없으면 POST (신규 생성)
@@ -337,12 +340,12 @@ def send_to_notion(report_data):
                 "parent": {"database_id": database_id},
                 "properties": properties
             }
-            res = requests.post("https://api.notion.com/v1/pages", headers=headers, json=payload)
+            http_res = requests.post("https://api.notion.com/v1/pages", headers=headers, json=payload)
             
-            if res.status_code == 200:
+            if http_res.status_code == 200:
                 success_count += 1
             else:
-                print(f"❌ 노션 적재 실패 ({tc_id}): {res.text}")
+                print(f"❌ 노션 적재 실패 ({tc_id}): {http_res.text}")
         except Exception as e:
             print(f"❌ 노션 API 에러: {e}")
             

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>가상 가상 관제 시스템 Central Control Simulator</title>
+  <title>Virtual Central Control System (가상 중앙제어 시스템) — Central Control Simulator</title>
   <!-- Google Fonts: Inter, Outfit & Noto Sans KR -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,7 +11,7 @@
   
   <style>
     :root {
-      /* 가상 가상 관제 시스템 Original Color Palette & Theme */
+      /* Virtual Central Control System (가상 중앙제어 시스템) — Color Palette & Theme */
       --bg-light: #f5f6f8;
       --sidebar-dark: #222736;
       --sidebar-dark-active: #1d212f;
@@ -1728,7 +1728,7 @@
             <rect x="46" y="65" width="8" height="10" fill="#818cf8" />
             <rect x="59" y="65" width="8" height="10" fill="#818cf8" />
           </svg>
-          <div class="agent-label-note">요구사항 & 프론트</div>
+          <div class="agent-label-note">요구사항 정제</div>
         </div>
         
         <div class="agent-circle-node sub-node" id="agent-2-btn" onclick="runAgent2Action(event)" title="에이전트 2번 (품질 체크리스트)">
@@ -1742,7 +1742,7 @@
             <rect x="46" y="65" width="8" height="10" fill="#fb7185" />
             <rect x="59" y="65" width="8" height="10" fill="#fb7185" />
           </svg>
-          <div class="agent-label-note">품질체크</div>
+          <div class="agent-label-note">TC 설계</div>
         </div>
         
         <div class="agent-circle-node sub-node" id="agent-3-btn" onclick="runAgent3Action(event)" title="에이전트 3번 (자동화 테스트)">
@@ -1756,7 +1756,7 @@
             <rect x="46" y="65" width="8" height="10" fill="#34d399" />
             <rect x="59" y="65" width="8" height="10" fill="#34d399" />
           </svg>
-          <div class="agent-label-note">자동화</div>
+          <div class="agent-label-note">자동화 실행</div>
         </div>
         
         <div class="agent-circle-node sub-node" id="agent-4-btn" onclick="runAgent4Action(event)" title="에이전트 4번 (CI/CD 파이프라인)">
@@ -1770,7 +1770,7 @@
             <rect x="46" y="65" width="8" height="10" fill="#fbbf24" />
             <rect x="59" y="65" width="8" height="10" fill="#fbbf24" />
           </svg>
-          <div class="agent-label-note">CI/CD</div>
+          <div class="agent-label-note">결과 분석·보고</div>
         </div>
       </div>
     </div>
@@ -3229,8 +3229,8 @@
         updatePanelUI();
       }
       
-      appendQALog('SYSTEM', '가상 가상 관제 시스템 가상 모니터링 시스템 기동 완료 (상태 복구 완료).', 'info');
-      appendQALog('GATEWAY', '가상 관제 시스템 게이트웨이와 12대 에어컨 디바이스 감지 성공.', 'info');
+      appendQALog('SYSTEM', 'Virtual Central Control System 가상 모니터링 시스템 기동 완료 (상태 복구 완료).', 'info');
+      appendQALog('GATEWAY', '가상 관제 시스템 게이트웨이와 16대 실내기 디바이스 감지 완료.', 'info');
 
       // ── QA 자동화 테스트용 전역 네임스페이스 노출 ──────────────────────────
       // const/let 변수는 window에 자동 노출되지 않으므로 명시적으로 등록
@@ -3404,9 +3404,10 @@
           </div>
         </div>
         <!-- Run button -->
-        <div style="display:flex; justify-content:flex-end;">
+        <div style="display:flex; justify-content:flex-end; align-items:center; gap:10px;">
+          <span title="이 패널은 실제 Playwright를 실행하지 않으며, QA 워크플로우 흐름을 시각화하는 Workflow Demo입니다." style="background:#7c3aed; color:#e9d5ff; font-size:0.62rem; font-weight:700; padding:3px 8px; border-radius:99px; cursor:help; border:1px solid #a78bfa; letter-spacing:0.03em;">⚠️ Workflow Demo</span>
           <button id="runner-start-btn" onclick="startTestRunner()" style="background:linear-gradient(135deg,#059669,#047857); border:none; color:white; border-radius:8px; padding:10px 24px; cursor:pointer; font-size:0.78rem; font-weight:700; box-shadow:0 4px 14px rgba(5,150,105,0.4); display:flex; align-items:center; gap:8px;">
-            ▶ Playwright 테스트 실행
+            ▶ Workflow 시뮬레이션 실행
           </button>
         </div>
       </div>

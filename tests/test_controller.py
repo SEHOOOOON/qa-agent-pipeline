@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
 # =============================================================================
 # test_controller.py
-# 가상 가상 관제 시스템 Central Control Simulator - Python Playwright 자동화 검증 테스트 스위트
+# Virtual Central Control System — Python Playwright QA Automation Test Suite
 #
 # ┌─────────────────────────────────────────────────────────────────────────┐
 # │  【용어 사전 (Domain Glossary)】                                         │
@@ -48,9 +49,7 @@ class SimulatorTimeoutError(Exception):
     """시뮬레이터 응답 타임아웃 에러"""
     pass
 
-# (생략) - 중간 코드는 그대로 두고 TC-07, TC-08만 수정합니다.
-# 하지만 start_line과 end_line을 맞추기 위해 전체를 덮어쓰는게 안전할 수 있습니다. 
-# 파일 끝부분만 교체하겠습니다.
+
 
 # ============================================================
 # 【설정 상수】
@@ -262,9 +261,9 @@ def test_tc01_happy_path_heat_mode_and_temp_apply(page: Page):
     # (--color-heat: #ea580c 주황색 테마 적용)
     expect(page.locator("#det-temp-display")).to_have_class(re.compile(r"heat"))
 
-    # ── Step 3: 설정온도를 24°C로 조절 (Flaky Test 방어 로직 적용) ──
-    # 인간이 눈으로 온도를 보면서 맞추듯, 24.0°C가 될 때까지 클릭하며 대기
-    target_temp = 24.0
+    # ── Step 3: 설정온도를 26°C로 조절 (초기값 24°C와 달라야 로그가 찍힘) ──
+    # 인간이 눈으로 온도를 보면서 맞추듯, 26.0°C가 될 때까지 클릭하며 대기
+    target_temp = 26.0
     for _ in range(20):  # 무한 루프 방지용 최대 20회 시도
         # inner_text()는 UI 렌더링이 안정화될 때까지 안전하게 대기 후 값을 가져옵니다.
         current_text = page.locator("#det-temp-display").inner_text()
@@ -280,8 +279,8 @@ def test_tc01_happy_path_heat_mode_and_temp_apply(page: Page):
             page.click("#det-temp-down-btn")
         page.wait_for_timeout(50)  # UI 렌더링 대기 마진
 
-    # 설정온도 표시가 24.0°C로 업데이트되었는지 검증
-    expect(page.locator("#det-temp-display")).to_contain_text("24.0")
+    # 설정온도 표시가 26.0°C로 업데이트되었는지 검증
+    expect(page.locator("#det-temp-display")).to_contain_text("26.0")
 
     # ── Step 4: '적용' 버튼 클릭 → applyPanelCommands() 실행 ──
     # ※ QA 드로어가 닫혀 있는 상태에서 적용해야 함
@@ -296,10 +295,11 @@ def test_tc01_happy_path_heat_mode_and_temp_apply(page: Page):
     mode_log_text = get_log_text(page, "운전모드: COOL -> HEAT")
     assert "운전모드: COOL -> HEAT" in mode_log_text
 
-    # [검증 5-2] 설정온도 변경 로그에 "24" 값 포함 확인
+    # [검증 5-2] 설정온도 변경 로그에 "26" 값 포함 확인
+    # HTML logs: "[IDU-00] 제어 적용 -> 운전모드: COOL -> HEAT, 설정온도: 24°C -> 26°C"
     wait_for_log_containing(page, "설정온도")
     temp_log_text = get_log_text(page, "설정온도")
-    assert "24" in temp_log_text, f"설정온도 변경 로그에 24°C 정보가 없습니다: {temp_log_text}"
+    assert "26" in temp_log_text, f"설정온도 변경 로그에 26°C 정보가 없습니다: {temp_log_text}"
 
     # ── Step 6: 장치 카드 상태 동기화 검증 ──
     page.wait_for_function(
@@ -323,8 +323,8 @@ def test_tc01_happy_path_heat_mode_and_temp_apply(page: Page):
     backend_device = page.evaluate(
         "() => { return window.__vccs.devices.find(x => x.id === 1); }"
     )
-    assert backend_device["mode"] == "HEAT", f"백엔드 레지스터 모드 불일치: {backend_device['mode']}"
-    assert backend_device["setTemp"] == 24.0, f"백엔드 레지스터 온도 불일치: {backend_device['setTemp']}"
+    assert backend_device["mode"] == "HEAT", f"백앤드 레지스터 모드 불일치: {backend_device['mode']}"
+    assert backend_device["setTemp"] == 26.0, f"백앤드 레지스터 온도 불일치: {backend_device['setTemp']}"
 
 
 # ============================================================
@@ -629,8 +629,8 @@ def test_tc07_alarm_ui_ambiguity_classification(page: Page):
 # ============================================================
 # 【TC-08】하드웨어 통신 타임아웃
 # ============================================================
-def test_tc08_hardware_timeout_exclusion(page: Page):
-    """[TC-08] 테스트 환경 이슈 | 제어 명령 후 시뮬레이터 미반응 (Mocked Timeout)"""
+def test_tc08_simulator_timeout_classification(page: Page):
+    """[TC-08] 시뮬레이터 환경 이슈 분류 | 제어 명령 후 가상 백엔드 미반응 (Simulator Timeout) — Finding: ENV-001"""
     load_clean_simulator(page)
     # QA Drawer가 덮기 전에 장치를 먼저 선택합니다.
     select_device_card(page, 1)

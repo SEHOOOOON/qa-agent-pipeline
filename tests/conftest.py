@@ -3,7 +3,13 @@
 
 import pytest
 import json
+from pathlib import Path
 from test_controller import SimulatorTimeoutError
+
+# 프로젝트 루트 기준 reports 경로 (tests/ 폴더 한 단계 위)
+REPORTS_DIR = Path(__file__).parent.parent / "reports"
+REPORTS_DIR.mkdir(parents=True, exist_ok=True)
+QA_RESULTS_PATH = REPORTS_DIR / "qa_results.json"
 
 # Global test results collector
 qa_results = []
@@ -54,8 +60,9 @@ def pytest_runtest_makereport(item, call):
         })
 
 def pytest_sessionfinish(session, exitstatus):
-    with open("reports/qa_results.json", "w", encoding="utf-8") as f:
+    with open(QA_RESULTS_PATH, "w", encoding="utf-8") as f:
         json.dump(qa_results, f, ensure_ascii=False, indent=2)
+    print(f"\n[OK] QA 결과 저장 완료: {QA_RESULTS_PATH}")
 
 # -- 3. Add Columns headers -----------------------------------------
 def pytest_html_results_table_header(cells):
@@ -83,4 +90,4 @@ def pytest_html_results_table_row(report, cells):
 
 # -- 5. Report title -----------------------------------------------------------
 def pytest_html_report_title(report):
-    report.title = "가상 가상 관제 시스템 Virtual Control System - QA Automation Report"
+    report.title = "Virtual Central Control System — QA Automation Report"
