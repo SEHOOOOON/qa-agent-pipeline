@@ -27,7 +27,7 @@
   - Cleanup에 '기기 설정 전체 초기화 버튼(Reset)' 클릭 또는 명시적인 `load_clean_simulator` 호출을 명시할 것.
 
 ### [TC-02A 피드백]
-- **위반 Rule**: Major
+- **위반 Rule**: Critical (기획에 없는 에러 상황을 임의로 지어냄)
 - **수정 가이드**: 
   - Initial State를 `mode: COOL`로 설정하고, Steps에서 FAN 모드 버튼을 클릭하도록 Setup과 Steps의 역할을 분리할 것.
   - Register Assert 영역은 비워두거나 `[]`로 처리하고, `double_assert_policy`를 `UI-only`로 지정하여 미적용 사유를 시스템적으로 처리할 것.
@@ -35,7 +35,7 @@
   - (권고) FAN 모드 전환 자체를 검증하는 TC와 온도 비활성화를 검증하는 TC를 분리하는 것이 Atomic 원칙에 더 부합함.
 
 ### [TC-INT-02 피드백]
-- **위반 Rule**: Critical
+- **위반 Rule**: Major
 - **수정 가이드**: 
   - Data Contract 필수 포맷(Initial State, Setup, Cleanup 등)을 완벽하게 채울 것.
   - 비대상 장비 불변 검증 시 "100% 유지"라는 단어를 삭제하고, "실행 전 Snapshot과 실행 후 값 비교" 방식으로 구체화할 것. (예: `before_devices[4].mode == after_devices[4].mode`)
