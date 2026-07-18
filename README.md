@@ -41,8 +41,8 @@ AI를 활용하면 테스트케이스를 빠르게 만들 수 있었지만, 요�
 | 항목 | 상세 | 설명 |
 |------|------|------|
 | **테스트 대상** | **B2B 웹 모의 관제 시스템** | 16대의 장치를 제어하는 가상 관제 대시보드 검증 |
-| **검증 전략** | **UI/Register 이중 검증** | Playwright를 통해 화면 표출 상태와 내부 가상 레지스터 상태를 교차 검증 |
-| **거버넌스 구조** | **QA Checkpoint** | Agent가 결과를 생성하고, 단계별 품질 통제소(Checkpoint)가 기준 미달 산출물을 차단 |
+| **검증 전략** | **UI/내부 상태 교차 검증** | Playwright를 통해 화면 표출 상태와 내부 가상 장치 상태를 교차 검증 |
+| **단계별 검토** | **QA Checkpoint** | Agent가 결과를 생성하고, 단계별 품질 통제소(Checkpoint)가 기준 미달 산출물을 차단 |
 | **파이프라인 연동** | **Pytest / Slack / Notion** | 5가지 원인으로 분류된 테스트 결과를 Slack으로 전송하고 Notion DB에 기록 |
 
 </div>
@@ -71,7 +71,7 @@ Slack 알림 · Notion TC 목록 · 실행 리포트
 ```text
 qa-agent-pipeline/
 ├── 📁 docs/                    # 각 Agent별 지시문(프롬프트), 산출물 샘플 및 추적성 매트릭스
-├── 📁 tests/                   # Playwright 기반 E2E 자동화 스크립트 (test_controller.py 등)
+├── 📁 tests/                   # Playwright 기반 통합 TC 자동화 스크립트 (test_controller.py 등)
 ├── 📁 reports/                 # 테스트 자동화 결과 리포트 및 JSON 데이터
 ├── virtual-controller.html     # 테스트 대상 가상 모의 관제 웹 시스템
 ├── notify_agent.py             # Slack 및 Notion API 연동 리포팅 봇
