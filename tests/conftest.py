@@ -1,5 +1,6 @@
 # conftest.py
 # pytest-html v4 compatible configuration for 가상 관제 시스템 QA Test Suite
+# ※ Screenshot·Trace·상태 Snapshot 수집 기능은 향후 고도화 대상으로 관리합니다.
 
 import pytest
 import json

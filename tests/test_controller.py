@@ -14,15 +14,16 @@
 # └─────────────────────────────────────────────────────────────────────────┘
 #
 # 【핵심 검증 항목 (4대 시나리오 + 확장 2개)】
-#   TC01: 해피패스 관제 제어 (HEAT 모드 + 24°C 적용 → 로그·카드 동기화 검증)
-#   TC02: Rule 2 예외 차단 (FAN/DRY 모드 시 설정온도 관제점 즉시 비활성화)
-#   TC03: LOCK 관제점 전수 검사 (16대 루프 검사 + 자물쇠 아이콘 + 현장 리모컨 차단)
-#   TC04: 결함 주입 후 제어 차단 (CH05 에러 주입 → 차단 로그 타임아웃 방어 검증)
-#   TC05: 복수 선택 일괄 제어 (3대 선택 → HEAT 일괄 적용 → 내부 상태 검증)
-#   TC06: 온도 상한 경계값 방어 (30°C 초과 시 Toast + 값 차단 검증)
+#   TC-MODE-001: 해피패스 관제 제어 (HEAT 모드 + 24°C 적용 → 로그·카드 동기화 검증)
+#   TC-MODE-002: Rule 2 예외 차단 - FAN 모드 시 설정온도 관제점 비활성화
+#   TC-MODE-003: Rule 2 양방향 - DRY 비활성화 → COOL 복귀 재활성화
+#   TC-LOCK-001: LOCK 관제점 전수 검사 (16대 루프 + 자물쇠 아이콘 + 현장 리모컨 차단)
+#   TC-ERR-001: 결함 주입 후 제어 차단 (CH05 에러 주입 → 차단 로그 타임아웃 방어 검증)
+#   TC-INT-002: 복수 선택 일괄 제어 (3대 선택 → HEAT 일괄 적용 → 내부 상태 검증)
+#   TC-TEMP-001: 온도 상한 경계값 방어 (30°C 초과 시 Toast + 값 차단 검증)
 #
 # 【실행 방법】
-#   pip install playwright pytest-playwright
+#   pip install pytest pytest-playwright pytest-html
 #   playwright install chromium
 #
 #   pytest test_controller.py -v --browser chromium          # Headless 실행
@@ -208,16 +209,16 @@ def get_log_text(page: Page, has_text: str) -> str:
 
 
 # ============================================================
-# 【TC-00】사전 환경 검증 (Pre-check)
+# 【TC-ENV-000】사전 환경 검증 (Pre-check)
 # ============================================================
-def test_tc00_pre_environment_check(page: Page):
-    """[TC-00] 사전 환경 검증 (Pre-check) | 테스트 실행 전 가상 환경 및 레지스터 로드 상태 검증"""
+def test_tc_env_000_pre_environment_check(page: Page):
+    """[TC-ENV-000] 사전 환경 검증 (Pre-check) | 테스트 실행 전 가상 환경 및 레지스터 로드 상태 검증"""
     page.goto(VIRTUAL_CONTROLLER_URL, wait_until="domcontentloaded")
     
     # 1. UI 렌더링 검증 (첫 번째 장치 카드가 보일 때까지 대기)
     expect(page.locator("#device-card-1")).to_be_visible(timeout=5000)
     
-    # 2. 백엔드 레지스터(H/W) 객체 존재 및 16대 로드 검증
+    # 2. 내부 장치 상태(가상 레지스터) 객체 존재 및 16대 로드 검증
     device_count = page.evaluate("() => window.__vccs ? window.__vccs.devices.length : 0")
     assert device_count == 16, f"환경 에러: 16대 장비 로드 실패 (실제 로드 수: {device_count})"
     
@@ -225,7 +226,7 @@ def test_tc00_pre_environment_check(page: Page):
     expect(page.locator(".qa-drawer")).to_be_attached()
 
 # ============================================================
-# 【TC-01】해피패스 관제 제어 검증
+# 【TC-MODE-001】해피패스 관제 제어 검증
 #
 # 시나리오:
 #   1번 장치 카드 클릭 → 제어 패널에서 '난방(HEAT)' 모드 선택
@@ -242,8 +243,8 @@ def test_tc00_pre_environment_check(page: Page):
 # ※ 핵심 주의: QA 드로어는 적용 버튼 클릭 후에 열어야 한다.
 #              드로어가 열린 상태에서는 제어 패널 버튼이 클릭 불가.
 # ============================================================
-def test_tc01_happy_path_heat_mode_and_temp_apply(page: Page):
-    """[TC-01] 해피패스 | 장치 #1 선택 → HEAT 모드 + 24°C 적용 → QA 로그 및 장치 카드 동기화 검증"""
+def test_tc_mode_001_heat_mode_and_temp_apply(page: Page):
+    """[TC-MODE-001] 해피패스 | 장치 #1 선택 → HEAT 모드 + 24°C 적용 → QA 로그 및 장치 카드 동기화 검증"""
     load_clean_simulator(page)
 
     # ── Step 1: 1번 장치 카드 선택 ('IDU-00', 초기: COOL 19°C) ──
@@ -318,20 +319,20 @@ def test_tc01_happy_path_heat_mode_and_temp_apply(page: Page):
     # 장치 카드에 mode-heat CSS 클래스 동적 바인딩 검증 (Rule 1 주황색 테마)
     expect(page.locator("#device-card-1")).to_have_class(re.compile(r"mode-heat"))
 
-    # ── Step 7: [오세훈 아키텍트의 핵심 가드레일: 백엔드 데이터 이중 검증] ──
-    # UI 화면(앞문)만 믿지 않고, 실제 가상 레지스터 메모리 어레이(뒷문) 데이터까지 완전히 동기화되었는지 교차 검증
+    # ── Step 7: [화면·내부 상태 동시 검증] ──
+    # 사용자 UI에 표시된 값과 내부 장치 상태(가상 레지스터)가 동일하게 반영되었는지 교차 검증
     backend_device = page.evaluate(
         "() => { return window.__vccs.devices.find(x => x.id === 1); }"
     )
-    assert backend_device["mode"] == "HEAT", f"백앤드 레지스터 모드 불일치: {backend_device['mode']}"
-    assert backend_device["setTemp"] == 26.0, f"백앤드 레지스터 온도 불일치: {backend_device['setTemp']}"
+    assert backend_device["mode"] == "HEAT", f"내부 장치 상태 모드 불일치: {backend_device['mode']}"
+    assert backend_device["setTemp"] == 26.0, f"내부 장치 상태 온도 불일치: {backend_device['setTemp']}"
 
 
 # ============================================================
-# 【TC-02-A】Rule 2 예외 차단 - 송풍(FAN) 모드
+# 【TC-MODE-002】Rule 2 예외 차단 - 송풍(FAN) 모드
 # ============================================================
-def test_tc02a_rule2_fan_mode_temp_disabled(page: Page):
-    """[TC-02A] Rule 2 예외 | 송풍(FAN) 모드 선택 시 설정온도 관제점 비활성화 이중 Assert"""
+def test_tc_mode_002_fan_mode_temp_disabled(page: Page):
+    """[TC-MODE-002] Rule 2 예외 | 송풍(FAN) 모드 선택 시 설정온도 관제점 비활성화 검증"""
     load_clean_simulator(page)
     select_device_card(page, 1)
 
@@ -344,13 +345,13 @@ def test_tc02a_rule2_fan_mode_temp_disabled(page: Page):
     page.click("#det-mode-fan")
     expect(page.locator("#det-mode-fan")).to_have_class(re.compile(r"active"))
 
-    # [이중 Assert A] disabled 클래스 추가 검증
+    # [화면·상태 동시 검증 A] disabled 클래스 추가 검증
     expect(page.locator("#det-temp-adjust-card")).to_have_class(re.compile(r"disabled"))
 
-    # [이중 Assert B-1] UP 버튼 비활성화
+    # [화면·상태 동시 검증 B-1] UP 버튼 비활성화
     expect(page.locator("#det-temp-up-btn")).to_be_disabled()
 
-    # [이중 Assert B-2] DOWN 버튼 비활성화
+    # [화면·상태 동시 검증 B-2] DOWN 버튼 비활성화
     expect(page.locator("#det-temp-down-btn")).to_be_disabled()
 
     # 비활성화 표시 텍스트 '---' 확인
@@ -358,10 +359,10 @@ def test_tc02a_rule2_fan_mode_temp_disabled(page: Page):
 
 
 # ============================================================
-# 【TC-02-B】Rule 2 예외 차단 - 제습(DRY) + 냉방(COOL) 복귀 재활성화
+# 【TC-MODE-003】Rule 2 예외 차단 - 제습(DRY) + 냉방(COOL) 복귀 재활성화
 # ============================================================
-def test_tc02b_rule2_dry_mode_then_cool_reactivation(page: Page):
-    """[TC-02B] Rule 2 양방향 | 제습(DRY) 비활성화 → 냉방(COOL) 복귀 시 설정온도 관제점 재활성화"""
+def test_tc_mode_003_dry_mode_then_cool_reactivation(page: Page):
+    """[TC-MODE-003] Rule 2 양방향 | 제습(DRY) 비활성화 → 냉방(COOL) 복귀 시 설정온도 관제점 재활성화"""
     load_clean_simulator(page)
     select_device_card(page, 1)
 
@@ -386,10 +387,10 @@ def test_tc02b_rule2_dry_mode_then_cool_reactivation(page: Page):
 
 
 # ============================================================
-# 【TC-03】LOCK 관제점 전수 검사
+# 【TC-LOCK-001】LOCK 관제점 전수 검사
 # ============================================================
-def test_tc03_lock_all_devices_full_inspection(page: Page):
-    """[TC-03] LOCK 전수 검사 | 16대 전체 잠금 주입 → 🔒 아이콘·CSS·현장 리모컨 차단 루프 검증"""
+def test_tc_lock_001_all_devices_full_inspection(page: Page):
+    """[TC-LOCK-001] LOCK 전수 검사 | 16대 전체 잠금 주입 → 🔒 아이콘·CSS·현장 리모컨 차단 루프 검증"""
     load_clean_simulator(page)
 
     # 초기: locked 카드 0개
@@ -443,10 +444,10 @@ def test_tc03_lock_all_devices_full_inspection(page: Page):
 
 
 # ============================================================
-# 【TC-04】결함 주입(CH05) 후 제어 차단 검증
+# 【TC-ERR-001】결함 주입(CH05) 후 제어 차단 검증
 # ============================================================
-def test_tc04_ch05_fault_injection_control_block(page: Page):
-    """[TC-04] 결함 주입 | CH05 과열 에러 강제 주입 → 제어 명령 차단 로그 및 Toast 검증"""
+def test_tc_err_001_ch05_fault_injection_control_block(page: Page):
+    """[TC-ERR-001] 결함 주입 | CH05 과열 에러 강제 주입 → 제어 명령 차단 로그 및 Toast 검증"""
     load_clean_simulator(page)
 
     # QA 드로어 먼저 열기 (에러 주입 버튼이 QA 드로어 내부에 있음)
@@ -506,10 +507,10 @@ def test_tc04_ch05_fault_injection_control_block(page: Page):
 
 
 # ============================================================
-# 【TC-05】복수 선택 모드 일괄 제어 검증
+# 【TC-INT-002】복수 선택 모드 일괄 제어 검증
 # ============================================================
-def test_tc05_multi_select_batch_control(page: Page):
-    """[TC-05] 복수 선택 일괄 제어 | 3대 선택 → HEAT 일괄 적용 → 내부 상태(devices[].mode) 검증"""
+def test_tc_int_002_multi_select_batch_control(page: Page):
+    """[TC-INT-002] 복수 선택 일괄 제어 | 3대 선택 → HEAT 일괄 적용 → 내부 상태(devices[].mode) 검증"""
     load_clean_simulator(page)
 
     # 복수 선택 모드 활성화
@@ -571,10 +572,10 @@ def test_tc05_multi_select_batch_control(page: Page):
 
 
 # ============================================================
-# 【TC-06】온도 상한 경계값 방어 검증
+# 【TC-TEMP-001】온도 상한 경계값 방어 검증
 # ============================================================
-def test_tc06_temp_upper_limit_boundary(page: Page):
-    """[TC-06] 온도 경계값 방어 | 설정온도 30°C 상한 초과 시도 → Toast 경고 + 값 차단 검증"""
+def test_tc_temp_001_upper_limit_boundary(page: Page):
+    """[TC-TEMP-001] 온도 경계값 방어 | 설정온도 30°C 상한 초과 시도 → Toast 경고 + 값 차단 검증"""
     load_clean_simulator(page)
     select_device_card(page, 1)
 
@@ -607,10 +608,10 @@ def test_tc06_temp_upper_limit_boundary(page: Page):
 
 
 # ============================================================
-# 【TC-07】알람 UI 표시 기준 모호성 (Agent 3 - Requirement Ambiguity)
+# 【Pipeline Validation】알람 UI 표시 기준 모호성 — 요구사항 확인 필요 분류
 # ============================================================
-def test_tc07_alarm_ui_ambiguity_classification(page: Page):
-    """[TC-07] 요구사항 모호성 | 알람(CH05) 발생 시 카드 색상 변경 기준 부재로 인한 Assert 불가"""
+def test_pipeline_001_alarm_ui_ambiguity_classification(page: Page):
+    """[Pipeline-001] 요구사항 모호성 | 알람(CH05) 발생 시 카드 색상 변경 기준 부재로 인한 Assert 불가"""
     load_clean_simulator(page)
     # QA Drawer가 덮기 전에 장치를 먼저 선택합니다.
     select_device_card(page, 5)
@@ -627,10 +628,10 @@ def test_tc07_alarm_ui_ambiguity_classification(page: Page):
 
 
 # ============================================================
-# 【TC-08】하드웨어 통신 타임아웃
+# 【Pipeline Validation】시뮬레이터 환경 이슈 분류
 # ============================================================
-def test_tc08_simulator_timeout_classification(page: Page):
-    """[TC-08] 시뮬레이터 환경 이슈 분류 | 제어 명령 후 가상 백엔드 미반응 (Simulator Timeout) — Finding: ENV-001"""
+def test_pipeline_002_simulator_timeout_classification(page: Page):
+    """[Pipeline-002] 시뮬레이터 환경 이슈 분류 | 제어 명령 후 가상 환경 미반응 (Simulator Timeout) — Finding: ENV-001"""
     load_clean_simulator(page)
     # QA Drawer가 덮기 전에 장치를 먼저 선택합니다.
     select_device_card(page, 1)

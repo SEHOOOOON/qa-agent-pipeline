@@ -1,5 +1,6 @@
 # 🟢 Agent 2: 테스트케이스 수정본 (Checkpoint 2 피드백 반영)
 *안내: Checkpoint 2의 수정 요청을 반영한 재검토 대상 산출물입니다. 최종 승인 여부는 Checkpoint 2 재검토 결과에서 결정합니다.*
+*본 문서는 전체 자동화 TC 중 품질 검토 과정을 보여주는 **대표 TC**만 수록합니다. 전체 TC 목록은 `tests/test_controller.py`를 참조하세요.*
 
 ```yaml
 test_cases:

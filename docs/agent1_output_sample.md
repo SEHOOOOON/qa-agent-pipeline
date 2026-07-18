@@ -28,6 +28,11 @@
 - **Source Type**: Domain Rule
 - **Statement**: 전체 잠금(Lock) 주입 시, 시스템 상 UI 제어가 차단된다.
 
+- **Fact ID**: FACT-005
+- **Source ID**: REQ-TEMP-001
+- **Source Type**: Requirement
+- **Statement**: 설정온도의 허용 범위는 16.0°C~30.0°C이며, 범위 초과 입력은 적용하지 않고 경고를 표시한다.
+
 ### 🟡 [추정 정보] (Agent 2 기대결과(Expected Result) 사용 금지)
 - **없음** (현재 문서에서 합리적 추정이 가능한 영역 없음)
 
@@ -42,18 +47,14 @@
 - **Missing Information**: 통신 타임아웃 발생 시 UI에 띄워야 할 정확한 Toast 메시지 텍스트
 - **Impact**: 타임아웃 예외 처리 기대결과(Expected Result) 정의 불가
 
-- **Gap ID**: GAP-003
-- **Related Source ID**: REQ-001
-- **Missing Information**: 설정온도의 최소·최대 허용 범위와 경계값 초과 시 처리 정책
-- **Impact**: 온도 경계값(Boundary) TC의 기대결과(Expected Result) 정의 불가
+
 
 ## 3. 기획자 확인용 질문 리스트 (Clarification Questions)
 - **Question ID**: Q-001 (Related: GAP-001)
   - **Question**: CH05 에러 발생 시 장치 카드의 어떤 UI 요소가 어떤 색상으로 변경되어야 합니까? (예: 전체 배경색 #FF0000, 또는 테두리만)
 - **Question ID**: Q-002 (Related: GAP-002)
   - **Question**: 통신 타임아웃 시 사용자에게 표시되는 정확한 Toast 메시지 문구를 알려주세요.
-- **Question ID**: Q-003 (Related: GAP-003)
-  - **Question**: 사용자가 설정할 수 있는 온도의 최솟값과 최댓값은 몇 도입니까? 허용 범위를 넘은 입력이 들어왔을 때의 UI 반응(초기화 또는 차단)은 무엇입니까?
+
 
 ## 4. 통합 테스트(E2E) 필요성 평가
 - **필요 여부**: Yes
@@ -74,6 +75,7 @@ source_ids:
   - "DOMAIN-RULE-003"
   - "REQ-ERROR-001"
   - "REQ-ERROR-002"
+  - "REQ-TEMP-001"
 
 input_assessment:
   level: "Level 2"
@@ -100,6 +102,11 @@ confirmed_facts:
     source_type: "Domain Rule"
     statement: "전체 잠금(Lock) 주입 시, 시스템 상 UI 제어가 차단된다."
     allowed_for_expected_result: true
+  - fact_id: "FACT-005"
+    source_id: "REQ-TEMP-001"
+    source_type: "Requirement"
+    statement: "설정온도의 허용 범위는 16.0°C~30.0°C이며, 범위 초과 입력은 적용하지 않고 경고를 표시한다."
+    allowed_for_expected_result: true
 
 inferred_facts: []
 
@@ -114,11 +121,7 @@ information_gaps:
     missing_information: "통신 타임아웃 발생 시 UI에 띄워야 할 정확한 Toast 메시지 텍스트"
     impact: "타임아웃 예외 처리 기대결과(Expected Result) 정의 불가"
     clarification_required: true
-  - gap_id: "GAP-003"
-    related_source_ids: ["REQ-001"]
-    missing_information: "설정온도의 최소·최대 허용 범위와 경계값 초과 시 처리 정책"
-    impact: "온도 경계값 TC의 기대결과(Expected Result) 정의 불가"
-    clarification_required: true
+
 
 clarification_questions:
   - question_id: "Q-001"
@@ -131,11 +134,7 @@ clarification_questions:
     question: "통신 타임아웃 시 사용자에게 표시되는 정확한 Toast 메시지 문구를 알려주세요."
     owner: "Planning"
     priority: "Medium"
-  - question_id: "Q-003"
-    related_gap_id: "GAP-003"
-    question: "사용자가 설정할 수 있는 온도의 최솟값과 최댓값, 초과 시 정책은 무엇입니까?"
-    owner: "Planning"
-    priority: "High"
+
 
 control_points:
   - name: "Power"
@@ -160,6 +159,9 @@ testable_scope:
   - scope_id: "SCOPE-004"
     description: "전체 잠금 시 UI 제어 차단"
     source_ids: ["DOMAIN-RULE-003"]
+  - scope_id: "SCOPE-005"
+    description: "온도 경계값 초과 방어"
+    source_ids: ["REQ-TEMP-001"]
 
 excluded_scope:
   - scope_id: "EXCLUDED-001"
@@ -168,9 +170,7 @@ excluded_scope:
   - scope_id: "EXCLUDED-002"
     description: "통신 타임아웃 문구 검증"
     related_gap_ids: ["GAP-002"]
-  - scope_id: "EXCLUDED-003"
-    description: "온도 상하한 경계값 검증"
-    related_gap_ids: ["GAP-003"]
+
 
 integration_assessment:
   required: true
@@ -183,9 +183,9 @@ integration_assessment:
 
 checkpoint_1:
   status: "Partial Proceed"
-  passed_scope: ["SCOPE-001", "SCOPE-002", "SCOPE-003", "SCOPE-004"]
-  excluded_scope: ["EXCLUDED-001", "EXCLUDED-002", "EXCLUDED-003"]
-  blocking_gaps: ["GAP-001", "GAP-002", "GAP-003"]
+  passed_scope: ["SCOPE-001", "SCOPE-002", "SCOPE-003", "SCOPE-004", "SCOPE-005"]
+  excluded_scope: ["EXCLUDED-001", "EXCLUDED-002"]
+  blocking_gaps: ["GAP-001", "GAP-002"]
   next_step: "Agent 2"
   decision_reason: "명확한 범위(SCOPE-001~004)에 한해 TC 설계 가능"
 ```
