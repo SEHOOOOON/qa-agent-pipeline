@@ -1,4 +1,4 @@
-# 🤖 Agent 1 요구사항 정제 결과
+# 🤖 Agent 1 요구사항 분석 결과
 
 ## 1. 입력 수준 및 판정
 - **판정 Level**: Level 2 (Partially Testable)
