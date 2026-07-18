@@ -12,14 +12,16 @@ load_dotenv()
 sys.stdout.reconfigure(encoding='utf-8')
 
 # =============================================================================
-# Agent 4: 리포트 & Slack 알림 에이전트 (Report & Notification Manager)
+# Agent 4: 결과 분석·보고 Demo (Result Analysis & Reporting)
 # =============================================================================
-# Agent 3(Playwright)가 생성한 report.html을 파싱하여,
-# 단순 Pass/Fail이 아닌 "실패 사유(Failure Classification)"를 기반으로
-# [제품 결함]과 [요구사항 확인 필요]를 분리하여 Slack Webhook으로 쏘는 역할.
+# Agent 3(Playwright)가 생성한 qa_results.json을 파싱하여,
+# Pytest 원본 상태(Pass/Fail)와 QA 분류(결함/환경/기획 등 5가지)를 분리합니다.
+# 집계 결과(summary.json)를 생성하고, Checkpoint 4를 거쳐 Slack/Notion으로 전송합니다.
+# (report.html은 사용자 확인용 원본 실행 Report로 유지)
 # =============================================================================
 
 RESULTS_PATH = Path(__file__).parent / "reports" / "qa_results.json"
+SUMMARY_PATH = Path(__file__).parent / "reports" / "summary.json"
 
 def parse_report():
     if not RESULTS_PATH.exists():
@@ -38,42 +40,95 @@ def parse_report():
     code_issues = []      # 4. 자동화 코드 문제
     not_executed = []     # 5. 조건 부족으로 미실행
 
+    # 5가지 QA 원인 분류
+    qa_classification_counts = {
+        "product_defect": 0,
+        "requirement_review": 0,
+        "environment_issue": 0,
+        "automation_issue": 0,
+        "not_executed": 0
+    }
+
+    results = []
+
     for run in data:
         test_id = run.get("test_id", "")
         desc = run.get("description", "")
         
         # TC-00 (사전 환경 점검)은 제품 TC 수치에서 제외
-        if "tc00" in test_id.lower() or "tc-00" in desc.lower():
+        if "tc00" in test_id.lower() or "tc-00" in desc.lower() or "tc-env" in test_id.lower() or "tc-env" in desc.lower():
             continue
 
         summary["total"] += 1
         res = run.get("result", "")
         reason_text = run.get("failure_reason", "")
         
-        # 슬랙/노션 표시용: "1. ", "2. ", "3. " 같은 접두어 제거
         display_reason = re.sub(r'^\d+\.\s*', '', reason_text)
         
-        item = {"test": test_id, "desc": desc, "reason": display_reason, "result": res}
-        all_tests.append(item)
+        qa_class = ""
+        
+        item = {
+            "tc_id": run.get("tc_id", test_id),
+            "pytest_status": res,
+            "qa_classification": qa_class,
+            "description": desc,
+            "failure_reason": display_reason
+        }
 
         if res == "passed":
             summary["passed"] += 1
+            qa_class = "pass"
+            item["qa_classification"] = qa_class
         elif res == "skipped":
             summary["skipped"] += 1
-            if "2. 기획" in reason_text:
+            if "기획" in reason_text or "요구사항" in reason_text:
+                qa_class = "requirement_review"
+                item["qa_classification"] = qa_class
+                qa_classification_counts["requirement_review"] += 1
                 ambiguities.append(item)
             else:
+                qa_class = "not_executed"
+                item["qa_classification"] = qa_class
+                qa_classification_counts["not_executed"] += 1
                 not_executed.append(item)
         elif res == "failed":
             summary["failed"] += 1
-            if "1. 제품 결함" in reason_text:
+            if "제품 결함" in reason_text:
+                qa_class = "product_defect"
+                item["qa_classification"] = qa_class
+                qa_classification_counts["product_defect"] += 1
                 defects.append(item)
-            elif "3. 테스트 환경" in reason_text:
+            elif "환경" in reason_text or "시뮬레이터" in reason_text:
+                qa_class = "environment_issue"
+                item["qa_classification"] = qa_class
+                qa_classification_counts["environment_issue"] += 1
                 env_issues.append(item)
             else:
+                qa_class = "automation_issue"
+                item["qa_classification"] = qa_class
+                qa_classification_counts["automation_issue"] += 1
                 code_issues.append(item)
 
+        all_tests.append(item)
+        results.append(item)
+
+    # Agent 4 단일 진실의 원천 생성 (summary.json)
+    import datetime
+    now_kst = datetime.datetime.utcnow() + datetime.timedelta(hours=9)
+    summary_data = {
+        "run_id": data[0].get("run_id", f"RUN-{now_kst.strftime('%Y%m%d-%H%M%S')}"),
+        "generated_at": now_kst.isoformat(),
+        "summary": summary,
+        "qa_classification": qa_classification_counts,
+        "results": results
+    }
+
+    with open(SUMMARY_PATH, "w", encoding="utf-8") as f:
+        json.dump(summary_data, f, ensure_ascii=False, indent=2)
+    print(f"✅ [Agent 4] 표준 요약 결과물(summary.json) 생성 완료: {SUMMARY_PATH}")
+
     return {
+        "summary_data": summary_data,
         "summary": summary,
         "all_tests": all_tests,
         "defects": defects,
@@ -82,6 +137,24 @@ def parse_report():
         "code_issues": code_issues,
         "not_executed": not_executed
     }
+
+def checkpoint_4_validation(report_data):
+    """
+    Checkpoint 4: 데이터 무결성 검증
+    qa_results.json 원본 기반으로 Agent 4가 파싱한 수치가 일치하는지 검증합니다.
+    """
+    summary = report_data["summary_data"]["summary"]
+    qa_counts = report_data["summary_data"]["qa_classification"]
+    
+    total_parsed = summary["passed"] + summary["skipped"] + summary["failed"]
+    total_classified = summary["passed"] + sum(qa_counts.values())
+    
+    if summary["total"] != total_parsed or summary["total"] != total_classified:
+        print("❌ [Checkpoint 4 실패] 수집된 테스트 수와 분류된 테스트 수가 일치하지 않습니다. 알림 전송을 차단합니다.")
+        return False
+        
+    print("✅ [Checkpoint 4 통과] 원본 데이터와 분류 집계 수치가 100% 일치합니다.")
+    return True
 
 def format_slack_payload(report_data):
     if not report_data:
@@ -130,16 +203,14 @@ def format_slack_payload(report_data):
                 "text": {"type": "mrkdwn", "text": header_text}
             })
             for i in items:
-                import re
-                tc_id_match = re.search(r'\[(.*?)\]', i['desc'])
-                tc_id = tc_id_match.group(1) if tc_id_match else i['test']
-                title = i['desc'].replace(f"[{tc_id}]", "").strip()
+                tc_id = i.get('tc_id', '')
+                title = i['description'].replace(f"[{tc_id}]", "").strip()
                 
                 blocks_list.append({
                     "type": "section",
                     "text": {
                         "type": "mrkdwn", 
-                        "text": f"{icon} *[{tc_id}] {title}*\n```└─ 상세 사유: {i['reason']}```"
+                        "text": f"{icon} *[{tc_id}] {title}*\n```└─ 상세 사유: {i['failure_reason']}```"
                     }
                 })
 
@@ -212,7 +283,7 @@ def format_slack_payload(report_data):
 def send_to_slack(payload_json_str):
     webhook_url = os.getenv("SLACK_WEBHOOK_URL")
     if not webhook_url or "여기에" in webhook_url:
-        print("⚠️ SLACK_WEBHOOK_URL이 설정되지 않아 콘솔 시뮬레이션으로 대체합니다.")
+        print("⚠️ SLACK_WEBHOOK_URL이 설정되지 않았습니다. [콘솔 미리보기] 모드로 대체합니다.")
         print(payload_json_str)
         return False
     
@@ -237,7 +308,7 @@ def send_to_notion(report_data):
     database_id = os.getenv("NOTION_DATABASE_ID")
     
     if not notion_token or not database_id or "secret_X" in notion_token:
-        print("⚠️ NOTION 토큰이 설정되지 않아 노션 연동을 스킵합니다.")
+        print("⚠️ NOTION_API_KEY가 설정되지 않았습니다. 노션 연동을 스킵하고 [콘솔 미리보기] 모드로 종료합니다.")
         return False
         
     print("⏳ 노션 데이터베이스에 결함 리포트 적재 중...")
@@ -251,14 +322,12 @@ def send_to_notion(report_data):
     success_count = 0
     # 전체 테스트 결과를 노션 DB에 적재
     for test in report_data.get("all_tests", []):
-        res = test["result"]
-        reason = test["reason"]
-        full_desc = test["desc"]  # e.g., "[TC-01] 해피패스 | 장치 #1 선택..."
+        res = test["pytest_status"]
+        reason = test["failure_reason"]
+        full_desc = test["description"]
         
         # 1. 파싱 (Parsing)
-        import re
-        tc_id_match = re.search(r'\[(.*?)\]', full_desc)
-        tc_id = tc_id_match.group(1) if tc_id_match else test["test"]
+        tc_id = test.get("tc_id", "")
         
         # '[TC-01] 해피패스 | 블라블라' 형태에서 파싱
         parts = full_desc.split("|", 1)
@@ -276,7 +345,7 @@ def send_to_notion(report_data):
         priority = "P1" if category in ["해피패스", "네거티브"] else "P2"
         
         # 2. 실행 결과 및 결과 메시지 매핑
-        result_str = test["result"]  # 루프 변수 'res'와 충돌 방지를 위해 result_str 사용
+        result_str = test["pytest_status"]
         if result_str == "passed":
             status_name = "Pass"
             result_msg = "정상 동작"
@@ -362,6 +431,10 @@ if __name__ == "__main__":
     report_data = parse_report()
     
     if report_data:
+        # Checkpoint 4 무결성 검증 통과 여부 확인
+        if not checkpoint_4_validation(report_data):
+            sys.exit(1)
+            
         slack_payload = format_slack_payload(report_data)
         
         print("==================================================")
