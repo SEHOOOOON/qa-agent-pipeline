@@ -4,6 +4,9 @@
 
 import pytest
 import json
+import re
+import uuid
+from datetime import datetime
 from pathlib import Path
 from test_controller import SimulatorTimeoutError
 
@@ -14,6 +17,8 @@ QA_RESULTS_PATH = REPORTS_DIR / "qa_results.json"
 
 # Global test results collector
 qa_results = []
+session_run_id = str(uuid.uuid4())
+session_start_time = datetime.now()
 
 # -- 1. Viewport fixture -------------------------------------------------------
 @pytest.fixture(scope="session")
@@ -52,18 +57,41 @@ def pytest_runtest_makereport(item, call):
             else:
                 report.failure_reason = "4. 자동화 코드 문제"
 
+        # Extract TC ID
+        tc_match = re.search(r'\[(.*?)\]', report.description)
+        tc_id = tc_match.group(1) if tc_match else "UNKNOWN_TC"
+        
         # Save to global array for JSON export
         qa_results.append({
+            "run_id": session_run_id,
+            "tc_id": tc_id,
             "test_id": item.name,
             "description": report.description,
             "result": report.outcome,
-            "failure_reason": report.failure_reason
+            "failure_reason": report.failure_reason,
+            "executed_at": datetime.now().isoformat(),
+            "duration": round(report.duration, 2),
+            "evidence_path": ""
         })
 
 def pytest_sessionfinish(session, exitstatus):
     with open(QA_RESULTS_PATH, "w", encoding="utf-8") as f:
         json.dump(qa_results, f, ensure_ascii=False, indent=2)
     print(f"\n[OK] QA 결과 저장 완료: {QA_RESULTS_PATH}")
+
+# -- 2.5 Fix pytest-html Summary Count Bug --------------------------------------
+def pytest_html_results_summary(prefix, summary, postfix):
+    """
+    pytest-html의 기본 summary는 skipped/failed 처리 시점에 따라 실제 수집된 테스트 수와 
+    달라지는 버그가 있습니다. 이를 json에 수집된 정확한 qa_results 배열 길이로 덮어씌웁니다.
+    """
+    total_tests = len(qa_results)
+    duration = round((datetime.now() - session_start_time).total_seconds(), 2)
+    # 기존 summary 요소 중 run-count p 태그를 찾아서 교체
+    for i, element in enumerate(summary):
+        if hasattr(element, "tag") and element.tag == "p" and "run-count" in getattr(element, "attributes", {}).get("class", ""):
+            summary[i] = f'<p class="run-count">{total_tests} tests took {duration} seconds.</p>'
+            break
 
 # -- 3. Add Columns headers -----------------------------------------
 def pytest_html_results_table_header(cells):
