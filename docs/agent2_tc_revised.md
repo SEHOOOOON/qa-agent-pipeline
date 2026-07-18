@@ -8,6 +8,7 @@ test_cases:
     requirement_ids: ["REQ-001"]
     source_evidence: ["실내기 한 대 개별 제어 가능"]
     qa_criteria: ["공통: 상태 전이 검증", "도메인: UI 및 내부 상태 정합성"]
+    quality_standard_ids: ["CRIT-CTRL-001"]
     risk_covered: ["모드 변경 시 UI에만 적용되고 Register에 반영되지 않는 문제 방지"]
     initial_state: 
       online: true
@@ -41,6 +42,7 @@ test_cases:
     requirement_ids: ["DOMAIN-RULE-002"]
     source_evidence: ["FAN 모드 지원"]
     qa_criteria: ["공통: 상태 전이 검증"]
+    quality_standard_ids: ["CRIT-MODE-002"]
     risk_covered: ["모드 변경 UI/Register 불일치"]
     initial_state: 
       online: true
@@ -71,6 +73,7 @@ test_cases:
     requirement_ids: ["DOMAIN-RULE-002"]
     source_evidence: ["FAN/DRY 모드 시 온도 조절 차단"]
     qa_criteria: ["기능별: 모드별 제어 제한 (배타 제어)"]
+    quality_standard_ids: ["CRIT-MODE-002"]
     risk_covered: ["FAN 모드에서 허용되지 않은 온도 제어가 전달되어 UI와 내부 제어 상태가 불일치할 위험 방지"]
     initial_state: 
       online: true
@@ -103,6 +106,7 @@ test_cases:
     requirement_ids: ["REQ-002"]
     source_evidence: ["다중 선택 후 일괄 명령 전송 가능"]
     qa_criteria: ["기능별: 모드별 제어 제한 (배타 제어)", "도메인: 다중 장비 제어 일치성"]
+    quality_standard_ids: ["CRIT-INT-001"]
     risk_covered: ["일괄 제어 시 비대상 기기까지 상태가 변경되는 치명적 오염 오류 방지"]
     initial_state: 
       devices: "모두 COOL 모드, 24도"
