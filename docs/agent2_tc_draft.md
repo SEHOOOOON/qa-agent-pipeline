@@ -7,7 +7,7 @@ test_cases:
     title: "단일장비 모드변경 정합성"
     requirement_ids: ["REQ-001"]
     source_evidence: ["실내기 한 대 개별 제어 가능"]
-    qa_criteria: ["상태 전이", "UI/Register 동기화"]
+    qa_criteria: ["공통: 상태 전이 검증", "도메인: UI 및 내부 상태 정합성"]
     risk_covered: ["모드 변경 시 UI에만 적용되고 Register에 반영되지 않는 문제 방지"]
     initial_state: 
       online: true
@@ -23,7 +23,7 @@ test_cases:
       - "[Apply] 버튼 클릭"
     expected_ui: 
       - "모드 아이콘이 'HEAT'로 변경됨." # ❌ 결함: 실제 화면 문구 "난방"과 불일치 가능성
-    expected_register: 
+    expected_device_state: 
       - "devices[1].mode == 'HEAT'" # ❌ 결함: 인덱스(1)와 ID(1) 매핑 모호성
     negative_assertions: []
     unchanged_state_assertions: []
@@ -40,7 +40,7 @@ test_cases:
     title: "Rule2 송풍모드 온도조절 비활성화"
     requirement_ids: ["DOMAIN-RULE-002"]
     source_evidence: ["FAN/DRY 모드 시 온도 조절 차단"]
-    qa_criteria: ["도메인 특화 배타 제어"]
+    qa_criteria: ["기능별: 모드별 제어 제한 (배타 제어)"]
     risk_covered: ["FAN 모드에서 온도가 변경되어 하드웨어 에러를 유발할 위험"] # ❌ 결함: 하드웨어 에러 유발이라는 근거 없는 추측
     initial_state: 
       online: true
@@ -53,7 +53,7 @@ test_cases:
       - "온도 조절 영역 상태 확인"
     expected_ui: 
       - "온도 조절 영역(Up/Down 버튼 등)이 disabled 처리됨"
-    expected_register: 
+    expected_device_state: 
       - "(UI-only Allowed: 상태 입력 차단 여부 확인이므로 Register 갱신 불필요)" # ❌ 결함: Assert 칸에 미적용 사유를 적음
     negative_assertions: []
     unchanged_state_assertions: []
@@ -70,7 +70,7 @@ test_cases:
     # ❌ 결함: requirement_ids, initial_state, setup 등 필수 항목 누락
     expected_ui: 
       - "장치 1, 2, 3의 모드가 'HEAT'로 변경됨"
-    expected_register: 
+    expected_device_state: 
       - "장치 1, 2, 3의 mode == 'HEAT'"
     unchanged_state_assertions: 
       - "선택하지 않은 장치들은 기존 값을 100% 유지함" # ❌ 결함: '100% 유지'라는 모호한 금지어 사용

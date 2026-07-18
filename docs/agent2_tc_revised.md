@@ -1,5 +1,5 @@
-# 🤖 Agent 2: 테스트 케이스 최종본 (Revised)
-*안내: Checkpoint 2의 피드백을 수용하여 환각(Hallucination) 및 논리적 오류를 모두 수정한 최종 TC 산출물 샘플입니다.*
+# 🤖 Agent 2 테스트케이스 수정본 (Checkpoint 2 피드백 반영)
+*안내: Checkpoint 2의 수정 요청을 반영한 재검토 대상 산출물입니다. 최종 승인 여부는 Checkpoint 2 재검토 결과에서 결정합니다.*
 
 ```yaml
 test_cases:
@@ -7,7 +7,7 @@ test_cases:
     title: "단일장비 모드변경 정합성 (COOL -> HEAT)"
     requirement_ids: ["REQ-001"]
     source_evidence: ["실내기 한 대 개별 제어 가능"]
-    qa_criteria: ["상태 전이", "UI/Register 동기화"]
+    qa_criteria: ["공통: 상태 전이 검증", "도메인: UI 및 내부 상태 정합성"]
     risk_covered: ["모드 변경 시 UI에만 적용되고 Register에 반영되지 않는 문제 방지"]
     initial_state: 
       online: true
@@ -24,12 +24,11 @@ test_cases:
       - "[Apply] 버튼 클릭"
     expected_ui: 
       - "모드 배지 텍스트가 '난방'으로 변경됨."
-    expected_register: 
+    expected_device_state: 
       - "devices.find(d => d.id === 1).mode === 'HEAT'"
     negative_assertions: []
     unchanged_state_assertions: []
-    excluded_assertions: 
-      - "에러 색상, 에러 문구 (Agent 1 기획 확인 필요 항목)"
+    excluded_assertions: []
     cleanup: 
       - "resetSimulatorState() 호출 (또는 기기 설정 전체 초기화 클릭)"
     double_assert_policy: "Required"
@@ -41,7 +40,7 @@ test_cases:
     title: "Rule2 송풍모드 전환 UI/Register 동기화"
     requirement_ids: ["DOMAIN-RULE-002"]
     source_evidence: ["FAN 모드 지원"]
-    qa_criteria: ["상태 전이"]
+    qa_criteria: ["공통: 상태 전이 검증"]
     risk_covered: ["모드 변경 UI/Register 불일치"]
     initial_state: 
       online: true
@@ -55,7 +54,7 @@ test_cases:
       - "[Apply] 버튼 클릭"
     expected_ui: 
       - "모드 배지 텍스트가 '송풍'으로 변경됨."
-    expected_register: 
+    expected_device_state: 
       - "devices.find(d => d.id === 1).mode === 'FAN'"
     negative_assertions: []
     unchanged_state_assertions: []
@@ -71,7 +70,7 @@ test_cases:
     title: "Rule2 송풍모드 시 온도조절 UI 비활성화"
     requirement_ids: ["DOMAIN-RULE-002"]
     source_evidence: ["FAN/DRY 모드 시 온도 조절 차단"]
-    qa_criteria: ["도메인 특화 배타 제어"]
+    qa_criteria: ["기능별: 모드별 제어 제한 (배타 제어)"]
     risk_covered: ["FAN 모드에서 허용되지 않은 온도 제어가 전달되어 UI와 내부 제어 상태가 불일치할 위험 방지"]
     initial_state: 
       online: true
@@ -80,13 +79,15 @@ test_cases:
     preconditions: 
       - "기기가 이미 FAN 모드로 설정되어 있음"
     setup: 
-      - "TC-MODE-002 수행 완료 상태 또는 시뮬레이터에서 FAN 강제 주입 후 장치 1 선택"
+      - "load_clean_simulator() 호출 (초기화)"
+      - "장치 1 선택"
+      - "FAN 모드 클릭 및 적용"
     steps: 
       - "온도 조절 영역 상태(Up/Down 버튼 등) 확인"
     expected_ui: 
       - "온도 UP 버튼 disabled === true"
       - "온도 DOWN 버튼 disabled === true"
-    expected_register: []
+    expected_device_state: []
     negative_assertions: []
     unchanged_state_assertions: []
     excluded_assertions: []
@@ -99,9 +100,9 @@ test_cases:
 
   - tc_id: "TC-INT-02"
     title: "복수 장비 일괄 제어 정합성"
-    requirement_ids: ["REQ-005"]
+    requirement_ids: ["REQ-002"]
     source_evidence: ["다중 선택 후 일괄 명령 전송 가능"]
-    qa_criteria: ["상태 오염 방지", "배치 제어 정합성"]
+    qa_criteria: ["기능별: 모드별 제어 제한 (배타 제어)", "도메인: 다중 장비 제어 일치성"]
     risk_covered: ["일괄 제어 시 비대상 기기까지 상태가 변경되는 치명적 오염 오류 방지"]
     initial_state: 
       devices: "모두 COOL 모드, 24도"
@@ -116,7 +117,7 @@ test_cases:
       - "[Apply] 버튼 클릭"
     expected_ui: 
       - "장치 1, 2, 3의 모드 배지가 '난방'으로 변경됨"
-    expected_register: 
+    expected_device_state: 
       - "devices.find(d => d.id === 1).mode === 'HEAT'"
       - "devices.find(d => d.id === 2).mode === 'HEAT'"
       - "devices.find(d => d.id === 3).mode === 'HEAT'"
