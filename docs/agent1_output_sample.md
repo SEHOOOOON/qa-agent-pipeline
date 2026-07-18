@@ -1,4 +1,4 @@
-# 🤖 Agent 1: 요구사항 분석 결과 (Requirement Analysis Report)
+# 🤖 Agent 1 요구사항 정제 결과
 
 ## 1. 입력 수준 및 판정
 - **판정 Level**: Level 2 (Partially Testable)
@@ -60,7 +60,7 @@
 - **사유 및 오염 위험**: 다중 장비에 대한 일괄 적용(Broadcast) 기능이 있으므로, 명령 대상이 아닌 비대상 장비의 상태가 변경되는 치명적 오염 위험이 있음.
 - **불변 유지 조건 (Required Invariants)**: 
   - 선택 장비에만 제어 명령(모드/온도 등)이 적용되어야 함.
-  - 선택되지 않은 장비의 모든 검증 대상 필드는 실행 전 Snapshot과 완전히 동일해야 함.
+  - 사전 정의된 비교 대상 필드는 실행 전 상태와 동일해야 함.
 
 ---
 
@@ -179,7 +179,7 @@ integration_assessment:
     - "비대상 장비 상태 오염"
   required_invariants:
     - "선택 장비에만 제어 명령 적용"
-    - "비선택 장비의 검증 대상 필드는 실행 전 Snapshot과 동일"
+    - "사전 정의된 비교 대상 필드는 실행 전 상태와 동일해야 함"
 
 checkpoint_1:
   status: "Partial Proceed"
