@@ -33,7 +33,7 @@ test_cases:
     excluded_assertions: []
     cleanup: 
       - "resetSimulatorState() 호출 (또는 기기 설정 전체 초기화 클릭)"
-    double_assert_policy: "Required"
+    ui_state_sync_policy: "Required"
     automation_level: "Automated"
     independent_execution: true
     review_status: "Revised"
@@ -64,7 +64,7 @@ test_cases:
     excluded_assertions: []
     cleanup: 
       - "resetSimulatorState() 호출"
-    double_assert_policy: "Required"
+    ui_state_sync_policy: "Required"
     automation_level: "Automated"
     independent_execution: true
     review_status: "Revised"
@@ -97,12 +97,12 @@ test_cases:
     excluded_assertions: []
     cleanup: 
       - "resetSimulatorState() 호출"
-    double_assert_policy: "UI-only"
+    ui_state_sync_policy: "UI-only"
     automation_level: "Automated"
     independent_execution: true
     review_status: "Revised"
 
-  - tc_id: "TC-INT-02"
+  - tc_id: "TC-INT-002"
     title: "복수 장비 일괄 제어 정합성"
     requirement_ids: ["REQ-002"]
     source_evidence: ["다중 선택 후 일괄 명령 전송 가능"]
@@ -134,7 +134,7 @@ test_cases:
     excluded_assertions: []
     cleanup: 
       - "복수 제어 모드 해제 및 resetSimulatorState() 호출"
-    double_assert_policy: "Required"
+    ui_state_sync_policy: "Required"
     automation_level: "Automated"
     independent_execution: true
     review_status: "Revised"

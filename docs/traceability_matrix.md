@@ -4,24 +4,25 @@
 
 이 구조적 추적성을 통해 **"근거 없는 기대결과가 다음 단계로 전달될 위험을 줄이고"**, 요구사항이나 코드가 변경될 때 **"영향 범위를 빠르게 확인"**할 수 있습니다.
 
-*안내: 본 매트릭스는 전체 TC 중 대표 TC만 수록한 샘플입니다. (예: TC-LOCK-001 등 일부 전체 목록은 본 문서에만 기재됨)*
+*안내: 본 매트릭스는 전체 TC 중 대표 TC만 수록한 샘플입니다. 전체 TC 목록은 `tests/test_controller.py`를 참조하세요.*
 
 ---
 
 ## A. 설계 추적성 매트릭스 (Design Traceability)
 입력된 요구사항과 정보 부족(Gap)이 Agent 1, 2를 거쳐 테스트 케이스(TC)로 어떻게 변환되었는지, 그리고 각 Checkpoint를 통과했는지 추적합니다.
-*(기능 전체 판정은 Agent 1 기준 Partial Proceed이며, 아래 표의 Checkpoint 1 값은 개별 범위의 통과/제외 상태를 표시합니다.)*
+*(기능 전체 판정은 Agent 1 기준 일부 진행(Partial Proceed)이며, 아래 표의 Checkpoint 1 값은 개별 범위의 통과/제외 상태를 표시합니다.)*
 
 | 항목 유형 | 근거 ID | 정제 결과 (Agent 1) | 품질 기준 (Agent 2) | TC ID | Checkpoint 1 | Checkpoint 2 |
 | :--- | :--- | :--- | :--- | :--- | :---: | :---: |
 | **Requirement** | REQ-001 | **FACT-001** (개별 제어) | CRIT-CTRL-001 | **TC-MODE-001** | Passed Scope | Approved 가능 |
-| **Requirement** | REQ-002 | **FACT-002** (일괄 제어) | CRIT-INT-001 | **TC-INT-02** | Passed Scope | Needs Revision |
+| **Requirement** | REQ-002 | **FACT-002** (일괄 제어) | CRIT-INT-001 | **TC-INT-002** | Passed Scope | Needs Revision |
 | **Domain Rule** | DOMAIN-RULE-002 | **FACT-003** (FAN 배타 제어) | CRIT-MODE-002 | **TC-MODE-002** | Passed Scope | Approved 가능 |
 | **Domain Rule** | DOMAIN-RULE-002 | **FACT-003** (FAN 온도 제한) | CRIT-MODE-002 | **TC-MODE-003** | Passed Scope | Needs Revision |
 | **Domain Rule** | DOMAIN-RULE-003 | **FACT-004** (전체 Lock 통제) | CRIT-LOCK-001 | **TC-LOCK-001** | Passed Scope | Approved 가능 |
+| **Requirement** | REQ-TEMP-001 | **FACT-005** (온도 경계 16~30°C) | CRIT-TEMP-001 | **TC-TEMP-001** | Passed Scope | Approved 가능 |
+| **Requirement** | REQ-ERROR-001 | **FACT-004** (에러 제어 차단) | CRIT-ERR-001 | **TC-ERR-001** | Passed Scope | Approved 가능 |
 | **Spec Gap** | REQ-ERROR-001 | **GAP-001** (에러 시 색상 정책) | Information Gap | - | Excluded | Not Applicable |
 | **Spec Gap** | REQ-ERROR-002 | **GAP-002** (타임아웃 문구) | Information Gap | - | Excluded | Not Applicable |
-| **Spec Gap** | REQ-001 | **GAP-003** (온도 상하한계 누락) | Information Gap | - | Excluded | Not Applicable |
 
 ---
 
@@ -32,11 +33,13 @@
 
 | TC ID | 자동화 함수 (Automation Function) | Run ID | Checkpoint 3 | 실행 상태 (Execution Status) | 테스트 결과 (Result) | 실행 증거 (Evidence) |
 | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
-| **TC-MODE-001** | `test_tc01_happy_path_heat_mode_and_temp_apply` | - | Pending | **NOT_RUN** | - | - |
-| **TC-INT-02** | `test_tc05_multi_select_batch_control` | - | Pending | **NOT_RUN** | - | - |
-| **TC-MODE-002** | `test_tc02_rule2_fan_mode_sync` | - | Pending | **NOT_RUN** | - | - |
-| **TC-MODE-003** | `test_tc02a_rule2_fan_mode_temp_disabled` | - | Pending | **NOT_RUN** | - | - |
-| **TC-LOCK-001** | `test_tc03_lock_all_devices_full_inspection` | - | Pending | **NOT_RUN** | - | - |
+| **TC-MODE-001** | `test_tc_mode_001_heat_mode_and_temp_apply` | - | Pending | **NOT_RUN** | - | - |
+| **TC-MODE-002** | `test_tc_mode_002_fan_mode_temp_disabled` | - | Pending | **NOT_RUN** | - | - |
+| **TC-MODE-003** | `test_tc_mode_003_dry_mode_then_cool_reactivation` | - | Pending | **NOT_RUN** | - | - |
+| **TC-LOCK-001** | `test_tc_lock_001_all_devices_full_inspection` | - | Pending | **NOT_RUN** | - | - |
+| **TC-ERR-001** | `test_tc_err_001_ch05_fault_injection_control_block` | - | Pending | **NOT_RUN** | - | - |
+| **TC-INT-002** | `test_tc_int_002_multi_select_batch_control` | - | Pending | **NOT_RUN** | - | - |
+| **TC-TEMP-001** | `test_tc_temp_001_upper_limit_boundary` | - | Pending | **NOT_RUN** | - | - |
 
 ---
 
@@ -45,8 +48,8 @@
 
 | Gap ID | 검증 목적 | 자동화 함수 (Pipeline Validation Function) | 실행 상태 | 분류 결과 (Finding ID) |
 | :--- | :--- | :--- | :---: | :---: |
-| **GAP-001** | 요구사항 모호성 분류 규칙 테스트 | `test_tc07_alarm_ui_ambiguity_classification` | **NOT_RUN** | - |
-| **GAP-002** | 환경·시뮬레이터 예외 분류 규칙 테스트 | `test_simulator_timeout_classification` | **NOT_RUN** | - |
+| **GAP-001** | 요구사항 모호성 분류 규칙 테스트 | `test_pipeline_001_alarm_ui_ambiguity_classification` | **NOT_RUN** | - |
+| **GAP-002** | 환경·시뮬레이터 예외 분류 규칙 테스트 | `test_pipeline_002_simulator_timeout_classification` | **NOT_RUN** | - |
 
 ---
 

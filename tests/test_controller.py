@@ -637,7 +637,7 @@ def test_pipeline_002_simulator_timeout_classification(page: Page):
     select_device_card(page, 1)
     open_qa_drawer(page)
 
-    # 5초간 기다렸으나 가상 백엔드에서 상태 갱신이 올라오지 않는 상황을 시뮬레이션
+    # 5초간 기다렸으나 가상 환경에서 상태 갱신이 올라오지 않는 상황을 시뮬레이션
     raise SimulatorTimeoutError(
-        "3. 테스트 환경·시뮬레이터 문제: UI에서 전원 켜기 제어를 시도했으나, 5000ms 내에 가상 백엔드로부터 응답을 받지 못했습니다."
+        "3. 테스트 환경·시뮬레이터 문제: UI에서 전원 켜기 제어를 시도했으나, 5000ms 내에 가상 환경으로부터 응답을 받지 못했습니다."
     )
