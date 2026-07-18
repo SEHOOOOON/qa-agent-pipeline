@@ -7,7 +7,7 @@
 
 ## 2. 요구사항 근거 및 정보 분류 (가장 중요)
 
-### 🟢 [확정 정보] (Agent 2 Expected Result 사용 가능)
+### 🟢 [확정 정보] (Agent 2 기대결과(Expected Result) 사용 가능)
 - **Fact ID**: FACT-001
 - **Source ID**: REQ-001
 - **Source Type**: Requirement
@@ -28,24 +28,24 @@
 - **Source Type**: Domain Rule
 - **Statement**: 전체 잠금(Lock) 주입 시, 시스템 상 UI 제어가 차단된다.
 
-### 🟡 [추정 정보] (Agent 2 Expected Result 사용 금지)
+### 🟡 [추정 정보] (Agent 2 기대결과(Expected Result) 사용 금지)
 - **없음** (현재 문서에서 합리적 추정이 가능한 영역 없음)
 
-### 🔴 [정보 부족] (Agent 2 Expected Result 사용 금지)
+### 🔴 [정보 부족] (Agent 2 기대결과(Expected Result) 사용 금지)
 - **Gap ID**: GAP-001
 - **Related Source ID**: REQ-ERROR-001
 - **Missing Information**: CH05 에러 발생 시 변경되는 카드의 UI 요소(배경색 전체인지 테두리인지)와 색상 코드 정책
-- **Impact**: 알람 UI Assert(기대결과) 정의 불가
+- **Impact**: 알람 UI 기대결과(Expected Result) 정의 불가
 
 - **Gap ID**: GAP-002
 - **Related Source ID**: REQ-ERROR-002
 - **Missing Information**: 통신 타임아웃 발생 시 UI에 띄워야 할 정확한 Toast 메시지 텍스트
-- **Impact**: 타임아웃 예외 처리 Assert 정의 불가
+- **Impact**: 타임아웃 예외 처리 기대결과(Expected Result) 정의 불가
 
 - **Gap ID**: GAP-003
 - **Related Source ID**: REQ-001
 - **Missing Information**: 설정온도의 최소·최대 허용 범위와 경계값 초과 시 처리 정책
-- **Impact**: 온도 경계값(Boundary) TC의 Expected Result 정의 불가
+- **Impact**: 온도 경계값(Boundary) TC의 기대결과(Expected Result) 정의 불가
 
 ## 3. 기획자 확인용 질문 리스트 (Clarification Questions)
 - **Question ID**: Q-001 (Related: GAP-001)
@@ -107,17 +107,17 @@ information_gaps:
   - gap_id: "GAP-001"
     related_source_ids: ["REQ-ERROR-001"]
     missing_information: "CH05 에러 발생 시 변경되는 카드의 UI 요소와 색상 코드 정책"
-    impact: "알람 UI Assert 정의 불가"
+    impact: "알람 UI 기대결과(Expected Result) 정의 불가"
     clarification_required: true
   - gap_id: "GAP-002"
     related_source_ids: ["REQ-ERROR-002"]
     missing_information: "통신 타임아웃 발생 시 UI에 띄워야 할 정확한 Toast 메시지 텍스트"
-    impact: "타임아웃 예외 처리 Assert 정의 불가"
+    impact: "타임아웃 예외 처리 기대결과(Expected Result) 정의 불가"
     clarification_required: true
   - gap_id: "GAP-003"
     related_source_ids: ["REQ-001"]
     missing_information: "설정온도의 최소·최대 허용 범위와 경계값 초과 시 처리 정책"
-    impact: "온도 경계값 TC의 Expected Result 정의 불가"
+    impact: "온도 경계값 TC의 기대결과(Expected Result) 정의 불가"
     clarification_required: true
 
 clarification_questions:

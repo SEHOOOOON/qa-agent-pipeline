@@ -1,4 +1,4 @@
-# 🤖 Agent 2 테스트케이스 수정본 (Checkpoint 2 피드백 반영)
+# 🟢 Agent 2: 테스트케이스 수정본 (Checkpoint 2 피드백 반영)
 *안내: Checkpoint 2의 수정 요청을 반영한 재검토 대상 산출물입니다. 최종 승인 여부는 Checkpoint 2 재검토 결과에서 결정합니다.*
 
 ```yaml
