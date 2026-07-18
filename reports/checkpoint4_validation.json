@@ -1,0 +1,15 @@
+{
+  "checkpoint": "Checkpoint 4",
+  "status": "VALIDATED",
+  "validated_at": "2026-07-18T23:32:45+09:00",
+  "external_reporting_allowed": true,
+  "json_total": 10,
+  "html_total": 10,
+  "errors": [],
+  "warnings": [
+    {
+      "code": "CP4-W01",
+      "message": "pytest-html Summary 문구(9)와 실제 결과 행(10)이 다릅니다. 실제 결과 행과 JSON 수치를 사용하세요."
+    }
+  ]
+}
