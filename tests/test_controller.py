@@ -611,7 +611,7 @@ def test_tc_temp_001_upper_limit_boundary(page: Page):
 # 【Pipeline Validation】알람 UI 표시 기준 모호성 — 요구사항 확인 필요 분류
 # ============================================================
 def test_pipeline_001_alarm_ui_ambiguity_classification(page: Page):
-    """[Pipeline-001] 요구사항 모호성 | 알람(CH05) 발생 시 카드 색상 변경 기준 부재로 인한 Assert 불가"""
+    """[TC-PIPE-001] 요구사항 모호성 | 알람(CH05) 발생 시 카드 색상 변경 기준 부재로 인한 Assert 불가"""
     load_clean_simulator(page)
     # QA Drawer가 덮기 전에 장치를 먼저 선택합니다.
     select_device_card(page, 5)
@@ -628,10 +628,10 @@ def test_pipeline_001_alarm_ui_ambiguity_classification(page: Page):
 
 
 # ============================================================
-# 【Pipeline Validation】시뮬레이터 환경 이슈 분류
+# 【TC-PIPE-002】시뮬레이터 환경 이슈 분류
 # ============================================================
 def test_pipeline_002_simulator_timeout_classification(page: Page):
-    """[Pipeline-002] 시뮬레이터 환경 이슈 분류 | 제어 명령 후 가상 환경 미반응 (Simulator Timeout) — Finding: ENV-001"""
+    """[TC-PIPE-002] 시뮬레이터 환경 이슈 분류 | 제어 명령 후 가상 환경 미반응 (Simulator Timeout) — Finding: ENV-001"""
     load_clean_simulator(page)
     # QA Drawer가 덮기 전에 장치를 먼저 선택합니다.
     select_device_card(page, 1)

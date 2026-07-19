@@ -15,6 +15,10 @@ REPORTS_DIR = Path(__file__).parent.parent / "reports"
 REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 QA_RESULTS_PATH = REPORTS_DIR / "qa_results.json"
 
+# TC-ENV-000은 사전 환경 검증(Pre-check) 단계로,
+# 비즈니스 테스트 케이스가 아니므로 HTML 요약 카운트에서 제외합니다.
+EXCLUDED_FROM_SUMMARY = {"TC-ENV-000"}
+
 # Global test results collector
 qa_results = []
 session_run_id = str(uuid.uuid4())
@@ -58,7 +62,7 @@ def pytest_runtest_makereport(item, call):
                 report.failure_reason = "4. 자동화 코드 문제"
 
         # Extract TC ID
-        tc_match = re.search(r'\[(.*?)\]', report.description)
+        tc_match = re.search(r'\[(TC-[^\]]+|Pipeline-\d+)\]', report.description)
         tc_id = tc_match.group(1) if tc_match else "UNKNOWN_TC"
         
         # Save to global array for JSON export
@@ -79,19 +83,26 @@ def pytest_sessionfinish(session, exitstatus):
         json.dump(qa_results, f, ensure_ascii=False, indent=2)
     print(f"\n[OK] QA 결과 저장 완료: {QA_RESULTS_PATH}")
 
-# -- 2.5 Fix pytest-html Summary Count Bug --------------------------------------
+# -- 2.5 Fix pytest-html Summary Count (TC-ENV-000 제외) -----------------------
 def pytest_html_results_summary(prefix, summary, postfix):
     """
-    pytest-html의 기본 summary는 skipped/failed 처리 시점에 따라 실제 수집된 테스트 수와 
-    달라지는 버그가 있습니다. 이를 json에 수집된 정확한 qa_results 배열 길이로 덮어씌웁니다.
+    TC-ENV-000(사전 환경 검증)은 비즈니스 TC가 아닌 Pre-check 단계입니다.
+    실제 비즈니스 TC 수(EXCLUDED_FROM_SUMMARY 제외)를 prefix에 별도 표기합니다.
+    pytest-html 4.x에서는 summary 리스트 교체가 동작하지 않으므로,
+    prefix에 안내 문구를 추가하는 방식으로 구현합니다.
     """
-    total_tests = len(qa_results)
-    duration = round((datetime.now() - session_start_time).total_seconds(), 2)
-    # 기존 summary 요소 중 run-count p 태그를 찾아서 교체
-    for i, element in enumerate(summary):
-        if hasattr(element, "tag") and element.tag == "p" and "run-count" in getattr(element, "attributes", {}).get("class", ""):
-            summary[i] = f'<p class="run-count">{total_tests} tests took {duration} seconds.</p>'
-            break
+    business_tc_count = sum(
+        1 for r in qa_results
+        if r.get("tc_id") not in EXCLUDED_FROM_SUMMARY
+    )
+    env_check_count = len(qa_results) - business_tc_count
+    if env_check_count > 0:
+        prefix.extend([
+            f'<p class="summary-note" style="color:#8b949e; font-size:0.9em;">'
+            f'※ 전체 {len(qa_results)}건 중 사전 환경 검증(Pre-check) {env_check_count}건 제외 — '
+            f'비즈니스 TC {business_tc_count}건 기준으로 결과를 분석합니다.'
+            f'</p>'
+        ])
 
 # -- 3. Add Columns headers -----------------------------------------
 def pytest_html_results_table_header(cells):

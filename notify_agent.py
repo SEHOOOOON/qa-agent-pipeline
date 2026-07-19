@@ -44,6 +44,10 @@ PYTEST_STATUSES = {
     "passed", "failed", "skipped", "error", "xfailed", "xpassed", "rerun"
 }
 
+# conftest.py와 동일하게 유지: HTML 요약 카운트에서 제외되는 TC 목록
+# TC-ENV-000은 사전 환경 검증(Pre-check) 단계이며 비즈니스 TC가 아닙니다.
+EXCLUDED_FROM_SUMMARY = {"TC-ENV-000"}
+
 QA_CLASSIFICATIONS = {
     "product_defect": "제품 결함 후보",
     "requirement_review": "요구사항 확인 필요",
@@ -223,6 +227,9 @@ def checkpoint4_validate(
     json_counts = dict(Counter(row.get("result", "") for row in results))
     html_counts = html_report.get("counts", {})
 
+    # TC-ENV-000과 같이 HTML 요약에서 의도적으로 제외된 TC를 고려한 총 수 검증
+    # 주의: EXCLUDED_FROM_SUMMARY는 HTML 상단 '요약 문구(run-count)'의 표시 수치에만 영향을 줍니다.
+    # data-jsonblob의 실제 결과 행(total)은 TC-ENV-000 포함 전체 건수이므로, JSON과 반드시 1:1 일치해야 합니다.
     if len(results) != html_report.get("total", 0):
         errors.append(
             {
@@ -230,6 +237,7 @@ def checkpoint4_validate(
                 "message": f"총 결과 수 불일치: JSON={len(results)}, HTML={html_report.get('total', 0)}",
             }
         )
+
 
     if json_counts != html_counts:
         errors.append(
@@ -239,20 +247,27 @@ def checkpoint4_validate(
             }
         )
 
-    # pytest-html의 화면 요약 문구가 실제 결과 행과 다른 경우는 경고로 분리한다.
+    # pytest-html의 화면 요약 문구와 HTML 실제 결과 행 수 비교
+    # 단, EXCLUDED_FROM_SUMMARY 만큼의 차이는 의도된 것이므로 경고를 발생시키지 않는다.
     try:
         report_text = HTML_REPORT_PATH.read_text(encoding="utf-8")
         match = re.search(r'<p class="run-count">\s*(\d+) tests? took', report_text)
-        if match and int(match.group(1)) != html_report.get("total", 0):
-            warnings.append(
-                {
-                    "code": "CP4-W01",
-                    "message": (
-                        f"pytest-html Summary 문구({match.group(1)})와 실제 결과 행"
-                        f"({html_report.get('total', 0)})이 다릅니다. 실제 결과 행과 JSON 수치를 사용하세요."
-                    ),
-                }
-            )
+        if match:
+            html_summary_count = int(match.group(1))
+            html_actual_count = html_report.get("total", 0)
+            excluded_count = len([r for r in results if r.get("tc_id") in EXCLUDED_FROM_SUMMARY])
+            expected_diff = excluded_count  # TC-ENV-000 등 제외 대상만큼의 차이는 허용
+            actual_count_diff = abs(html_actual_count - html_summary_count)
+            if html_summary_count != html_actual_count and actual_count_diff != expected_diff:
+                warnings.append(
+                    {
+                        "code": "CP4-W01",
+                        "message": (
+                            f"pytest-html Summary 문구({html_summary_count})와 실제 결과 행"
+                            f"({html_actual_count})이 다릅니다. 실제 결과 행과 JSON 수치를 사용하세요."
+                        ),
+                    }
+                )
     except OSError:
         pass
 

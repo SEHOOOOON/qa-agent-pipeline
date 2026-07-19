@@ -1,8 +1,10 @@
+# ── QA 파이프라인 핵심 의존성 ──────────────────────────────────
 pytest>=8.0.0
-pytest-html>=4.1.0
-playwright>=1.40.0
-pytest-playwright>=0.4.0
-beautifulsoup4>=4.12.0
+pytest-html>=4.1.0          # HTML 리포트 생성
+pytest-playwright>=0.4.0    # Playwright E2E 테스트
+playwright>=1.40.0          # Playwright 브라우저 자동화
 
-python-dotenv>=1.0.0
-requests>=2.31.0
+# ── Agent 4 의존성 ──────────────────────────────────────────
+beautifulsoup4>=4.12.0      # report.html 파싱 (Checkpoint 4)
+python-dotenv>=1.0.0        # .env 파일 로드
+requests>=2.31.0            # Slack Webhook / Notion API 전송
