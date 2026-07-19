@@ -1637,11 +1637,11 @@
     </div>
     <div class="header-right">
       <div class="system-status-indicator">
-        <div class="status-item" onclick="toggleQADrawer(true)">
+        <div class="status-item" onclick="toggleQADrawer()">
           <div class="status-icon-triangle" id="hdr-device-err-icon"></div>
           <span>장치 에러 <strong id="hdr-device-err-cnt">0</strong></span>
         </div>
-        <div class="status-item" onclick="toggleQADrawer(true)">
+        <div class="status-item" onclick="toggleQADrawer()">
           <div class="status-icon-triangle" id="hdr-net-err-icon"></div>
           <span>네트워크 에러 <strong id="hdr-net-err-cnt">0</strong></span>
         </div>
@@ -1667,7 +1667,7 @@
       </svg>
       <span>자율 QA</span>
     </div>
-    <div class="sidebar-icon-btn" id="tab-test-panel" onclick="toggleQADrawer(true)" title="QA 테스트 컨트롤러">
+    <div class="sidebar-icon-btn" id="tab-test-panel" onclick="toggleQADrawer()" title="QA 테스트 컨트롤러">
       <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" style="width:24px;height:24px;margin-bottom:4px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/></svg>
       <span>테스트</span>
     </div>
