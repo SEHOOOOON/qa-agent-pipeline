@@ -61,8 +61,8 @@ def pytest_runtest_makereport(item, call):
             else:
                 report.failure_reason = "4. 자동화 코드 문제"
 
-        # Extract TC ID
-        tc_match = re.search(r'\[(TC-[^\]]+|Pipeline-\d+)\]', report.description)
+        # TC ID 추출: [TC-xxx-000] 형식 기준 (TC-ENV, TC-MODE, TC-LOCK, TC-ERR, TC-INT, TC-TEMP, TC-PIPE 등)
+        tc_match = re.search(r'\[(TC-[^\]]+)\]', report.description)
         tc_id = tc_match.group(1) if tc_match else "UNKNOWN_TC"
         
         # Save to global array for JSON export
