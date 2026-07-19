@@ -698,32 +698,31 @@ def test_pipeline_004_not_executed_condition_missing(page: Page):
 #           이를 'product_defect'으로 정확하게 분류하는지 검증
 # ============================================================
 def test_pipeline_005_product_defect_classification(page: Page):
-    """[TC-PIPE-005] 제품 결함 후보 | QA 이벤트 로그가 JSON 구조화 포맷을 미준수 — Finding: LOG-001"""
+    """[TC-PIPE-005] 제품 결함 후보 | 온도 하한 경계값(16.0°C) 방어 실패 — 15.0°C 설정 허용 결함 — Finding: DEF-001"""
     load_clean_simulator(page)
     select_device_card(page, 1)
 
-    # 모드 변경 제어 명령 실행 (HEAT 모드 적용)
-    # ※ QA 드로어가 닫혀 있는 상태에서 제어 패널 버튼을 클릭해야 합니다.
-    page.click("#det-mode-heat")
-    page.click(".btn-apply-cmd")
+    # 1. 16.0°C까지 하강
+    for _ in range(15):
+        current_text = page.locator("#det-temp-display").inner_text()
+        if "---" in current_text or "16.0" in current_text:
+            break
+        page.click("#det-temp-down-btn")
+        page.wait_for_timeout(50)
 
-    # QA 드로어 활성화
-    open_qa_drawer(page)
+    # 2. 기획상 하한인 16.0°C 상태에서 한 번 더 하강 시도
+    page.click("#det-temp-down-btn")
 
-    # 로그 항목 렌더링 대기
-    page.wait_for_function(
-        "() => document.querySelectorAll('.qa-log-text').length > 0",
-        timeout=LOG_RENDER_TIMEOUT,
-    )
+    # 3. 결과 확인
+    # 기획 요건: 16.0°C 미만 설정 불가. Toast 경고 노출 및 온도 16.0°C 유지
+    # 결함 상황: 시뮬레이터 로직 오류로 15.0°C로 내려가버림
+    toast = page.locator("#global-toast")
+    has_toast = toast.evaluate("el => el.classList.contains('show')")
+    current_text = page.locator("#det-temp-display").inner_text()
 
-    # 제품 결함 후보 Assert:
-    # 기획 요건: QA 이벤트 로그는 외부 시스템(Slack/Notion) 자동 연동을 위해
-    #           JSON 구조화 포맷({"event": ..., "tc_id": ...}) 으로 기록되어야 함
-    # 실제 구현: 단순 텍스트 형태로만 기록 (예: "[HEAT] 모드 적용 완료")
-    # → 이 Assert는 반드시 실패하여 AssertionError 발생 → product_defect 분류
-    first_log = page.locator(".qa-log-text").first.text_content() or ""
-    assert first_log.strip().startswith("{"), (
-        f"[Finding: LOG-001] 제품 결함 후보: QA 이벤트 로그가 JSON 구조화 포맷을 미준수합니다. "
-        f"기획 요건: JSON 오브젝트({{...}}) 형식 필요. "
-        f"실제 로그: '{first_log[:80]}'"
+    # 이 Assert는 시뮬레이터에 주입된 결함 때문에 반드시 실패하여 제품 결함(product_defect)으로 분류됨
+    assert has_toast and "16.0" in current_text, (
+        f"[Finding: DEF-001] 제품 결함 후보: 온도 하한(16.0°C) 방어 로직이 동작하지 않습니다. "
+        f"기획 요건: 설정 온도는 16.0°C ~ 30.0°C 범위 내에서만 조작 가능해야 하며 초과 시 경고 노출. "
+        f"실제 결과: Toast 노출({has_toast}), 현재 표시온도({current_text})"
     )

@@ -2638,7 +2638,8 @@
     function adjustPanelTemp(val) {
       if (currentTempUnit === 'C') {
         const target = pendingState.setTemp + val;
-        if (target < 16 || target > 30) {
+        // [Bug Injected for QA Pipeline] 기획(16.0)과 다르게 15.0까지 내려가버리는 결함
+        if (target < 15 || target > 30) {
           showToast('설정 가능 온도 범위는 16.0°C ~ 30.0°C입니다.', true);
           return;
         }
@@ -3134,7 +3135,8 @@
 
       // D. Limit check
       const target = device.setTemp + val;
-      if (target < 16 || target > 30) {
+      // [Bug Injected for QA Pipeline] 15.0°C까지 허용되는 결함
+      if (target < 15 || target > 30) {
         showToast('현장 리모컨 조작 범위 초과 (16.0°C ~ 30.0°C)', true);
         return;
       }
