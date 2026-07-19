@@ -1632,7 +1632,7 @@
   <!-- Header -->
   <header>
     <div class="header-left">
-      <div class="header-logo">VCCS<span>_5</span></div>
+      <div class="header-logo">HVAC-PRO<span>_5</span></div>
     </div>
     <div class="header-right">
       <div class="system-status-indicator">
@@ -1653,7 +1653,7 @@
   <!-- Left Icon Sidebar -->
   <div class="icon-sidebar">
     <div class="sidebar-icon-btn active" id="tab-control" onclick="switchSidebarTab('control')" title="장치 관제 및 제어">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 24px; height: 24px; margin-bottom: 4px;"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 24px; height: 24px; margin-bottom: 4px;"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
       <span>제어</span>
     </div>
     <div class="sidebar-icon-btn" id="tab-qa" onclick="switchSidebarTab('qa')" title="AI QA 거버넌스 컨트롤 타워">
@@ -1666,7 +1666,26 @@
       </svg>
       <span>자율 QA</span>
     </div>
+    <div class="sidebar-icon-btn" id="tab-test-panel" onclick="toggleQADrawer(true)" title="QA 테스트 컨트롤러">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" style="width:24px;height:24px;margin-bottom:4px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/></svg>
+      <span>테스트</span>
+    </div>
+    <div class="sidebar-icon-btn" id="tab-simulator" onclick="toggleHwSimulator()" title="H/W Device Simulator">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px;margin-bottom:4px;"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      <span>시뮬레이터</span>
+    </div>
   </div>
+  
+  <script>
+    function toggleHwSimulator() {
+      const zone = document.getElementById('hardware-simulator-zone');
+      if (zone.style.display === 'none') {
+        zone.style.display = 'flex';
+      } else {
+        zone.style.display = 'none';
+      }
+    }
+  </script>
 
   <!-- AI Agent Control Tower Embedded Grid Panel -->
   <div class="qa-tower-panel collapsed">
@@ -1790,7 +1809,7 @@
   <!-- Dashboard Main Workspace (장치 카드 뷰) -->
   <div class="dashboard-main">
     <div class="breadcrumb-row" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-      <span>장치 제어 &gt; ACS &gt; VCCS</span>
+      <span>장치 제어 &gt; ACS &gt; HVAC-PRO</span>
       
       <!-- B2B Real Enterprise System Controls -->
       <div style="display:flex; gap:12px; align-items:center; user-select:none;">
@@ -1842,12 +1861,8 @@
         <select class="filter-select">
           <option>모든 장치/상태</option>
         </select>
-        <select class="filter-select">
-          <option>큰 아이콘</option>
-        </select>
-        <select class="filter-select">
-          <option>이름순</option>
-        </select>
+        
+        
       </div>
       <button class="btn-multi-select" id="btn-multi-select-trigger" onclick="toggleMultiSelectMode()">
         <input type="checkbox" id="chk-multi-select" style="cursor:pointer;" onchange="toggleMultiSelectMode(this.checked); event.stopPropagation();">
@@ -1972,10 +1987,7 @@
     </div>
   </div>
 
-  <!-- QA Simulator Drawer Trigger -->
-  <button class="qa-toggle-trigger" onclick="toggleQADrawer(true)">
-    <span>⚠️</span> QA 테스트 컨트롤러
-  </button>
+
 
   <!-- QA Simulator Drawer -->
   <div class="qa-drawer" id="qa-drawer-panel">
@@ -2383,7 +2395,7 @@
         // Layout matching reference screenshot & Rule 3 (자물쇠 모양 🔒)
         card.innerHTML = `
           <div class="card-top-bar">
-            <span>📅 VCCS</span>
+            <span>📅 HVAC-PRO</span>
             ${device.purify ? '<span class="card-purify-indicator" style="background:#059669; color:#fff; font-size:9px; padding:1px 5px; border-radius:3px; font-weight:700; margin-left:5px; display:inline-flex; align-items:center; gap:2px; animation: blink 1.5s infinite alternate;">🍃 청정</span>' : ''}
             <span class="card-lock-indicator">🔒 Lock</span>
           </div>
