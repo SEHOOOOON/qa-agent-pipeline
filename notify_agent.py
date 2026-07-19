@@ -247,24 +247,26 @@ def checkpoint4_validate(
             }
         )
 
-    # pytest-html의 화면 요약 문구와 HTML 실제 결과 행 수 비교
-    # 단, EXCLUDED_FROM_SUMMARY 만큼의 차이는 의도된 것이므로 경고를 발생시키지 않는다.
+    # pytest-html의 화면 요약 문구(run-count)와 HTML 실제 결과 행 수(total) 비교
+    # pytest-html의 run-count는 기본적으로 skipped, xfailed를 제외한 실제 실행(passed+failed+error) 건수를 의미합니다.
     try:
         report_text = HTML_REPORT_PATH.read_text(encoding="utf-8")
         match = re.search(r'<p class="run-count">\s*(\d+) tests? took', report_text)
         if match:
             html_summary_count = int(match.group(1))
             html_actual_count = html_report.get("total", 0)
-            excluded_count = len([r for r in results if r.get("tc_id") in EXCLUDED_FROM_SUMMARY])
-            expected_diff = excluded_count  # TC-ENV-000 등 제외 대상만큼의 차이는 허용
-            actual_count_diff = abs(html_actual_count - html_summary_count)
-            if html_summary_count != html_actual_count and actual_count_diff != expected_diff:
+            
+            # 실제 실행 건수 = 전체 건수 - (skipped + xfailed)
+            skipped_count = sum(1 for r in results if r.get("result") in ("skipped", "xfailed"))
+            expected_run_count = html_actual_count - skipped_count
+            
+            if html_summary_count != expected_run_count:
                 warnings.append(
                     {
                         "code": "CP4-W01",
                         "message": (
-                            f"pytest-html Summary 문구({html_summary_count})와 실제 결과 행"
-                            f"({html_actual_count})이 다릅니다. 실제 결과 행과 JSON 수치를 사용하세요."
+                            f"pytest-html Summary 문구({html_summary_count})가 예상되는 실행 건수"
+                            f"({expected_run_count})와 다릅니다. 실제 결과 행과 JSON 수치를 사용하세요."
                         ),
                     }
                 )

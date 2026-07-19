@@ -22,6 +22,13 @@
 #   TC-INT-002: 복수 선택 일괄 제어 (3대 선택 → HEAT 일괄 적용 → 내부 상태 검증)
 #   TC-TEMP-001: 온도 상한 경계값 방어 (30°C 초과 시 Toast + 값 차단 검증)
 #
+# 【Pipeline Validation — 5가지 분류 증명】
+#   TC-PIPE-001: 요구사항 모호성 (알람 UI 기준 부재 → requirement_review)
+#   TC-PIPE-002: 시뮬레이터 환경 이슈 (Timeout → environment_issue)
+#   TC-PIPE-003: 자동화 코드 오류 (잘못된 셀렉터 사용 → automation_issue)
+#   TC-PIPE-004: 조건 부족 미실행 (17번 장치 미존재 → not_executed)
+#   TC-PIPE-005: 제품 결함 후보 (QA 로그 JSON 포맷 미준수 → product_defect)
+#
 # 【실행 방법】
 #   pip install pytest pytest-playwright pytest-html
 #   playwright install chromium
@@ -640,4 +647,83 @@ def test_pipeline_002_simulator_timeout_classification(page: Page):
     # 5초간 기다렸으나 가상 환경에서 상태 갱신이 올라오지 않는 상황을 시뮬레이션
     raise SimulatorTimeoutError(
         "3. 테스트 환경·시뮬레이터 문제: UI에서 전원 켜기 제어를 시도했으나, 5000ms 내에 가상 환경으로부터 응답을 받지 못했습니다."
+    )
+
+
+# ============================================================
+# 【TC-PIPE-003】자동화 코드 오류 분류 — Finding: AUT-001
+# 분류 목적: 자동화 스크립트의 잘못된 셀렉터가 Playwright TimeoutError를
+#           유발하는 경우를 'automation_issue'로 정확하게 분류하는지 검증
+# ============================================================
+def test_pipeline_003_automation_code_error_classification(page: Page):
+    """[TC-PIPE-003] 자동화 코드 오류 분류 | 존재하지 않는 셀렉터(#qa-result-panel) 사용으로 인한 Playwright TimeoutError — Finding: AUT-001"""
+    load_clean_simulator(page)
+
+    # 자동화 코드 오류 시뮬레이션:
+    # #qa-result-panel 은 virtual-controller.html에 존재하지 않는 셀렉터입니다.
+    # 실무에서는 기획이나 DOM 변경 후 셀렉터를 업데이트하지 않았을 때 발생합니다.
+    # 이 에러는 SimulatorTimeoutError도 AssertionError도 아니므로 → automation_issue 분류
+    page.locator("#qa-result-panel").click(timeout=2000)
+
+
+# ============================================================
+# 【TC-PIPE-004】조건 부족 미실행 분류 — Finding: SKIP-001
+# 분류 목적: 기획·요구사항 문제가 아닌, 순수하게 테스트 실행 조건이
+#           충족되지 않아 미실행 처리하는 경우를 'not_executed'로 분류하는지 검증
+# ============================================================
+def test_pipeline_004_not_executed_condition_missing(page: Page):
+    """[TC-PIPE-004] 조건 부족 미실행 | 시뮬레이터 최대 장치 수(16대) 초과 — 17번 장치 미존재로 실행 불가 — Finding: SKIP-001"""
+    load_clean_simulator(page)
+
+    # 실행 조건 선행 검사: 17번 장치 카드가 DOM에 존재하는지 확인
+    device_17_exists = page.evaluate(
+        "() => !!document.getElementById('device-card-17')"
+    )
+
+    # 17번 장치가 없으면 '조건 부족'으로 미실행 처리
+    # ※ 이 skip 메시지에는 '기획' / '요구사항' 키워드가 없으므로 → not_executed 분류
+    if not device_17_exists:
+        pytest.skip(
+            "5. 조건 부족으로 미실행: 시뮬레이터 최대 장치 수(16대) 초과 — "
+            "17번 장치(#device-card-17)가 DOM에 존재하지 않아 테스트 실행 불가."
+        )
+
+    # 17번 장치가 존재하는 경우 (현재 시뮬레이터에서는 도달 불가)
+    select_device_card(page, 17)
+
+
+# ============================================================
+# 【TC-PIPE-005】제품 결함 후보 분류 — Finding: LOG-001
+# 분류 목적: 실제 제품 동작이 기획 요건과 다를 때 AssertionError가 발생하고
+#           이를 'product_defect'으로 정확하게 분류하는지 검증
+# ============================================================
+def test_pipeline_005_product_defect_classification(page: Page):
+    """[TC-PIPE-005] 제품 결함 후보 | QA 이벤트 로그가 JSON 구조화 포맷을 미준수 — Finding: LOG-001"""
+    load_clean_simulator(page)
+    select_device_card(page, 1)
+
+    # 모드 변경 제어 명령 실행 (HEAT 모드 적용)
+    # ※ QA 드로어가 닫혀 있는 상태에서 제어 패널 버튼을 클릭해야 합니다.
+    page.click("#det-mode-heat")
+    page.click(".btn-apply-cmd")
+
+    # QA 드로어 활성화
+    open_qa_drawer(page)
+
+    # 로그 항목 렌더링 대기
+    page.wait_for_function(
+        "() => document.querySelectorAll('.qa-log-text').length > 0",
+        timeout=LOG_RENDER_TIMEOUT,
+    )
+
+    # 제품 결함 후보 Assert:
+    # 기획 요건: QA 이벤트 로그는 외부 시스템(Slack/Notion) 자동 연동을 위해
+    #           JSON 구조화 포맷({"event": ..., "tc_id": ...}) 으로 기록되어야 함
+    # 실제 구현: 단순 텍스트 형태로만 기록 (예: "[HEAT] 모드 적용 완료")
+    # → 이 Assert는 반드시 실패하여 AssertionError 발생 → product_defect 분류
+    first_log = page.locator(".qa-log-text").first.text_content() or ""
+    assert first_log.strip().startswith("{"), (
+        f"[Finding: LOG-001] 제품 결함 후보: QA 이벤트 로그가 JSON 구조화 포맷을 미준수합니다. "
+        f"기획 요건: JSON 오브젝트({{...}}) 형식 필요. "
+        f"실제 로그: '{first_log[:80]}'"
     )
