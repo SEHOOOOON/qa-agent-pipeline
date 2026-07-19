@@ -1814,12 +1814,7 @@
       
       <!-- B2B Real Enterprise System Controls -->
       <div style="display:flex; gap:12px; align-items:center; user-select:none;">
-        <!-- User Role Switcher -->
-        <div style="display:flex; align-items:center; background:#1e293b; border:1px solid #334155; border-radius:6px; padding:2px; font-size:0.7rem; font-family:'Noto Sans KR',sans-serif;">
-          <span style="color:#94a3b8; padding:0 8px; font-weight:700;">🔑 권한</span>
-          <button id="role-admin-btn" class="role-segment-btn active" onclick="switchUserRole('ADMIN')" style="background:#4f46e5; border:none; color:white; border-radius:4px; padding:3px 8px; cursor:pointer; font-weight:700; transition:all 0.2s; font-size:0.66rem;">관리자</button>
-          <button id="role-viewer-btn" class="role-segment-btn" onclick="switchUserRole('VIEWER')" style="background:transparent; border:none; color:#64748b; border-radius:4px; padding:3px 8px; cursor:pointer; font-weight:700; transition:all 0.2s; font-size:0.66rem;">뷰어</button>
-        </div>
+        
 
         <!-- Temp Unit Selector -->
         <div style="display:flex; align-items:center; background:#1e293b; border:1px solid #334155; border-radius:6px; padding:2px; font-size:0.7rem; font-family:'Noto Sans KR',sans-serif;">
@@ -1959,13 +1954,10 @@
 
       <!-- Lock configuration on Dashboard -->
       <div class="control-group">
-        <div class="control-title-small">잠금 설정 (Lock 관제점)</div>
-        <div class="lock-setting-row">
-          <span class="label">리모컨 잠금</span>
-          <div class="btn-segments" style="width: 140px;">
-            <button class="segment-btn" id="det-lock-on-btn" onclick="setPanelLock(true)">설정</button>
-            <button class="segment-btn" id="det-lock-off-btn" onclick="setPanelLock(false)">해제</button>
-          </div>
+        <div class="control-title-small">잠금</div>
+        <div class="btn-segments cols-2">
+          <button class="segment-btn" id="det-lock-on-btn" onclick="setPanelLock(true)">설정</button>
+          <button class="segment-btn" id="det-lock-off-btn" onclick="setPanelLock(false)">해제</button>
         </div>
       </div>
 
