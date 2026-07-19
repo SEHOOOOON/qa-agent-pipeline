@@ -3312,36 +3312,28 @@
         <button class="agent-modal-close" onclick="closeAgent1Modal()">&times;</button>
       </div>
       <div class="agent-modal-body" style="background:#0f0f1a; padding:20px; display:flex; flex-direction:column; gap:16px;">
-        <div style="font-size:0.75rem; color:#7c3aed; font-weight:700; letter-spacing:0.5px;">📋 테스트 대상 및 범위 정의</div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-          <div>
-            <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">시스템명</label>
-            <input id="req-system" type="text" value="가상 관제 시스템 B2B 공조 제어" style="width:100%; background:#1e293b; border:1px solid #334155; border-radius:6px; color:#e2e8f0; padding:7px 10px; font-size:0.75rem; box-sizing:border-box;">
-          </div>
-          <div>
-            <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">버전</label>
-            <input id="req-version" type="text" value="v2.4.1-QA" style="width:100%; background:#1e293b; border:1px solid #334155; border-radius:6px; color:#e2e8f0; padding:7px 10px; font-size:0.75rem; box-sizing:border-box;">
-          </div>
+        <div style="font-size:0.75rem; color:#7c3aed; font-weight:700; letter-spacing:0.5px;">🔗 기획 문서 연동 (Jira / Confluence)</div>
+        <div style="display:flex; gap:8px;">
+          <input id="req-jira-url" type="text" placeholder="예: https://jira.company.com/browse/HVAC-1234" style="flex:1; background:#1e293b; border:1px solid #334155; border-radius:6px; color:#e2e8f0; padding:9px 12px; font-size:0.75rem; box-sizing:border-box;">
+          <button style="background:#334155; border:1px solid #475569; color:#f8fafc; border-radius:6px; padding:0 16px; cursor:pointer; font-size:0.75rem; font-weight:700;" onclick="alert('Jira 연동을 시작합니다. (Demo)')">연동</button>
         </div>
 
-        <div style="font-size:0.75rem; color:#7c3aed; font-weight:700; letter-spacing:0.5px;">✅ 빠른 요구사항 체크리스트</div>
-        <div id="req-chip-area" style="display:flex; flex-wrap:wrap; gap:8px;">
-          <button class="req-chip active" onclick="toggleChip(this)" data-key="power">전원 ON/OFF 제어</button>
-          <button class="req-chip active" onclick="toggleChip(this)" data-key="mode">냉방/난방/송풍/제습/자동 모드</button>
-          <button class="req-chip active" onclick="toggleChip(this)" data-key="temp">온도 설정 (16~30°C)</button>
-          <button class="req-chip active" onclick="toggleChip(this)" data-key="fan">풍량 설정 (LOW/MED/HIGH)</button>
-          <button class="req-chip active" onclick="toggleChip(this)" data-key="lock">ALL LOCK 잠금 방어 로직</button>
-          <button class="req-chip active" onclick="toggleChip(this)" data-key="error">에러 코드 발생 및 복구</button>
-          <button class="req-chip" onclick="toggleChip(this)" data-key="gateway">게이트웨이 오프라인 처리</button>
-          <button class="req-chip" onclick="toggleChip(this)" data-key="multi">멀티 선택 일괄 제어</button>
-          <button class="req-chip" onclick="toggleChip(this)" data-key="register">Register Simulator 화면·상태 동시 검증</button>
-          <button class="req-chip" onclick="toggleChip(this)" data-key="purify" style="border: 1px dashed #fb7185; color: #fda4af;">✨ 공기청정 기능 (확장 관제점)</button>
+        <div style="display:flex; align-items:center; color:#475569; font-size:0.7rem; margin: 4px 0;">
+          <div style="flex:1; height:1px; background:#1e293b;"></div>
+          <div style="padding:0 10px;">OR</div>
+          <div style="flex:1; height:1px; background:#1e293b;"></div>
         </div>
 
-        <div>
-          <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">📝 추가 요구사항 메모 (자유 입력)</label>
-          <textarea id="req-memo" rows="4" placeholder="예: 전원 ON 후 1초 이내 상태 동기화 필요, 잠금 상태에서 리모컨 연타 시 통신 먹통 검증 등..." style="width:100%; background:#1e293b; border:1px solid #334155; border-radius:6px; color:#c4c9d4; padding:10px; font-size:0.74rem; resize:none; box-sizing:border-box; font-family:'Noto Sans KR',sans-serif; line-height:1.6;">잠금 상태 ON 시 리모컨 제어 신호 완전 차단 검증 필요.
-송풍 모드 전환 시 메모리 레지스터 온도 값 초기화 버그 주입 검증 포함.</textarea>
+        <div style="font-size:0.75rem; color:#7c3aed; font-weight:700; letter-spacing:0.5px;">📄 요구사항 정의서 (PRD) 파일 업로드</div>
+        <div class="file-upload-box" style="background:#111827; border:1px dashed #334155; border-radius:8px; padding:30px; text-align:center; cursor:pointer; transition:all 0.2s ease;" onclick="alert('파일 업로드 창을 엽니다. (Demo)')" onmouseover="this.style.borderColor='#7c3aed'; this.style.background='#1e1b4b'" onmouseout="this.style.borderColor='#334155'; this.style.background='#111827'">
+          <div style="font-size:2rem; margin-bottom:8px;">📁</div>
+          <div style="color:#94a3b8; font-size:0.8rem; font-weight:500;">클릭하여 문서(PDF, DOCX) 업로드 및 파싱 시작</div>
+          <div style="color:#64748b; font-size:0.7rem; margin-top:4px;">(최대 50MB, 보안 적용됨)</div>
+        </div>
+
+        <div id="agent1-loading" style="display:none; text-align:center; color:#a5b4fc; font-size:0.75rem; margin-top:10px;">
+          <span class="hw-sync-dot" style="background:#818cf8; display:inline-block; margin-right:6px;"></span>
+          Agent 1이 문서를 분석하여 핵심 TC 뼈대를 추출 중입니다...
         </div>
 
         <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #1e293b; padding-top:14px;">

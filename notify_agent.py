@@ -404,67 +404,111 @@ def send_to_slack(payload: dict[str, Any]) -> bool:
 
 
 def send_to_notion(report_data: dict[str, Any]) -> bool:
-    """실행 요약을 Notion DB에 새 페이지로 저장한다.
+    """실행 요약 및 개별 TC 결과를 Notion DB에 Upsert (TC ID 기반 업데이트) 한다.
 
-    기존 원본에 상세 DB 스키마와 Upsert 구현이 없으므로 안전한 최소 등록으로 구성한다.
-    TC ID 기반 Upsert는 DB 속성 스키마가 확정된 후 별도 구현해야 한다.
+    [구현 목적]
+    - 매 실행마다 중복 페이지를 생성하지 않고, TC ID를 기준으로 기존 페이지를 찾아 상태(결과, 로그 등)만 업데이트(PATCH) 합니다.
+    - 기존에 없는 TC라면 새 페이지를 생성(POST) 합니다.
     """
     notion_token = os.getenv("NOTION_API_KEY", "").strip()
     database_id = os.getenv("NOTION_DATABASE_ID", "").strip()
 
     if not notion_token or not database_id:
-        print("[INFO] Notion 환경변수 미설정: Notion 전송 생략")
+        print("[INFO] Notion 환경변수 미설정: Notion TC-ID 기반 Upsert 시뮬레이션(콘솔 미리보기)")
+        
+        # 1. qa_results.json의 테스트 결과를 불러옵니다.
+        try:
+            results_path = Path("reports/qa_results.json")
+            results = json.loads(results_path.read_text(encoding="utf-8")) if results_path.exists() else []
+        except Exception as e:
+            print(f"       JSON 결과 로드 실패: {e}")
+            results = []
+
+        print(f"       총 {len(results)}개의 TC에 대해 Upsert(수정/추가)를 시뮬레이션합니다.")
+        
+        # 2. 각 TC별로 Upsert 로직 (시뮬레이션 출력)
+        for tc in results:
+            tc_id = tc.get("tc_id", "UNKNOWN")
+            result = tc.get("result", "")
+            finding_type = tc.get("finding_type", "none")
+            
+            # 실제 API 호출이라면 아래와 같이 동작합니다.
+            # 2-1) Notion Query API (filter: TC-ID == tc_id)
+            # 2-2) 결과(results)가 있으면 -> PATCH (업데이트)
+            # 2-3) 결과(results)가 없으면 -> POST (신규 생성)
+            
+            action = "PATCH (Update)" if tc_id.startswith("TC-") else "POST (Create)"
+            print(f"       - [{action}] {tc_id} | Status: {result.upper()} | Finding: {finding_type}")
+            
+        print("       Notion 전송 시뮬레이션 완료.")
         return False
 
-    payload = {
-        "parent": {"database_id": database_id},
-        "properties": {
-            "TC-ID": {
-                "title": [
-                    {"text": {"content": f"QA Run {report_data['run_id']}"}}
-                ]
-            }
-        },
-        "children": [
-            {
-                "object": "block",
-                "type": "paragraph",
-                "paragraph": {
-                    "rich_text": [
-                        {
-                            "type": "text",
-                            "text": {
-                                "content": json.dumps(
-                                    {
-                                        "checkpoint4": report_data["checkpoint4"],
-                                        "execution": report_data["execution"],
-                                        "pytest_summary": report_data["pytest_summary"],
-                                        "qa_classification_summary": report_data["qa_classification_summary"],
-                                    },
-                                    ensure_ascii=False,
-                                )
-                            },
-                        }
-                    ]
-                },
-            }
-        ],
-    }
-
+    # 실제 Notion 연동 로직 (환경변수 존재 시 동작)
     headers = {
         "Authorization": f"Bearer {notion_token}",
         "Notion-Version": "2022-06-28",
         "Content-Type": "application/json",
     }
+    
+    # 1. 파일에서 결과 로드
+    results_path = Path("reports/qa_results.json")
+    if not results_path.exists():
+        return False
+    
+    results = json.loads(results_path.read_text(encoding="utf-8"))
+    
+    # 2. 개별 TC Upsert
+    success = True
+    for tc in results:
+        tc_id = tc.get("tc_id")
+        if not tc_id:
+            continue
+            
+        # (1) 페이지 존재 여부 쿼리
+        query_payload = {
+            "filter": {
+                "property": "TC-ID",
+                "title": {"equals": tc_id}
+            }
+        }
+        resp = requests.post(
+            f"https://api.notion.com/v1/databases/{database_id}/query",
+            headers=headers,
+            json=query_payload,
+            timeout=10,
+        )
+        if resp.status_code != 200:
+            success = False
+            continue
+            
+        query_results = resp.json().get("results", [])
+        
+        # (2) 속성 정의
+        properties = {
+            "TC-ID": {"title": [{"text": {"content": tc_id}}]},
+            "Status": {"select": {"name": tc.get("result", "").upper()}},
+            "Finding Type": {"select": {"name": tc.get("finding_type", "none")}},
+            "Run ID": {"rich_text": [{"text": {"content": str(report_data.get('run_id', ''))}}]}
+        }
+        
+        # (3) Upsert 분기
+        if query_results:
+            page_id = query_results[0]["id"]
+            requests.patch(
+                f"https://api.notion.com/v1/pages/{page_id}",
+                headers=headers,
+                json={"properties": properties},
+                timeout=10,
+            )
+        else:
+            requests.post(
+                "https://api.notion.com/v1/pages",
+                headers=headers,
+                json={"parent": {"database_id": database_id}, "properties": properties},
+                timeout=10,
+            )
 
-    response = requests.post(
-        "https://api.notion.com/v1/pages",
-        headers=headers,
-        json=payload,
-        timeout=20,
-    )
-    response.raise_for_status()
-    return True
+    return success
 
 
 def main() -> int:
