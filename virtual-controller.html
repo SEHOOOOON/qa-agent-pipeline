@@ -2388,16 +2388,14 @@
         // Layout matching reference screenshot & Rule 3 (자물쇠 모양 🔒)
         card.innerHTML = `
           <div class="card-top-bar">
-            <span>📅 중앙제어 시스템</span>
+            
             ${device.purify ? '<span class="card-purify-indicator" style="background:#059669; color:#fff; font-size:9px; padding:1px 5px; border-radius:3px; font-weight:700; margin-left:5px; display:inline-flex; align-items:center; gap:2px; animation: blink 1.5s infinite alternate;">🍃 청정</span>' : ''}
             <span class="card-lock-indicator">🔒 Lock</span>
           </div>
           <div class="offline-overlay-shield">통신불가</div>
           <div class="card-body-split" onclick="selectUnit(${device.id})">
             <div class="card-body-left">
-              <div class="fan-icon-container">
-                <div class="fan-icon-wings" id="fan-wings-${device.id}"></div>
-              </div>
+              
               <div class="card-mode-text ${device.mode.toLowerCase()}">${modeIcon} ${modeText}</div>
               ${fanSpeedHtml}
             </div>
