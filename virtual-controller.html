@@ -52,7 +52,7 @@
       overflow: hidden;
       display: grid;
       grid-template-columns: 70px 280px 1fr 340px;
-      grid-template-rows: 55px 1fr 220px;  /* Row 3: Register Simulator View */
+      grid-template-rows: 55px 1fr auto;  /* Row 3: Register Simulator View */
       transition: grid-template-columns 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
@@ -80,6 +80,7 @@
     /* Register Simulator View (가상 장치 상태)                           */
     /* ================================================================ */
     #hardware-simulator-zone {
+      height: 220px;
       grid-column: 1 / 5;
       grid-row: 3;
       background: #0d1117;
@@ -1653,7 +1654,7 @@
   <!-- Left Icon Sidebar -->
   <div class="icon-sidebar">
     <div class="sidebar-icon-btn active" id="tab-control" onclick="switchSidebarTab('control')" title="장치 관제 및 제어">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 24px; height: 24px; margin-bottom: 4px;"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 24px; height: 24px; margin-bottom: 4px;"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg>
       <span>제어</span>
     </div>
     <div class="sidebar-icon-btn" id="tab-qa" onclick="switchSidebarTab('qa')" title="AI QA 거버넌스 컨트롤 타워">
@@ -3594,6 +3595,10 @@
       const controlBtn = document.getElementById('tab-control');
       const qaBtn = document.getElementById('tab-qa');
       const towerPanel = document.querySelector('.qa-tower-panel');
+      
+      if (tabName === 'qa' && qaBtn.classList.contains('active')) {
+        tabName = 'control'; // Toggle off
+      }
       
       if (tabName === 'control') {
         controlBtn.classList.add('active');
