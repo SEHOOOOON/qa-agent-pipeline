@@ -87,3 +87,7 @@ qa-agent-pipeline/
 [![시뮬레이터 바로가기](https://img.shields.io/badge/시뮬레이터_바로가기-a855f7?style=for-the-badge&labelColor=08060f)](https://SEHOOOOON.github.io/qa-agent-pipeline/virtual-controller.html)
 
 </div>
+
+## 🚀 Future Works (v2 업데이트 예정)
+- **에이전트 1번(요구사항 파싱)의 RAG 기반 자율 엣지케이스 교차 검증 도입**
+  - 사내 공통 안전 규격서(Safety Guideline)와 신규 PRD 문서를 교차 검증(Cross-Validation)하여 AI 환각(Hallucination) 없이 엣지케이스(Edge Case) TC를 자동 도출하는 기능 추가 예정.

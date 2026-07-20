@@ -106,7 +106,7 @@ def load_clean_simulator(page: Page) -> None:
         "document.getElementById('qa-drawer-panel').classList.contains('open')"
     )
     if not is_open:
-        page.click(".qa-toggle-trigger")
+        page.click("#tab-test-panel")
         page.wait_for_selector("#qa-drawer-panel.open", timeout=3000)
 
     # confirm() 다이얼로그 자동 수락 핸들러 등록
@@ -134,7 +134,7 @@ def open_qa_drawer(page: Page) -> None:
         "document.getElementById('qa-drawer-panel').classList.contains('open')"
     )
     if not is_open:
-        page.click(".qa-toggle-trigger")
+        page.click("#tab-test-panel")
         page.wait_for_selector("#qa-drawer-panel.open", timeout=3000)
 
     expect(page.locator("#qa-log-container")).to_be_visible()
@@ -543,15 +543,14 @@ def test_tc_int_002_multi_select_batch_control(page: Page):
     # 복수 제어 모드 헤더 업데이트 대기
     page.wait_for_function(
         """() => {
-            const el = document.getElementById('det-unit-info');
-            return el && el.textContent.includes('복수 제어 모드');
+            const el = document.getElementById('det-unit-name');
+            return el && el.textContent.includes('외 2대');
         }""",
         timeout=2000,
     )
 
-    # 헤더에 "복수 제어 모드" + "3대" 표시 검증
-    expect(page.locator("#det-unit-info")).to_contain_text("복수 제어 모드")
-    expect(page.locator("#det-unit-info")).to_contain_text("3대")
+    # 헤더에 "외 2대" 표시 검증
+    expect(page.locator("#det-unit-name")).to_contain_text("외 2대")
 
     # 선택된 3개 카드 CSS 하이라이트
     expect(page.locator("#device-card-1")).to_have_class(re.compile(r"selected"))

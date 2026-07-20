@@ -2283,7 +2283,9 @@
     // Toggle QA Controller Sidebar Panel
     function toggleQADrawer(open) {
       const drawer = document.getElementById('qa-drawer-panel');
-      if (open) {
+      if (open === undefined) {
+        drawer.classList.toggle('open');
+      } else if (open) {
         drawer.classList.add('open');
       } else {
         drawer.classList.remove('open');
@@ -3320,50 +3322,47 @@
         <div style="font-size:0.75rem; color:#7c3aed; font-weight:700; letter-spacing:0.5px;">🔗 기획 문서 연동 (Jira / Confluence / PRD)</div>
         <div style="display:flex; gap:10px; align-items:center; margin-top:-8px;">
           <input id="req-jira-url" type="text" placeholder="Jira URL 입력 (예: HVAC-1234)..." style="flex:1; background:#1e293b; border:1px solid #334155; border-radius:6px; color:#e2e8f0; padding:6px 10px; font-size:0.7rem; box-sizing:border-box;">
-          <button style="background:#334155; border:1px solid #475569; color:#f8fafc; border-radius:6px; padding:5px 12px; cursor:pointer; font-size:0.7rem; font-weight:700;" onclick="alert('Jira 연동을 시작합니다. (Demo)')">URL 연동</button>
+          <button style="background:#334155; border:1px solid #475569; color:#f8fafc; border-radius:6px; padding:5px 12px; cursor:pointer; font-size:0.7rem; font-weight:700;" onclick="simulateJiraImport(this)">URL 연동</button>
           <div style="color:#475569; font-size:0.65rem; font-weight:bold;">OR</div>
-          <button style="background:#1e1b4b; border:1px dashed #7c3aed; color:#a5b4fc; border-radius:6px; padding:5px 12px; cursor:pointer; font-size:0.7rem; font-weight:700;" onclick="alert('파일 업로드 창을 엽니다. (Demo)')">📁 파일 업로드</button>
+          <button style="background:#1e1b4b; border:1px dashed #7c3aed; color:#a5b4fc; border-radius:6px; padding:5px 12px; cursor:pointer; font-size:0.7rem; font-weight:700;" onclick="simulateFileImport(this)">📁 파일 업로드</button>
         </div>
         
-        <hr style="border: 0; height: 1px; background: #1e293b; margin: 0;">
 
-        <div style="font-size:0.75rem; color:#7c3aed; font-weight:700; letter-spacing:0.5px;">📋 테스트 대상 및 범위 정의</div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-          <div>
-            <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">시스템명</label>
-            <input id="req-system" type="text" value="가상 관제 시스템 B2B 공조 제어" style="width:100%; background:#1e293b; border:1px solid #334155; border-radius:6px; color:#e2e8f0; padding:7px 10px; font-size:0.75rem; box-sizing:border-box;">
-          </div>
-          <div>
-            <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">버전</label>
-            <input id="req-version" type="text" value="v2.4.1-QA" style="width:100%; background:#1e293b; border:1px solid #334155; border-radius:6px; color:#e2e8f0; padding:7px 10px; font-size:0.75rem; box-sizing:border-box;">
-          </div>
-        </div>
-
-        <div style="font-size:0.75rem; color:#7c3aed; font-weight:700; letter-spacing:0.5px;">✅ 빠른 요구사항 체크리스트</div>
-        <div id="req-chip-area" style="display:flex; flex-wrap:wrap; gap:8px;">
-          <button class="req-chip active" onclick="toggleChip(this)" data-key="power">전원 ON/OFF 제어</button>
-          <button class="req-chip active" onclick="toggleChip(this)" data-key="mode">냉방/난방/송풍/제습/자동 모드</button>
-          <button class="req-chip active" onclick="toggleChip(this)" data-key="temp">온도 설정 (16~30°C)</button>
-          <button class="req-chip active" onclick="toggleChip(this)" data-key="fan">풍량 설정 (LOW/MED/HIGH)</button>
-          <button class="req-chip active" onclick="toggleChip(this)" data-key="lock">ALL LOCK 잠금 방어 로직</button>
-          <button class="req-chip active" onclick="toggleChip(this)" data-key="error">에러 코드 발생 및 복구</button>
-          <button class="req-chip" onclick="toggleChip(this)" data-key="gateway">게이트웨이 오프라인 처리</button>
-          <button class="req-chip" onclick="toggleChip(this)" data-key="multi">멀티 선택 일괄 제어</button>
-          <button class="req-chip" onclick="toggleChip(this)" data-key="register">Register Simulator 화면·상태 동시 검증</button>
-          <button class="req-chip" onclick="toggleChip(this)" data-key="purify" style="border: 1px dashed #fb7185; color: #fda4af;">✨ 공기청정 기능 (확장 관제점)</button>
-        </div>
 
         <div>
           <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">📝 추가 요구사항 메모 (자유 입력)</label>
-          <textarea id="req-memo" rows="4" placeholder="예: 전원 ON 후 1초 이내 상태 동기화 필요, 잠금 상태에서 리모컨 연타 시 통신 먹통 검증 등..." style="width:100%; background:#1e293b; border:1px solid #334155; border-radius:6px; color:#c4c9d4; padding:10px; font-size:0.74rem; resize:none; box-sizing:border-box; font-family:'Noto Sans KR',sans-serif; line-height:1.6;">잠금 상태 ON 시 리모컨 제어 신호 완전 차단 검증 필요.
-송풍 모드 전환 시 메모리 레지스터 온도 값 초기화 버그 주입 검증 포함.</textarea>
+          <textarea id="req-memo" rows="4" placeholder="예: 전원 ON 후 1초 이내 상태 동기화 필요, 잠금 상태에서 리모컨 연타 시 통신 먹통 검증 등..." style="width:100%; background:#1e293b; border:1px solid #334155; border-radius:6px; color:#c4c9d4; padding:10px; font-size:0.74rem; resize:none; box-sizing:border-box; font-family:'Noto Sans KR',sans-serif; line-height:1.6;"></textarea>
         </div>
 
-        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #1e293b; padding-top:14px;">
-          <div id="req-saved-status" style="font-size:0.7rem; color:#64748b;">아직 저장되지 않았습니다.</div>
+        <!-- Simulation Area (Hidden Initially) -->
+        <div id="agent-simulation-area" style="display:none; flex-direction:column; gap:12px; margin-top:10px; border-top:1px dashed #334155; padding-top:16px;">
+          <div style="font-size:0.75rem; color:#10b981; font-weight:700; letter-spacing:0.5px; display:flex; align-items:center; gap:6px;">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17l6-6-6-6M12 19h8"/></svg>
+            에이전트 시뮬레이션 터미널
+          </div>
+          <div id="simulation-terminal" style="background:#020617; border:1px solid #1e293b; border-radius:6px; padding:12px; font-family:'Outfit',monospace; font-size:0.68rem; color:#94a3b8; height:120px; overflow-y:auto; display:flex; flex-direction:column; gap:6px;">
+            <!-- Logs will be injected here -->
+          </div>
+          
+          <div id="simulation-table-container" style="display:none; flex-direction:column; gap:8px;">
+            <div style="font-size:0.75rem; color:#8b5cf6; font-weight:700;">추출된 신규 테스트 케이스 (Agent 2 결과물)</div>
+            <table style="width:100%; border-collapse:collapse; font-size:0.65rem; background:#0f172a; border:1px solid #1e293b;">
+              <thead style="background:#1e293b; color:#cbd5e1; text-align:left;">
+                <tr><th style="padding:6px; border:1px solid #334155;">TC ID</th><th style="padding:6px; border:1px solid #334155;">분류</th><th style="padding:6px; border:1px solid #334155;">테스트 명세</th></tr>
+              </thead>
+              <tbody id="simulation-tc-body" style="color:#94a3b8;">
+                <!-- Table rows injected here -->
+              </tbody>
+            </table>
+            
+            <button id="simulation-final-confirm" onclick="finishSimulation()" style="margin-top:8px; background:linear-gradient(135deg,#059669,#10b981); border:none; color:white; border-radius:6px; padding:10px; cursor:pointer; font-size:0.75rem; font-weight:700; box-shadow:0 4px 12px rgba(16,185,129,0.3); display:none; animation: pulse 2s infinite;">✅ QA 기준 검토 완료 및 테스트 자동화 스크립트 작성 지시</button>
+          </div>
+        </div>
+
+        <div id="req-action-area" style="display:flex; justify-content:flex-end; align-items:center; border-top:1px solid #1e293b; padding-top:14px;">
           <div style="display:flex; gap:8px;">
             <button onclick="closeAgent1Modal()" style="background:#1e293b; border:1px solid #334155; color:#94a3b8; border-radius:6px; padding:8px 16px; cursor:pointer; font-size:0.75rem;">취소</button>
-            <button onclick="saveRequirements()" style="background:linear-gradient(135deg,#4f46e5,#7c3aed); border:none; color:white; border-radius:6px; padding:8px 18px; cursor:pointer; font-size:0.75rem; font-weight:700; box-shadow:0 4px 12px rgba(79,70,229,0.4);">📌 요구사항 저장 및 확정</button>
+            <button onclick="startAgentSimulation()" style="background:linear-gradient(135deg,#4f46e5,#7c3aed); border:none; color:white; border-radius:6px; padding:8px 18px; cursor:pointer; font-size:0.75rem; font-weight:700; box-shadow:0 4px 12px rgba(79,70,229,0.4);">🚀 요구사항 분석 및 TC 생성 시작</button>
           </div>
         </div>
       </div>
@@ -3630,83 +3629,126 @@
       setTimeout(() => el.classList.remove('flashing'), 1500);
     }
 
+    // Auto-fill simulations for Demo
+    function simulateJiraImport(btn) {
+      btn.innerText = '연동 중...';
+      btn.style.color = '#fbbf24';
+      setTimeout(() => {
+        document.getElementById('req-jira-url').value = 'https://jira.company.com/browse/HVAC-2048';
+        document.getElementById('req-memo').value = '[신규 요구사항: 공기청정 제어 로직 추가]\n- 공기청정 활성화 시, 전용 아이콘 표출 및 독립 제어 가능해야 함.\n- 난방 모드와 동시 활성화 시 충돌 방어 로직 검증 필수.\n- 상호배타 조건 위반 시 즉시 에러 발생.';
+        btn.innerText = '✅ 연동 완료';
+        btn.style.color = '#4ade80';
+      }, 800);
+    }
+
+    function simulateFileImport(btn) {
+      btn.innerText = '업로드 중...';
+      setTimeout(() => {
+        document.getElementById('req-jira-url').value = 'PRD_HVAC_AirCare_v2.pdf (업로드됨)';
+        document.getElementById('req-memo').value = '[PDF 기획서 파싱 완료]\n- 신규 기능: 공기청정 제어\n- 예외 조건: 난방 모드 동작 시 공기청정 동시 켬 불가 (상호배타 로직 엣지케이스 테스트 추가 요망).';
+        btn.innerText = '✅ 파싱 완료';
+        btn.style.border = '1px solid #4ade80';
+        btn.style.color = '#4ade80';
+      }, 1200);
+    }
+
     // ═══════════════════════════════════════════════════════════════
     // AGENT 1 — 요구사항 정의
     // ═══════════════════════════════════════════════════════════════
     function runAgent1Action(event) {
       if (event) event.stopPropagation();
       flashNode('agent-1-btn');
-      document.getElementById('req-saved-status').innerText = '아직 저장되지 않았습니다.';
-      document.getElementById('req-saved-status').style.color = '#64748b';
       document.getElementById('agent1-req-modal').classList.add('show');
       setTowerStatus('요구사항 입력 중', '#818cf8');
       appendQALog('SYSTEM', '[에이전트 1번 (요구사항)] 품질 요구사항 정의 패널 활성화. 요구사항을 입력하고 확정하세요.', 'info');
     }
 
-    function saveRequirements() {
-      const system     = document.getElementById('req-system').value.trim();
-      const version    = document.getElementById('req-version').value.trim();
-      const activeChips= [...document.querySelectorAll('.req-chip.active')].map(c => c.textContent.trim());
-      const isPurifyEnabled = document.querySelector('.req-chip[data-key="purify"]').classList.contains('active');
+    function startAgentSimulation() {
+      document.getElementById('req-action-area').style.display = 'none';
+      document.getElementById('agent-simulation-area').style.display = 'flex';
+      const term = document.getElementById('simulation-terminal');
+      term.innerHTML = '';
+      
+      const logs = [
+        { msg: '<span style="color:#38bdf8">[Agent 1]</span> 기획 요구사항 텍스트 파싱 및 엣지케이스 분석 시작...', delay: 500 },
+        { msg: '<span style="color:#f59e0b">[Checkpoint 1]</span> 요구사항 충분성 검증 ➔ <span style="color:#4ade80">Pass</span> (제어 온도 범위 및 상태 이상 에러코드 명시 확인)', delay: 1500 },
+        { msg: '<span style="color:#c084fc">[Agent 2]</span> 검증된 요구사항을 바탕으로 테스트 시나리오(TC) 구조화 중...', delay: 2500 },
+        { msg: '<span style="color:#c084fc">[Agent 2]</span> 설계 완료: 기존 TC 20개 + 신규 TC 2개 추가 도출됨.', delay: 3800 },
+        { msg: '<span style="color:#f59e0b">[Checkpoint 2]</span> TC 품질 적합성 검증 대기 중... (Human in the loop)', delay: 4800 }
+      ];
 
-      const purifyGroup = document.getElementById('det-purify-group');
-      const tcTableBody = document.querySelector('.agent-tc-table tbody');
+      logs.forEach(log => {
+        setTimeout(() => {
+          const div = document.createElement('div');
+          div.innerHTML = `> ${log.msg}`;
+          term.appendChild(div);
+          term.scrollTop = term.scrollHeight;
+        }, log.delay);
+      });
 
-      // 1. 입력 모달 즉시 닫기
-      document.getElementById('agent1-req-modal').classList.remove('show');
-
-      // 2. 에이전트 1번 서클 노드가 반짝이도록 연출하고 상태를 변경
-      flashNode('agent-1-btn');
-      setTowerStatus('요구사항 분석 및 설계 중', '#fbbf24');
-      appendQALog('SYSTEM', '[에이전트 1번 (요구사항)] 신규 요구사항 명세를 분석하여 가상 가상 관제 시스템 인터페이스 확장 설계 프로세스 기동...', 'info');
-
-      // 3. 1.5초 딜레이 후에 실시간 UI 확장 및 TC 매트릭스 주입 적용
       setTimeout(() => {
-        if (isPurifyEnabled) {
-          // 제어 패널에 공기청정 카드 노출
-          purifyGroup.style.display = 'block';
-          
-          // 에이전트 2번 모달에 TC-21 동적 추가
-          if (!document.getElementById('tc-row-21')) {
-            const tr = document.createElement('tr');
-            tr.id = 'tc-row-21';
-            tr.style.background = 'rgba(251, 113, 133, 0.05)';
-            tr.innerHTML = `
-              <td>TC-21</td>
-              <td style="color:#fb7185; font-weight:700;">확장관제</td>
-              <td>공기청정(Purify) 기능 동작 제어 정합성 및 시뮬레이터 레지스터 연동 검증</td>
-              <td style="color:#10b981; font-weight:bold;">🟢 PASS</td>`;
-            tcTableBody.appendChild(tr);
-          }
+        const tbody = document.getElementById('simulation-tc-body');
+        tbody.innerHTML = `
+          <tr style="background:rgba(251,113,133,0.1);">
+            <td style="padding:6px; border:1px solid #334155; color:#f43f5e; font-weight:bold;">TC-21</td>
+            <td style="padding:6px; border:1px solid #334155;">확장관제</td>
+            <td style="padding:6px; border:1px solid #334155;">공기청정 제어 로직 ↔ 레지스터 매핑 및 아이콘 상태 동기화 검증</td>
+          </tr>
+          <tr style="background:rgba(251,113,133,0.1);">
+            <td style="padding:6px; border:1px solid #334155; color:#f43f5e; font-weight:bold;">TC-22</td>
+            <td style="padding:6px; border:1px solid #334155;">상호배타</td>
+            <td style="padding:6px; border:1px solid #334155;">난방 모드와 공기청정 동시 활성화 시 에러 방어 로직 검증</td>
+          </tr>
+        `;
+        document.getElementById('simulation-table-container').style.display = 'flex';
+      }, 5500);
 
-          // E2E 테스트용 tcData에 추가
-          if (!tcData.find(tc => tc.id === 'TC-21')) {
-            tcData.push({ 
-              id:'TC-21', 
-              category:'확장관제', 
-              desc:'공기청정(Purify) 기능 제어 및 ModBus 레지스터 정합성 검증', 
-              pass: true 
-            });
-          }
-          
-          showToast('요구사항 반영 완료: 공기청정 제어 UI 및 TC-21이 추가되었습니다.', false);
-          appendQALog('SYSTEM', '[에이전트 1번 (요구사항)] 시스템 요구사항 반영 완료: 공기청정 확장 제어 UI 및 TC-21 매트릭스 주입 성공.', 'success');
-        } else {
-          // 비활성화 시 원복
-          purifyGroup.style.display = 'none';
-          
-          const tr21 = document.getElementById('tc-row-21');
-          if (tr21) tr21.remove();
+      setTimeout(() => {
+        document.getElementById('simulation-final-confirm').style.display = 'block';
+      }, 6000);
+    }
 
-          const idx = tcData.findIndex(tc => tc.id === 'TC-21');
-          if (idx > -1) tcData.splice(idx, 1);
-          
-          showToast('요구사항 반영 완료: 공기청정 확장 기능이 제거되었습니다.', false);
-          appendQALog('SYSTEM', '[에이전트 1번 (요구사항)] 시스템 요구사항 반영 완료: 공기청정 기능 제어판 회수 완료.', 'info');
-        }
+    function finishSimulation() {
+      // 1. Close Modal
+      document.getElementById('agent1-req-modal').classList.remove('show');
+      
+      // 2. Reset Simulation UI for next time
+      document.getElementById('req-action-area').style.display = 'flex';
+      document.getElementById('agent-simulation-area').style.display = 'none';
+      document.getElementById('simulation-table-container').style.display = 'none';
+      document.getElementById('simulation-final-confirm').style.display = 'none';
 
-        setTowerStatus('대기 중', '#34d399');
-      }, 1500);
+      // 3. Update main UI (simulate the result of the new TCs being applied)
+      flashNode('agent-1-btn');
+      setTowerStatus('대기 중', '#34d399');
+      appendQALog('SYSTEM', '[체크포인트 2] 사용자가 신규 TC를 최종 승인하여 테스트 자동화 스크립트(Agent 3) 작성이 대기열에 등록되었습니다.', 'success');
+      showToast('요구사항 반영 완료: 공기청정 제어 UI 및 신규 TC가 추가되었습니다.', false);
+      
+      const purifyGroup = document.getElementById('det-purify-group');
+      if (purifyGroup) purifyGroup.style.display = 'block';
+      
+      const tcTableBody = document.querySelector('.agent-tc-table tbody');
+      if (tcTableBody && !document.getElementById('tc-row-21')) {
+        const tr = document.createElement('tr');
+        tr.id = 'tc-row-21';
+        tr.style.background = 'rgba(251, 113, 133, 0.05)';
+        tr.innerHTML = `
+          <td>TC-21, 22</td>
+          <td style="color:#fb7185; font-weight:700;">확장관제</td>
+          <td>공기청정 제어 및 상호배타 방어 로직 모의 테스트</td>
+          <td style="color:#fbbf24; font-weight:bold;">대기 중</td>`;
+        tcTableBody.appendChild(tr);
+      }
+      
+      // E2E 데이터에도 추가
+      if (!tcData.find(tc => tc.id === 'TC-21')) {
+        tcData.push({ 
+          id:'TC-21', 
+          category:'확장관제', 
+          desc:'공기청정 제어 및 상호배타 방어 로직 모의 테스트', 
+          pass: true 
+        });
+      }
     }
 
     // ── 공기청정 제어 패널 동작 핸들러 ────────────────────────────────
