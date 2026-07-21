@@ -3901,11 +3901,11 @@
     // AGENT 4 — CI/CD 파이프라인 (Jira 연동 & 빌드 배포 자동화)
     // ═══════════════════════════════════════════════════════════════
     const cicdStages = [
-      { id:1, name:'실행 수집', icon:'📥', log:'Pytest qa_results.json 실행 결과 수집 완료 (Total: 13건)' },
-      { id:2, name:'원인 분석', icon:'🔎', log:'QA 5대 원인 분류 완료 (제품결함:1, 환경:1, 자동화코드:1, 요구사항:1, 조건미달:1)' },
-      { id:3, name:'교차 검증', icon:'⚖️', log:'[Checkpoint 4] 기획(Agent 2) 예상 결과 vs 실제(Agent 3) 결과 정합성 교차 검증 완료', isWarn:true },
-      { id:4, name:'릴리즈 판정', icon:'🏁', log:'실제 제품 결함(1건) 잔존 확인 -> 릴리즈 의사결정: HOLD' },
-      { id:5, name:'외부 보고', icon:'📡', log:'Slack / Notion 담당자 알림 전송 및 DEFECTS.md 자동 첨부 완료', isWarn:true }
+      { id:1, name:'실행 수집', icon:'📥', log:'Pytest qa_results.json 실행 결과 수집 완료 (Total: 13건)', duration: 800 },
+      { id:2, name:'원인 분석', icon:'🔎', log:'QA 5대 원인 분류 완료 (제품결함:1, 환경:1, 자동화코드:1, 요구사항:1, 조건미달:1)', duration: 1200 },
+      { id:3, name:'교차 검증', icon:'⚖️', log:'[Checkpoint 4] 기획(Agent 2) 예상 결과 vs 실제(Agent 3) 결과 정합성 교차 검증 완료', isWarn:true, duration: 1500 },
+      { id:4, name:'릴리즈 판정', icon:'🏁', log:'실제 제품 결함(1건) 잔존 확인 -> 릴리즈 의사결정: HOLD', duration: 1000 },
+      { id:5, name:'외부 보고', icon:'📡', log:'Slack / Notion 담당자 알림 전송 및 DEFECTS.md 자동 첨부 완료', isWarn:true, duration: 1200 }
     ];
 
     let isCICDRunning = false;
