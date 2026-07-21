@@ -3265,7 +3265,7 @@
   <div class="agent-modal-backdrop" id="agent-tc-modal">
     <div class="agent-modal-card" onclick="event.stopPropagation()">
       <div class="agent-modal-header">
-        <h3>도메인 체크리스트 기반 테스트케이스 매트릭스 (에이전트 2번) <span style="background:#7c3aed;color:#e9d5ff;font-size:0.55rem;font-weight:700;padding:2px 6px;border-radius:99px;margin-left:8px;">⚠️ Workflow Demo</span></h3>
+        <h3>3-Tier 품질 기준 검증 매트릭스 (에이전트 2번) <span style="background:#7c3aed;color:#e9d5ff;font-size:0.55rem;font-weight:700;padding:2px 6px;border-radius:99px;margin-left:8px;">⚠️ Workflow Demo</span></h3>
         <button class="agent-modal-close" onclick="closeAgentModal()">&times;</button>
       </div>
       <div class="agent-modal-body">
@@ -3279,28 +3279,19 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td>TC-01</td><td>기본제어</td><td>IDU-00 냉난방 운전 모드 조작 및 시뮬레이터 레지스터 동기화 검증</td><td>🟢 PASS</td></tr>
-            <tr><td>TC-02</td><td>예외규정</td><td>송풍(FAN) 모드 전환 시 설정 온도 비활성화 및 '--' 매핑 검증</td><td>🟢 PASS</td></tr>
-            <tr><td>TC-03</td><td>예외규정</td><td>제습(DRY) 모드 전환 시 설정 온도 비활성화 및 '--' 매핑 검증</td><td>🟢 PASS</td></tr>
-            <tr><td>TC-04</td><td>경계값</td><td>온도 설정 범위 (16.0°C ~ 30.0°C) 상한/하한 초과 방어 검증</td><td>🟢 PASS</td></tr>
-            <tr><td>TC-05</td><td>하드웨어</td><td>IDU-00 ModBus 레지스터 정합성 실시간 Double-Assert 교차 검증</td><td>🟢 PASS</td></tr>
-            <tr><td>TC-06</td><td>하드웨어</td><td>IDU-01 ModBus 레지스터 정합성 실시간 Double-Assert 교차 검증</td><td>🟢 PASS</td></tr>
-            <tr><td>TC-07</td><td>하드웨어</td><td>IDU-02 ModBus 레지스터 정합성 실시간 Double-Assert 교차 검증</td><td>🟢 PASS</td></tr>
-            <tr><td>TC-08</td><td>하드웨어</td><td>IDU-03 ModBus 레지스터 정합성 실시간 Double-Assert 교차 검증 (결함 발견)</td><td style="color:#ef4444; font-weight:bold;">🔴 FAIL</td></tr>
-            <tr><td>TC-09</td><td>하드웨어</td><td>IDU-04 ModBus 레지스터 정합성 실시간 Double-Assert 교차 검증</td><td>🟢 PASS</td></tr>
-            <tr><td>TC-10</td><td>하드웨어</td><td>IDU-05 ModBus 레지스터 정합성 실시간 Double-Assert 교차 검증</td><td>🟢 PASS</td></tr>
-            <tr><td>TC-11</td><td>하드웨어</td><td>IDU-06 ModBus 레지스터 정합성 실시간 Double-Assert 교차 검증</td><td>🟢 PASS</td></tr>
-            <tr><td>TC-12</td><td>하드웨어</td><td>IDU-07 ModBus 레지스터 정합성 실시간 Double-Assert 교차 검증 (결함 발견)</td><td style="color:#ef4444; font-weight:bold;">🔴 FAIL</td></tr>
-            <tr><td>TC-13</td><td>하드웨어</td><td>IDU-08 ModBus 레지스터 정합성 실시간 Double-Assert 교차 검증</td><td>🟢 PASS</td></tr>
-            <tr><td>TC-14</td><td>하드웨어</td><td>IDU-09 ModBus 레지스터 정합성 실시간 Double-Assert 교차 검증</td><td>🟢 PASS</td></tr>
-            <tr><td>TC-15</td><td>하드웨어</td><td>IDU-10 ModBus 레지스터 정합성 실시간 Double-Assert 교차 검증</td><td>🟢 PASS</td></tr>
-            <tr><td>TC-16</td><td>하드웨어</td><td>IDU-11 ModBus 레지스터 정합성 실시간 Double-Assert 교차 검증</td><td>🟢 PASS</td></tr>
-            <tr><td>TC-17</td><td>하드웨어</td><td>IDU-12 ModBus 레지스터 정합성 실시간 Double-Assert 교차 검증</td><td>🟢 PASS</td></tr>
-            <tr><td>TC-18</td><td>하드웨어</td><td>IDU-13 ModBus 레지스터 정합성 실시간 Double-Assert 교차 검증</td><td>🟢 PASS</td></tr>
-            <tr><td>TC-19</td><td>하드웨어</td><td>IDU-14 ModBus 레지스터 정합성 실시간 Double-Assert 교차 검증</td><td>🟢 PASS</td></tr>
-            <tr><td>TC-20</td><td>하드웨어</td><td>IDU-15 ModBus 레지스터 정합성 실시간 Double-Assert 교차 검증</td><td>🟢 PASS</td></tr>
-            <tr style="background: rgba(79, 70, 229, 0.05);"><td>TC-22</td><td style="color:#818cf8; font-weight:700;">권한격리</td><td>뷰어(Viewer) 권한 세션 원격 제어 명령 송신 차단 가드레일 검증</td><td style="color:#10b981; font-weight:bold;">🟢 PASS</td></tr>
-            <tr style="background: rgba(2, 132, 199, 0.05);"><td>TC-23</td><td style="color:#0284c7; font-weight:700;">단위변환</td><td>섭씨(°C) ↔ 화씨(°F) 전환 시 소수점 변환 정밀도 및 경계값 가감 정합성 검증</td><td style="color:#10b981; font-weight:bold;">🟢 PASS</td></tr>
+            <tr><td>TC-ENV-000</td><td>공통</td><td>사전 환경 검증 (가상 환경 및 레지스터 로드 확인)</td><td style="color:#10b981; font-weight:bold;">🟢 PASS</td></tr>
+            <tr><td>TC-MODE-001</td><td>정상 동작</td><td>해피패스 (장치 #1 HEAT 모드 + 24°C 변경 동기화 검증)</td><td style="color:#10b981; font-weight:bold;">🟢 PASS</td></tr>
+            <tr><td>TC-MODE-002</td><td>도메인 로직</td><td>Rule 2 예외 방어 (FAN 모드 시 설정온도 관제점 비활성화)</td><td style="color:#10b981; font-weight:bold;">🟢 PASS</td></tr>
+            <tr><td>TC-MODE-003</td><td>상태 전이</td><td>Rule 2 양방향 (DRY 비활성화 → COOL 복귀 시 재활성화)</td><td style="color:#10b981; font-weight:bold;">🟢 PASS</td></tr>
+            <tr><td>TC-LOCK-001</td><td>제어 권한</td><td>LOCK 전수 검사 (16대 전체 잠금 아이콘 및 리모컨 차단)</td><td style="color:#10b981; font-weight:bold;">🟢 PASS</td></tr>
+            <tr><td>TC-ERR-001</td><td>오류 처리</td><td>결함 주입 방어 (CH05 강제 주입 후 제어 명령 차단 확인)</td><td style="color:#10b981; font-weight:bold;">🟢 PASS</td></tr>
+            <tr><td>TC-INT-002</td><td>다중 제어</td><td>복수 선택 일괄 제어 (3대 선택 후 HEAT 일괄 적용)</td><td style="color:#10b981; font-weight:bold;">🟢 PASS</td></tr>
+            <tr><td>TC-TEMP-001</td><td>경계값</td><td>온도 상한 방어 (30°C 상한 초과 시도 시 경고 및 차단)</td><td style="color:#10b981; font-weight:bold;">🟢 PASS</td></tr>
+            <tr><td>TC-PIPE-001</td><td>의도적 검증</td><td>요구사항 모호성 (알람 발생 시 색상 변경 기준 부재로 인한 Assert 불가)</td><td style="color:#94a3b8; font-weight:bold;">⚪ SKIP</td></tr>
+            <tr><td>TC-PIPE-002</td><td>의도적 검증</td><td>시뮬레이터 환경 이슈 (제어 명령 후 가상 환경 미반응 Timeout)</td><td style="color:#ef4444; font-weight:bold;">🔴 FAIL</td></tr>
+            <tr><td>TC-PIPE-003</td><td>의도적 검증</td><td>자동화 코드 오류 (존재하지 않는 셀렉터 사용 Playwright Error)</td><td style="color:#ef4444; font-weight:bold;">🔴 FAIL</td></tr>
+            <tr><td>TC-PIPE-004</td><td>의도적 검증</td><td>조건 부족 미실행 (시뮬레이터 최대 장치 수 초과 대상 지정)</td><td style="color:#94a3b8; font-weight:bold;">⚪ SKIP</td></tr>
+            <tr><td>TC-PIPE-005</td><td>의도적 검증</td><td>제품 결함 후보 (온도 하한 경계값 16.0°C 방어 실패 결함 주입)</td><td style="color:#ef4444; font-weight:bold;">🔴 FAIL</td></tr>
           </tbody>
         </table>
       </div>
