@@ -1802,7 +1802,7 @@
       </div>
       <div class="tower-status-row" style="border-top: 1px solid rgba(255,255,255,0.05); padding-top:5px; margin-top:1px;">
         <span>자동화 가드레일</span>
-        <span style="color:#60a5fa; font-weight:700; font-family:'Outfit',monospace; font-size:0.72rem;" id="tower-guardrail-val">● 활성화</span>
+        <span style="color:#e2e8f0; font-weight:700; font-family:'Outfit',monospace; font-size:0.72rem;" id="tower-guardrail-val">● 활성화</span>
       </div>
     </div>
   </div>
@@ -3371,13 +3371,13 @@
       </div>
       <div class="agent-modal-body" style="padding:16px; display:flex; flex-direction:column; gap:12px;">
         <!-- Progress bar -->
-        <div style="background:#0d2016; border-radius:8px; padding:12px 14px; border:1px solid #14532d;">
+        <div style="background:#0f172a; border-radius:8px; padding:12px 14px; border:1px solid #334155;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <span style="font-size:0.75rem; color:#86efac; font-weight:700; font-family:'Outfit',sans-serif;" id="runner-title">▶️ 테스트 대기 중...</span>
+            <span style="font-size:0.75rem; color:#e2e8f0; font-weight:700; font-family:'Outfit',sans-serif;" id="runner-title">▶️ 테스트 대기 중...</span>
             <span style="font-size:0.72rem; color:#e2e8f0; font-family:'Outfit',monospace;" id="runner-count">0 / 0</span>
           </div>
-          <div style="background:#1a3020; border-radius:4px; height:8px; overflow:hidden;">
-            <div id="runner-progress-bar" style="height:100%; width:0%; background:linear-gradient(90deg,#22c55e,#4ade80); border-radius:4px; transition:width 0.3s ease;"></div>
+          <div style="background:#1e293b; border-radius:4px; height:8px; overflow:hidden;">
+            <div id="runner-progress-bar" style="height:100%; width:0%; background:#3b82f6; border-radius:4px; transition:width 0.3s ease;"></div>
           </div>
           <div style="display:flex; gap:16px; margin-top:8px; font-size:0.66rem; color:#6b7280;">
             <span>✅ PASS: <strong id="runner-pass-cnt" style="color:#e2e8f0;">0</strong></span>
@@ -3389,25 +3389,25 @@
         <div id="runner-tc-list" style="display:flex; flex-direction:column; gap:4px; overflow-y:auto; max-height:360px; padding-right:4px;">
         </div>
         <!-- Summary (hidden until done) -->
-        <div id="runner-summary" style="display:none; background:#0d2016; border:1px solid #166534; border-radius:8px; padding:14px;">
+        <div id="runner-summary" style="display:none; background:#0f172a; border:1px solid #334155; border-radius:8px; padding:14px;">
           <div style="font-size:0.8rem; font-weight:700; color:#e2e8f0; margin-bottom:8px;">🏁 테스트 실행 완료 — 최종 리포트</div>
           <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; text-align:center;">
-            <div style="background:#052e16; border-radius:6px; padding:10px;">
+            <div style="background:#1e293b; border-radius:6px; padding:10px;">
               <div style="font-size:1.4rem; font-weight:900; color:#e2e8f0;" id="summary-pass">18</div>
-              <div style="font-size:0.65rem; color:#86efac;">PASS</div>
+              <div style="font-size:0.65rem; color:#e2e8f0;">PASS</div>
             </div>
-            <div style="background:#1c0a0a; border-radius:6px; padding:10px;">
+            <div style="background:#1e293b; border-radius:6px; padding:10px;">
               <div style="font-size:1.4rem; font-weight:900; color:#e2e8f0;" id="summary-fail">2</div>
-              <div style="font-size:0.65rem; color:#fca5a5;">FAIL (결함 후보)</div>
+              <div style="font-size:0.65rem; color:#e2e8f0;">FAIL (결함 후보)</div>
             </div>
-            <div style="background:#0c1027; border-radius:6px; padding:10px;">
-              <div style="font-size:1.4rem; font-weight:900; color:#60a5fa;" id="summary-rate">90%</div>
-              <div style="font-size:0.65rem; color:#93c5fd;">통과율</div>
+            <div style="background:#1e293b; border-radius:6px; padding:10px;">
+              <div style="font-size:1.4rem; font-weight:900; color:#e2e8f0;" id="summary-rate">90%</div>
+              <div style="font-size:0.65rem; color:#e2e8f0;">통과율</div>
             </div>
           </div>
           <div style="margin-top:10px; font-size:0.68rem; color:#6b7280; line-height:1.7;">
-            ⚠️ <span style="color:#fca5a5; font-weight:700;">SAMPLE-FINDING-01</span> — TC-08: 송풍 모드 전환 시 Register 온도값 미초기화 결함<br>
-            ⚠️ <span style="color:#fca5a5; font-weight:700;">SAMPLE-FINDING-02</span> — TC-12: LOCK 상태 리모컨 연타 시 통신 먹통 결함
+            ⚠️ <span style="color:#e2e8f0; font-weight:700;">SAMPLE-FINDING-01</span> — TC-08: 송풍 모드 전환 시 Register 온도값 미초기화 결함<br>
+            ⚠️ <span style="color:#e2e8f0; font-weight:700;">SAMPLE-FINDING-02</span> — TC-12: LOCK 상태 리모컨 연타 시 통신 먹통 결함
           </div>
         </div>
         <!-- Run button -->
