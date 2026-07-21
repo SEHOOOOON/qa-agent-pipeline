@@ -1737,7 +1737,7 @@
       
       <!-- Sub-nodes (Agent 1-4) -->
       <div class="tower-node-row">
-        <div class="agent-circle-node sub-node" id="agent-1-btn" onclick="runAgent1Action(event)" title="에이전트 1번 (요구사항 정의 & 프론트 엔지니어링)">
+        <div class="agent-circle-node sub-node" id="agent-1-btn" onclick="runAgent1Action(event)" title="에이전트 1번 (요구사항 정리)">
           <svg class="agent-bot-svg" viewBox="0 0 100 100">
             <rect x="25" y="25" width="50" height="40" rx="4" fill="#818cf8" />
             <rect x="17" y="37" width="8" height="16" rx="2" fill="#818cf8" />
@@ -1779,7 +1779,7 @@
           <div class="agent-label-note">자동화 실행</div>
         </div>
         
-        <div class="agent-circle-node sub-node" id="agent-4-btn" onclick="runAgent4Action(event)" title="에이전트 4번 (CI/CD 파이프라인)">
+        <div class="agent-circle-node sub-node" id="agent-4-btn" onclick="runAgent4Action(event)" title="에이전트 4번 (결과 분석·보고)">
           <svg class="agent-bot-svg" viewBox="0 0 100 100">
             <rect x="25" y="25" width="50" height="40" rx="4" fill="#fbbf24" />
             <rect x="17" y="37" width="8" height="16" rx="2" fill="#fbbf24" />
@@ -3671,10 +3671,10 @@
       
       const logs = [
         { msg: '<span style="color:#38bdf8">[Agent 1]</span> 기획 요구사항 텍스트 파싱 및 엣지케이스 분석 시작...', delay: 500 },
-        { msg: '<span style="color:#f59e0b">[Checkpoint 1]</span> 요구사항 충분성 검증 ➔ <span style="color:#4ade80">Pass</span> (제어 온도 범위 및 상태 이상 에러코드 명시 확인)', delay: 1500 },
+        { msg: '<span style="color:#f59e0b">[Step 1 ✓]</span> 요구사항 충분성 검증 ➔ <span style="color:#4ade80">Pass</span> (제어 온도 범위 및 상태 이상 에러코드 명시 확인)', delay: 1500 },
         { msg: '<span style="color:#c084fc">[Agent 2]</span> 검증된 요구사항을 바탕으로 테스트 시나리오(TC) 구조화 중...', delay: 2500 },
         { msg: '<span style="color:#c084fc">[Agent 2]</span> 설계 완료: 기존 TC 20개 + 신규 TC 2개 추가 도출됨.', delay: 3800 },
-        { msg: '<span style="color:#f59e0b">[Checkpoint 2]</span> TC 품질 적합성 검증 대기 중... (Human in the loop)', delay: 4800 }
+        { msg: '<span style="color:#f59e0b">[Step 2 ✓]</span> TC 품질 적합성 검증 대기 중... (Human in the loop)', delay: 4800 }
       ];
 
       logs.forEach(log => {

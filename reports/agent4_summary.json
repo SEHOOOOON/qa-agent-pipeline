@@ -44,7 +44,8 @@
       "executed_at": "2026-07-19T12:31:17.984302",
       "duration": 2.23,
       "evidence_path": "",
-      "qa_classification": "none"
+      "qa_classification": "none",
+      "scenario_type": "actual_validation"
     },
     {
       "run_id": "b47225e4-98bf-4504-a31f-9c7739a3e2df",
@@ -56,7 +57,8 @@
       "executed_at": "2026-07-19T12:31:22.073220",
       "duration": 3.83,
       "evidence_path": "",
-      "qa_classification": "none"
+      "qa_classification": "none",
+      "scenario_type": "actual_validation"
     },
     {
       "run_id": "b47225e4-98bf-4504-a31f-9c7739a3e2df",
@@ -68,7 +70,8 @@
       "executed_at": "2026-07-19T12:31:25.617266",
       "duration": 3.22,
       "evidence_path": "",
-      "qa_classification": "none"
+      "qa_classification": "none",
+      "scenario_type": "actual_validation"
     },
     {
       "run_id": "b47225e4-98bf-4504-a31f-9c7739a3e2df",
@@ -80,7 +83,8 @@
       "executed_at": "2026-07-19T12:31:29.332808",
       "duration": 3.3,
       "evidence_path": "",
-      "qa_classification": "none"
+      "qa_classification": "none",
+      "scenario_type": "actual_validation"
     },
     {
       "run_id": "b47225e4-98bf-4504-a31f-9c7739a3e2df",
@@ -92,7 +96,8 @@
       "executed_at": "2026-07-19T12:31:36.425727",
       "duration": 6.73,
       "evidence_path": "",
-      "qa_classification": "none"
+      "qa_classification": "none",
+      "scenario_type": "actual_validation"
     },
     {
       "run_id": "b47225e4-98bf-4504-a31f-9c7739a3e2df",
@@ -104,7 +109,8 @@
       "executed_at": "2026-07-19T12:31:42.019370",
       "duration": 5.3,
       "evidence_path": "",
-      "qa_classification": "none"
+      "qa_classification": "none",
+      "scenario_type": "actual_validation"
     },
     {
       "run_id": "b47225e4-98bf-4504-a31f-9c7739a3e2df",
@@ -116,7 +122,8 @@
       "executed_at": "2026-07-19T12:31:46.941557",
       "duration": 4.63,
       "evidence_path": "",
-      "qa_classification": "none"
+      "qa_classification": "none",
+      "scenario_type": "actual_validation"
     },
     {
       "run_id": "b47225e4-98bf-4504-a31f-9c7739a3e2df",
@@ -128,7 +135,8 @@
       "executed_at": "2026-07-19T12:31:51.379712",
       "duration": 4.16,
       "evidence_path": "",
-      "qa_classification": "none"
+      "qa_classification": "none",
+      "scenario_type": "actual_validation"
     },
     {
       "run_id": "b47225e4-98bf-4504-a31f-9c7739a3e2df",
@@ -140,7 +148,8 @@
       "executed_at": "2026-07-19T12:31:54.845451",
       "duration": 3.26,
       "evidence_path": "",
-      "qa_classification": "requirement_review"
+      "qa_classification": "requirement_review",
+      "scenario_type": "injected_validation"
     },
     {
       "run_id": "b47225e4-98bf-4504-a31f-9c7739a3e2df",
@@ -152,7 +161,8 @@
       "executed_at": "2026-07-19T12:31:59.944100",
       "duration": 3.01,
       "evidence_path": "",
-      "qa_classification": "environment_issue"
+      "qa_classification": "environment_issue",
+      "scenario_type": "injected_validation"
     },
     {
       "run_id": "b47225e4-98bf-4504-a31f-9c7739a3e2df",
@@ -164,7 +174,8 @@
       "executed_at": "2026-07-19T12:32:05.301173",
       "duration": 4.1,
       "evidence_path": "",
-      "qa_classification": "automation_issue"
+      "qa_classification": "automation_issue",
+      "scenario_type": "injected_validation"
     },
     {
       "run_id": "b47225e4-98bf-4504-a31f-9c7739a3e2df",
@@ -176,7 +187,8 @@
       "executed_at": "2026-07-19T12:32:08.343184",
       "duration": 2.57,
       "evidence_path": "",
-      "qa_classification": "not_executed"
+      "qa_classification": "not_executed",
+      "scenario_type": "injected_validation"
     },
     {
       "run_id": "b47225e4-98bf-4504-a31f-9c7739a3e2df",
@@ -188,7 +200,8 @@
       "executed_at": "2026-07-19T12:32:14.724971",
       "duration": 5.94,
       "evidence_path": "",
-      "qa_classification": "product_defect"
+      "qa_classification": "product_defect",
+      "scenario_type": "injected_validation"
     }
   ]
 }
