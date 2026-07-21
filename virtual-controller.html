@@ -3610,7 +3610,14 @@
     // ── Modal helpers ────────────────────────────────────────────────
     function openAgentModal()   { document.getElementById('agent-tc-modal').classList.add('show'); }
     function closeAgentModal()  { document.getElementById('agent-tc-modal').classList.remove('show'); }
-    function closeAgent1Modal() { document.getElementById('agent1-req-modal').classList.remove('show'); }
+    function closeAgent1Modal() { document.getElementById('agent1-req-modal').classList.remove('show');
+      if (typeof isMasterRunning !== 'undefined' && isMasterRunning) {
+          isMasterRunning = false;
+          const lead = document.getElementById('agent-lead-btn');
+          if(lead) lead.classList.remove('flashing');
+          setTowerStatus('대기 중', '#34d399');
+      }
+ }
     function closeAgent3Modal() { document.getElementById('agent3-runner-modal').classList.remove('show'); }
     function closeAgent4Modal() { document.getElementById('agent4-cicd-modal').classList.remove('show'); }
     function toggleChip(el)     { el.classList.toggle('active'); }
@@ -3711,6 +3718,13 @@
     function finishSimulation() {
       // 1. Close Modal
       document.getElementById('agent1-req-modal').classList.remove('show');
+      if (typeof isMasterRunning !== 'undefined' && isMasterRunning) {
+          isMasterRunning = false;
+          const lead = document.getElementById('agent-lead-btn');
+          if(lead) lead.classList.remove('flashing');
+          setTowerStatus('대기 중', '#34d399');
+      }
+
       
       // 2. Reset Simulation UI for next time
       document.getElementById('req-action-area').style.display = 'flex';
@@ -4000,55 +4014,19 @@
     let isMasterRunning = false;
     function runMasterQASequence(event) {
       if (event) event.stopPropagation();
-      if (isMasterRunning) return;
+      if (typeof isMasterRunning !== 'undefined' && isMasterRunning) return;
       isMasterRunning = true;
 
       const lead = document.getElementById('agent-lead-btn');
-      lead.classList.add('flashing');
-      setTowerStatus('QA Workflow Demo 가동', '#fb7185');
+      if (lead) lead.classList.add('flashing');
+      setTowerStatus('QA Workflow 진행 중', '#fb7185');
       appendQALog('SYSTEM', '==================================================', 'info');
-      appendQALog('SYSTEM', '[QA 아키텍트] 전체 QA Workflow Demo 가동 시작', 'info');
+      appendQALog('SYSTEM', '[팀장] 마스터 자율 QA 워크플로우 시작', 'info');
 
-      // Step 1: Agent 1 (요구사항)
+      // 요구사항 모달 열기
       setTimeout(() => {
-        flashNode('agent-1-btn');
-        showToast('[에이전트1] 요구사항 확정 완료 → 에이전트2로 전달', false);
-        appendQALog('SYSTEM', '[에이전트 1번 (요구사항)] B2B 도메인 품질 요구사항 정의 완료.', 'info');
+          runAgent1Action(event);
       }, 500);
-
-      // Step 2: Agent 2 (품질체크)
-      setTimeout(() => {
-        flashNode('agent-2-btn');
-        openAgentModal();
-        appendQALog('SYSTEM', `[에이전트 2번 (TC 설계)] ${tcData.length}건 E2E 테스트 시나리오 명세 작성 완료.`, 'info');
-      }, 1500);
-
-      setTimeout(() => { closeAgentModal(); }, 3200);
-
-      // Step 3: Agent 3 (자동화 테스트)
-      setTimeout(() => {
-        flashNode('agent-3-btn');
-        setTowerStatus('자동화 테스트 실행 중', '#fbbf24');
-        showToast('[E2E 자동화] Playwright 자동화 테스트 구동 시작', false);
-        const passCount = tcData.length - 2;
-        appendQALog('GATEWAY', `[에이전트 3번 (자동화)] Playwright E2E 검증 실행 완료. (성공:${passCount}, 결함:2)`, 'info');
-      }, 3600);
-
-      // Step 4: Agent 4 (CI/CD -> Reporting)
-      setTimeout(() => {
-        flashNode('agent-4-btn');
-        setTowerStatus('Slack / Notion 연동 중', '#fbbf24');
-        showToast('[리포팅] Slack 및 Notion 결함 리포트 Demo 동기화 완료', false);
-        appendQALog('GATEWAY', '[에이전트 4번 (리포팅)] 결과 분석 및 Slack/Notion Demo 완료.', 'info');
-      }, 5000);
-
-      // Finish
-      setTimeout(() => {
-        lead.classList.remove('flashing');
-        setTowerStatus('대기 중', '#34d399');
-        appendQALog('SYSTEM', '[QA 아키텍트] 전체 QA Workflow Demo 완료 (결함 2건 발견)', 'success');
-        isMasterRunning = false;
-      }, 6500);
     }
   </script>
 </body>
