@@ -3279,14 +3279,14 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td>TC-ENV-000</td><td>공통</td><td>사전 환경 검증 (가상 환경 및 레지스터 로드 확인)</td><td style="color:#10b981; font-weight:bold;">🟢 PASS</td></tr>
-            <tr><td>TC-MODE-001</td><td>정상 동작</td><td>해피패스 (장치 #1 HEAT 모드 + 24°C 변경 동기화 검증)</td><td style="color:#10b981; font-weight:bold;">🟢 PASS</td></tr>
-            <tr><td>TC-MODE-002</td><td>도메인 로직</td><td>Rule 2 예외 방어 (FAN 모드 시 설정온도 관제점 비활성화)</td><td style="color:#10b981; font-weight:bold;">🟢 PASS</td></tr>
-            <tr><td>TC-MODE-003</td><td>상태 전이</td><td>Rule 2 양방향 (DRY 비활성화 → COOL 복귀 시 재활성화)</td><td style="color:#10b981; font-weight:bold;">🟢 PASS</td></tr>
-            <tr><td>TC-LOCK-001</td><td>제어 권한</td><td>LOCK 전수 검사 (16대 전체 잠금 아이콘 및 리모컨 차단)</td><td style="color:#10b981; font-weight:bold;">🟢 PASS</td></tr>
-            <tr><td>TC-ERR-001</td><td>오류 처리</td><td>결함 주입 방어 (CH05 강제 주입 후 제어 명령 차단 확인)</td><td style="color:#10b981; font-weight:bold;">🟢 PASS</td></tr>
-            <tr><td>TC-INT-002</td><td>다중 제어</td><td>복수 선택 일괄 제어 (3대 선택 후 HEAT 일괄 적용)</td><td style="color:#10b981; font-weight:bold;">🟢 PASS</td></tr>
-            <tr><td>TC-TEMP-001</td><td>경계값</td><td>온도 상한 방어 (30°C 상한 초과 시도 시 경고 및 차단)</td><td style="color:#10b981; font-weight:bold;">🟢 PASS</td></tr>
+            <tr><td>TC-ENV-000</td><td>공통</td><td>사전 환경 검증 (가상 환경 및 레지스터 로드 확인)</td><td style="color:#e2e8f0; font-weight:bold;">🟢 PASS</td></tr>
+            <tr><td>TC-MODE-001</td><td>정상 동작</td><td>해피패스 (장치 #1 HEAT 모드 + 24°C 변경 동기화 검증)</td><td style="color:#e2e8f0; font-weight:bold;">🟢 PASS</td></tr>
+            <tr><td>TC-MODE-002</td><td>도메인 로직</td><td>Rule 2 예외 방어 (FAN 모드 시 설정온도 관제점 비활성화)</td><td style="color:#e2e8f0; font-weight:bold;">🟢 PASS</td></tr>
+            <tr><td>TC-MODE-003</td><td>상태 전이</td><td>Rule 2 양방향 (DRY 비활성화 → COOL 복귀 시 재활성화)</td><td style="color:#e2e8f0; font-weight:bold;">🟢 PASS</td></tr>
+            <tr><td>TC-LOCK-001</td><td>제어 권한</td><td>LOCK 전수 검사 (16대 전체 잠금 아이콘 및 리모컨 차단)</td><td style="color:#e2e8f0; font-weight:bold;">🟢 PASS</td></tr>
+            <tr><td>TC-ERR-001</td><td>오류 처리</td><td>결함 주입 방어 (CH05 강제 주입 후 제어 명령 차단 확인)</td><td style="color:#e2e8f0; font-weight:bold;">🟢 PASS</td></tr>
+            <tr><td>TC-INT-002</td><td>다중 제어</td><td>복수 선택 일괄 제어 (3대 선택 후 HEAT 일괄 적용)</td><td style="color:#e2e8f0; font-weight:bold;">🟢 PASS</td></tr>
+            <tr><td>TC-TEMP-001</td><td>경계값</td><td>온도 상한 방어 (30°C 상한 초과 시도 시 경고 및 차단)</td><td style="color:#e2e8f0; font-weight:bold;">🟢 PASS</td></tr>
             <tr><td>TC-PIPE-001</td><td>의도적 검증</td><td>요구사항 모호성 (알람 발생 시 색상 변경 기준 부재로 인한 Assert 불가)</td><td style="color:#94a3b8; font-weight:bold;">⚪ SKIP</td></tr>
             <tr><td>TC-PIPE-002</td><td>의도적 검증</td><td>시뮬레이터 환경 이슈 (제어 명령 후 가상 환경 미반응 Timeout)</td><td style="color:#ef4444; font-weight:bold;">🔴 FAIL</td></tr>
             <tr><td>TC-PIPE-003</td><td>의도적 검증</td><td>자동화 코드 오류 (존재하지 않는 셀렉터 사용 Playwright Error)</td><td style="color:#ef4444; font-weight:bold;">🔴 FAIL</td></tr>
@@ -3304,18 +3304,18 @@
   <div class="agent-modal-backdrop" id="agent1-req-modal">
     <div class="agent-modal-card" style="width:580px;" onclick="event.stopPropagation()">
       <div class="agent-modal-header">
-        <h3 style="color:#a5b4fc;">🔷 에이전트 1번 — 요구사항 정제</h3>
+        <h3>🔷 에이전트 1번 — 요구사항 정제</h3>
         <button class="agent-modal-close" onclick="closeAgent1Modal()">&times;</button>
       </div>
       <div class="agent-modal-body" style="padding:20px; display:flex; flex-direction:column; gap:16px;">
         
         <!-- New Jira/Upload Mockups (Compact) -->
-        <div style="font-size:0.75rem; color:#7c3aed; font-weight:700; letter-spacing:0.5px;">🔗 기획 문서 연동 (Jira / Confluence / PRD)</div>
+        <div style="font-size:0.75rem; color:#e2e8f0; font-weight:700; letter-spacing:0.5px;">🔗 기획 문서 연동 (Jira / Confluence / PRD)</div>
         <div style="display:flex; gap:10px; align-items:center; margin-top:-8px;">
           <input id="req-jira-url" type="text" placeholder="Jira URL 입력 (예: HVAC-1234)..." style="flex:1; background:#1e293b; border:1px solid #334155; border-radius:6px; color:#e2e8f0; padding:6px 10px; font-size:0.7rem; box-sizing:border-box;">
           <button style="background:#334155; border:1px solid #475569; color:#f8fafc; border-radius:6px; padding:5px 12px; cursor:pointer; font-size:0.7rem; font-weight:700;" onclick="simulateJiraImport(this)">URL 연동</button>
           <div style="color:#475569; font-size:0.65rem; font-weight:bold;">OR</div>
-          <button style="background:#1e1b4b; border:1px dashed #7c3aed; color:#a5b4fc; border-radius:6px; padding:5px 12px; cursor:pointer; font-size:0.7rem; font-weight:700;" onclick="simulateFileImport(this)">📁 파일 업로드</button>
+          <button style="background:#1e1b4b; border:1px dashed #7c3aed; color:#e2e8f0; border-radius:6px; padding:5px 12px; cursor:pointer; font-size:0.7rem; font-weight:700;" onclick="simulateFileImport(this)">📁 파일 업로드</button>
         </div>
         
 
@@ -3327,7 +3327,7 @@
 
         <!-- Simulation Area (Hidden Initially) -->
         <div id="agent-simulation-area" style="display:none; flex-direction:column; gap:12px; margin-top:10px; border-top:1px dashed #334155; padding-top:16px;">
-          <div style="font-size:0.75rem; color:#10b981; font-weight:700; letter-spacing:0.5px; display:flex; align-items:center; gap:6px;">
+          <div style="font-size:0.75rem; color:#e2e8f0; font-weight:700; letter-spacing:0.5px; display:flex; align-items:center; gap:6px;">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17l6-6-6-6M12 19h8"/></svg>
             에이전트 시뮬레이션 터미널
           </div>
@@ -3336,7 +3336,7 @@
           </div>
           
           <div id="simulation-table-container" style="display:none; flex-direction:column; gap:8px;">
-            <div style="font-size:0.75rem; color:#8b5cf6; font-weight:700;">추출된 신규 테스트 케이스 (Agent 2 결과물)</div>
+            <div style="font-size:0.75rem; color:#e2e8f0; font-weight:700;">추출된 신규 테스트 케이스 (Agent 2 결과물)</div>
             <table style="width:100%; border-collapse:collapse; font-size:0.65rem; background:#0f172a; border:1px solid #1e293b;">
               <thead style="background:#1e293b; color:#cbd5e1; text-align:left;">
                 <tr><th style="padding:6px; border:1px solid #334155;">TC ID</th><th style="padding:6px; border:1px solid #334155;">분류</th><th style="padding:6px; border:1px solid #334155;">테스트 명세</th></tr>
@@ -3353,7 +3353,7 @@
         <div id="req-action-area" style="display:flex; justify-content:flex-end; align-items:center; border-top:1px solid #1e293b; padding-top:14px;">
           <div style="display:flex; gap:8px;">
             <button onclick="closeAgent1Modal()" style="background:#1e293b; border:1px solid #334155; color:#94a3b8; border-radius:6px; padding:8px 16px; cursor:pointer; font-size:0.75rem;">취소</button>
-            <button onclick="startAgentSimulation()" style="background:linear-gradient(135deg,#4f46e5,#7c3aed); border:none; color:white; border-radius:6px; padding:8px 18px; cursor:pointer; font-size:0.75rem; font-weight:700; box-shadow:0 4px 12px rgba(79,70,229,0.4);">🚀 요구사항 분석 및 TC 생성 시작</button>
+            <button onclick="startAgentSimulation()" style="background:#3b82f6; border:none; color:white; border-radius:6px; padding:8px 18px; cursor:pointer; font-size:0.75rem; font-weight:700; box-shadow:0 4px 12px rgba(59,130,246,0.4);">🚀 요구사항 분석 및 TC 생성 시작</button>
           </div>
         </div>
       </div>
@@ -3366,7 +3366,7 @@
   <div class="agent-modal-backdrop" id="agent3-runner-modal">
     <div class="agent-modal-card" style="width:660px; max-height:85vh;" onclick="event.stopPropagation()">
       <div class="agent-modal-header">
-        <h3 style="color:#6ee7b7;">⚡ 에이전트 3번 — Playwright 워크플로우 시뮬레이션 (Demo)</h3>
+        <h3>⚡ 에이전트 3번 — Playwright 워크플로우 시뮬레이션 (Demo)</h3>
         <button class="agent-modal-close" onclick="closeAgent3Modal()">&times;</button>
       </div>
       <div class="agent-modal-body" style="padding:16px; display:flex; flex-direction:column; gap:12px;">
@@ -3413,7 +3413,7 @@
         <!-- Run button -->
         <div style="display:flex; justify-content:flex-end; align-items:center; gap:10px;">
           <span title="이 패널은 실제 Playwright를 실행하지 않으며, QA 워크플로우 흐름을 시각화하는 Workflow Demo입니다." style="background:#7c3aed; color:#e9d5ff; font-size:0.62rem; font-weight:700; padding:3px 8px; border-radius:99px; cursor:help; border:1px solid #a78bfa; letter-spacing:0.03em;">⚠️ Workflow Demo</span>
-          <button id="runner-start-btn" onclick="startTestRunner()" style="background:linear-gradient(135deg,#059669,#047857); border:none; color:white; border-radius:8px; padding:10px 24px; cursor:pointer; font-size:0.78rem; font-weight:700; box-shadow:0 4px 14px rgba(5,150,105,0.4); display:flex; align-items:center; gap:8px;">
+          <button id="runner-start-btn" onclick="startTestRunner()" style="background:#3b82f6; border:none; color:white; border-radius:8px; padding:10px 24px; cursor:pointer; font-size:0.78rem; font-weight:700; box-shadow:0 4px 14px rgba(59,130,246,0.4); display:flex; align-items:center; gap:8px;">
             ▶ Workflow 시뮬레이션 실행
           </button>
         </div>
@@ -3427,7 +3427,7 @@
   <div class="agent-modal-backdrop" id="agent4-cicd-modal">
     <div class="agent-modal-card" style="width:620px;" onclick="event.stopPropagation()">
       <div class="agent-modal-header">
-        <h3 style="color:#fbbf24;">🚀 에이전트 4번 — 결과 분석·보고 Demo <span style="background:#7c3aed;color:#e9d5ff;font-size:0.55rem;font-weight:700;padding:2px 6px;border-radius:99px;margin-left:8px;">⚠️ Workflow Demo</span></h3>
+        <h3>🚀 에이전트 4번 — 결과 분석·보고 Demo <span style="background:#7c3aed;color:#e9d5ff;font-size:0.55rem;font-weight:700;padding:2px 6px;border-radius:99px;margin-left:8px;">⚠️ Workflow Demo</span></h3>
         <button class="agent-modal-close" onclick="closeAgent4Modal()">&times;</button>
       </div>
       <div class="agent-modal-body" style="padding:20px; display:flex; flex-direction:column; gap:16px;">
@@ -3476,28 +3476,28 @@
 
         <!-- Jira tickets dashboard -->
         <div id="cicd-jira-area" style="display:none;">
-          <div style="font-size:0.72rem; color:#d97706; font-weight:700; margin-bottom:8px;">🎫 결함 티켓 Demo 생성 <span style="font-size:0.55rem;color:#a3a3a3;font-weight:400;">(실제 Jira 연동 아님)</span></div>
+          <div style="font-size:0.72rem; color:#e2e8f0; font-weight:700; margin-bottom:8px;">🎫 결함 티켓 Demo 생성 <span style="font-size:0.55rem;color:#a3a3a3;font-weight:400;">(실제 Jira 연동 아님)</span></div>
           <div style="display:flex; flex-direction:column; gap:6px;">
-            <div style="background:#1c1200; border:1px solid #92400e; border-radius:6px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="background:#1e293b; border:1px solid #334155; border-radius:6px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
               <div>
-                <span style="font-size:0.68rem; color:#fbbf24; font-weight:700;">SAMPLE-FINDING-01</span>
+                <span style="font-size:0.68rem; color:#e2e8f0; font-weight:700;">SAMPLE-FINDING-01</span>
                 <span style="font-size:0.68rem; color:#a3a3a3; margin-left:8px;">송풍 모드 레지스터 온도 미초기화 결함</span>
               </div>
-              <span style="font-size:0.62rem; background:#7c2d12; color:#fb923c; border-radius:4px; padding:2px 8px; font-weight:700;">🔴 CRITICAL</span>
+              <span style="font-size:0.62rem; background:#1e293b; color:#e2e8f0; border-radius:4px; padding:2px 8px; font-weight:700;">🔴 CRITICAL</span>
             </div>
-            <div style="background:#1c1200; border:1px solid #92400e; border-radius:6px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="background:#1e293b; border:1px solid #334155; border-radius:6px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
               <div>
-                <span style="font-size:0.68rem; color:#fbbf24; font-weight:700;">SAMPLE-FINDING-02</span>
+                <span style="font-size:0.68rem; color:#e2e8f0; font-weight:700;">SAMPLE-FINDING-02</span>
                 <span style="font-size:0.68rem; color:#a3a3a3; margin-left:8px;">LOCK 상태 리모컨 연타 시 통신 데드락 결함</span>
               </div>
-              <span style="font-size:0.62rem; background:#7c2d12; color:#fb923c; border-radius:4px; padding:2px 8px; font-weight:700;">🔴 CRITICAL</span>
+              <span style="font-size:0.62rem; background:#1e293b; color:#e2e8f0; border-radius:4px; padding:2px 8px; font-weight:700;">🔴 CRITICAL</span>
             </div>
           </div>
         </div>
 
         <!-- Run button -->
         <div style="display:flex; justify-content:flex-end;">
-          <button id="cicd-run-btn" onclick="startCICD()" style="background:linear-gradient(135deg,#d97706,#b45309); border:none; color:white; border-radius:8px; padding:10px 24px; cursor:pointer; font-size:0.78rem; font-weight:700; box-shadow:0 4px 14px rgba(217,119,6,0.4);">
+          <button id="cicd-run-btn" onclick="startCICD()" style="background:#3b82f6; border:none; color:white; border-radius:8px; padding:10px 24px; cursor:pointer; font-size:0.78rem; font-weight:700; box-shadow:0 4px 14px rgba(59,130,246,0.4);">
             🚀 Demo 실행
           </button>
         </div>
@@ -3541,7 +3541,7 @@
       from { opacity: 0; transform: translateX(-10px); }
       to   { opacity: 1; transform: translateX(0); }
     }
-    .runner-tc-row.running { border-color: #d97706; background: #1c1400; }
+    .runner-tc-row.running { border-color: #3b82f6; background: #1e3a8a; }
     .runner-tc-row.pass    { border-color: #166534; background: #052e16; }
     .runner-tc-row.fail    { border-color: #991b1b; background: #1c0505; }
     .runner-tc-id   { font-family: 'Outfit', monospace; font-weight: 700; color: #e2e8f0; min-width: 48px; }
@@ -3741,7 +3741,7 @@
           <td>TC-21, 22</td>
           <td style="color:#fb7185; font-weight:700;">확장관제</td>
           <td>공기청정 제어 및 상호배타 방어 로직 모의 테스트</td>
-          <td style="color:#fbbf24; font-weight:bold;">대기 중</td>`;
+          <td style="color:#e2e8f0; font-weight:bold;">대기 중</td>`;
         tcTableBody.appendChild(tr);
       }
       
