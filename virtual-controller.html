@@ -3291,7 +3291,7 @@
             <tr><td>TC-PIPE-002</td><td>의도적 검증</td><td>시뮬레이터 환경 이슈 (제어 명령 후 가상 환경 미반응 Timeout)</td><td style="color:#ef4444; font-weight:bold;">🔴 FAIL</td></tr>
             <tr><td>TC-PIPE-003</td><td>의도적 검증</td><td>자동화 코드 오류 (존재하지 않는 셀렉터 사용 Playwright Error)</td><td style="color:#ef4444; font-weight:bold;">🔴 FAIL</td></tr>
             <tr><td>TC-PIPE-004</td><td>의도적 검증</td><td>조건 부족 미실행 (시뮬레이터 최대 장치 수 초과 대상 지정)</td><td style="color:#94a3b8; font-weight:bold;">⚪ SKIP</td></tr>
-            <tr><td>TC-PIPE-005</td><td>의도적 검증</td><td>제품 결함 후보 (온도 하한 경계값 16.0°C 방어 실패 결함 주입)</td><td style="color:#ef4444; font-weight:bold;">🔴 FAIL</td></tr>
+            <tr><td>TC-TEMP-002</td><td>의도적 검증</td><td>제품 결함 후보 (AUTO 모드 온도 하한 18.0°C 방어 실패 로직 누락)</td><td style="color:#ef4444; font-weight:bold;">🔴 FAIL</td></tr>
           </tbody>
         </table>
       </div>
@@ -3406,7 +3406,7 @@
             </div>
           </div>
           <div style="margin-top:10px; font-size:0.68rem; color:#6b7280; line-height:1.7;">
-            ⚠️ <span style="color:#e2e8f0; font-weight:700;">SAMPLE-FINDING-01</span> — TC-08: 송풍 모드 전환 시 Register 온도값 미초기화 결함<br>
+            ⚠️ <span style="color:#e2e8f0; font-weight:700;">SAMPLE-FINDING-01</span> — TC-TEMP-002: AUTO 모드 온도 하한 18.0°C 방어 실패 결함<br>
             ⚠️ <span style="color:#e2e8f0; font-weight:700;">SAMPLE-FINDING-02</span> — TC-12: LOCK 상태 리모컨 연타 시 통신 먹통 결함
           </div>
         </div>
@@ -3794,7 +3794,7 @@
       { id:'TC-PIPE-002', category:'의도적 검증', desc:'시뮬레이터 환경 이슈 (제어 명령 후 가상 환경 미반응 Timeout)', expected_pytest_status: 'failed', expected_classification: 'environment_issue' },
       { id:'TC-PIPE-003', category:'의도적 검증', desc:'자동화 코드 오류 (존재하지 않는 셀렉터 사용 Playwright Error)', expected_pytest_status: 'failed', expected_classification: 'automation_issue' },
       { id:'TC-PIPE-004', category:'의도적 검증', desc:'조건 부족 미실행 (시뮬레이터 최대 장치 수 초과 대상 지정)', expected_pytest_status: 'skipped', expected_classification: 'not_executed' },
-      { id:'TC-PIPE-005', category:'의도적 검증', desc:'제품 결함 후보 (온도 하한 경계값 16.0°C 방어 실패 결함 주입)', expected_pytest_status: 'failed', expected_classification: 'product_defect' },
+      { id:'TC-TEMP-002', category:'의도적 검증', desc:'제품 결함 후보 (AUTO 모드 온도 하한 18.0°C 방어 실패 로직 누락)', expected_pytest_status: 'failed', expected_classification: 'product_defect' },
     ];
 
     let isRunnerRunning = false;

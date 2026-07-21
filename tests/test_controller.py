@@ -696,32 +696,36 @@ def test_pipeline_004_not_executed_condition_missing(page: Page):
 # 분류 목적: 실제 제품 동작이 기획 요건과 다를 때 AssertionError가 발생하고
 #           이를 'product_defect'으로 정확하게 분류하는지 검증
 # ============================================================
-def test_pipeline_005_product_defect_classification(page: Page):
-    """[TC-PIPE-005] 제품 결함 후보 | 온도 하한 경계값(16.0°C) 방어 실패 — 15.0°C 설정 허용 결함 — Finding: DEF-001"""
+def test_tc_temp_002_auto_mode_lower_limit(page: Page):
+    """[TC-TEMP-002] 제품 결함 후보 | AUTO 모드 온도 하한(18.0°C) 방어 실패 — 17.0°C 설정 허용 결함 — Finding: DEF-001"""
     load_clean_simulator(page)
     select_device_card(page, 1)
 
-    # 1. 16.0°C까지 하강
+    # 1. 운전모드를 AUTO로 변경
+    page.click("#det-mode-auto")
+    expect(page.locator("#det-mode-auto")).to_have_class(re.compile(r"active"))
+
+    # 2. 18.0°C까지 하강 (기존 16.0°C에서 18.0°C로 방어선 상향 기획)
     for _ in range(15):
         current_text = page.locator("#det-temp-display").inner_text()
-        if "---" in current_text or "16.0" in current_text:
+        if "---" in current_text or "18.0" in current_text:
             break
         page.click("#det-temp-down-btn")
         page.wait_for_timeout(50)
 
-    # 2. 기획상 하한인 16.0°C 상태에서 한 번 더 하강 시도
+    # 3. 18.0°C 상태에서 한 번 더 하강 시도 (17.0°C로 내려가는지 확인)
     page.click("#det-temp-down-btn")
 
-    # 3. 결과 확인
-    # 기획 요건: 16.0°C 미만 설정 불가. Toast 경고 노출 및 온도 16.0°C 유지
-    # 결함 상황: 시뮬레이터 로직 오류로 15.0°C로 내려가버림
+    # 4. 결과 확인
+    # 신규 요구사항: AUTO 모드에서는 18.0°C 미만 설정 불가. Toast 경고 노출 및 온도 18.0°C 유지
+    # 실제 상황: 시뮬레이터에 해당 분기처리가 누락되어 17.0°C(기존 16.0°C 제한)까지 그냥 내려감
     toast = page.locator("#global-toast")
     has_toast = toast.evaluate("el => el.classList.contains('show')")
     current_text = page.locator("#det-temp-display").inner_text()
 
-    # 이 Assert는 시뮬레이터에 주입된 결함 때문에 반드시 실패하여 제품 결함(product_defect)으로 분류됨
-    assert has_toast and "16.0" in current_text, (
-        f"[Finding: DEF-001] 제품 결함 후보: 온도 하한(16.0°C) 방어 로직이 동작하지 않습니다. "
-        f"기획 요건: 설정 온도는 16.0°C ~ 30.0°C 범위 내에서만 조작 가능해야 하며 초과 시 경고 노출. "
+    # 이 Assert는 시뮬레이터에 AUTO 모드 온도 제한 로직이 누락되었기 때문에 반드시 실패하여 제품 결함으로 분류됨
+    assert has_toast and "18.0" in current_text, (
+        f"[Finding: DEF-001] 제품 결함 후보: AUTO 모드 온도 하한(18.0°C) 방어 로직 누락. "
+        f"신규 기획 요건: AUTO 모드 시 설정 온도는 18.0°C ~ 30.0°C. "
         f"실제 결과: Toast 노출({has_toast}), 현재 표시온도({current_text})"
     )
