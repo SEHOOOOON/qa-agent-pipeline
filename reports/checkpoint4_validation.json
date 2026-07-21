@@ -1,22 +1,10 @@
 {
-  "audit_id": "AUDIT-20260719-124045",
-  "timestamp": "2026-07-19T12:40:46+09:00",
-  "source_files": [
-    "report.html",
-    "qa_results.json",
-    "agent4_summary.json"
-  ],
-  "validation_checks": {
-    "total_count_match": true,
-    "tc_id_match": true,
-    "pytest_status_match": true,
-    "failure_reason_present": true,
-    "classification_evidence_valid": true
-  },
-  "final_status": "VALIDATED",
-  "actions": [
-    "Execution Calculation Allowed",
-    "Release Calculation Allowed",
-    "External Reporting Allowed"
-  ]
+  "checkpoint": "Checkpoint 4",
+  "status": "VALIDATED",
+  "validated_at": "2026-07-21T23:02:30+09:00",
+  "external_reporting_allowed": true,
+  "json_total": 13,
+  "html_total": 13,
+  "errors": [],
+  "warnings": []
 }

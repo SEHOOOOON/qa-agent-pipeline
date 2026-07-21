@@ -348,47 +348,107 @@ def build_summary(results: list[dict[str, Any]], validation: dict[str, Any]) -> 
 
 
 def format_slack_payload(report_data: dict[str, Any]) -> dict[str, Any]:
-    """기존 함수명을 유지하면서 검증·실행·릴리즈 판정을 분리해 표시한다."""
+    """풍부한 포맷(Block Kit)을 사용하여 Slack 메시지를 구성합니다."""
     pytest_summary = report_data["pytest_summary"]
     qa_summary = report_data["qa_classification_summary"]
+    
+    release_decision = report_data['execution']['release_decision']
+    if release_decision == "HOLD":
+        decision_text = "🔴 *HOLD (배포 반려)* - 치명적 제품 결함 또는 스크립트/환경 이슈 존재"
+    elif release_decision == "INCOMPLETE":
+        decision_text = "🟡 *INCOMPLETE* - 일부 테스트 미실행 또는 요구사항 확인 필요"
+    else:
+        decision_text = "🟢 *PASS (배포 승인)* - 모든 검증 통과 완료"
 
-    return {
-        "blocks": [
-            {
-                "type": "header",
-                "text": {"type": "plain_text", "text": "QA 자동화 실행 결과", "emoji": True},
-            },
-            {
-                "type": "section",
-                "fields": [
-                    {"type": "mrkdwn", "text": f"*Run ID*\n{report_data['run_id']}"},
-                    {"type": "mrkdwn", "text": f"*Checkpoint 4 데이터 검증*\n{report_data['checkpoint4']['status']}"},
-                    {"type": "mrkdwn", "text": f"*실제 실행 결과*\n{report_data['execution']['result']}"},
-                    {"type": "mrkdwn", "text": f"*릴리즈 판정*\n{report_data['execution']['release_decision']}"},
-                    {
-                        "type": "mrkdwn",
-                        "text": (
-                            f"*Pytest*\nTotal {pytest_summary['total']} | "
-                            f"Passed {pytest_summary['passed']} | "
-                            f"Skipped {pytest_summary['skipped']} | Failed {pytest_summary['failed']}"
-                        ),
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": (
-                            "*QA 분류*\n"
-                            f"제품 {qa_summary['product_defect']} | "
-                            f"요구사항 {qa_summary['requirement_review']} | "
-                            f"환경 {qa_summary['environment_issue']} | "
-                            f"코드 {qa_summary['automation_issue']} | "
-                            f"미실행 {qa_summary['not_executed']}"
-                        ),
-                    },
-                ],
-            },
-        ]
+    total = pytest_summary.get('total', 0)
+    passed = pytest_summary.get('passed', 0)
+    failed = pytest_summary.get('failed', 0) + pytest_summary.get('error', 0)
+    skipped = pytest_summary.get('skipped', 0) + pytest_summary.get('xfailed', 0)
+    
+    blocks = [
+        {
+            "type": "header",
+            "text": {
+                "type": "plain_text",
+                "text": "📊 [가상 관제 시스템] QA 파이프라인 자동화 리포트",
+                "emoji": True
+            }
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f"*최종 릴리즈 판정*: {decision_text}"
+            }
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f"""*총 테스트 수*: {total}건
+✅ *S/W Pass*: {passed}건
+🚨 *S/W Fail*: {failed}건
+⚠️ *Skipped*: {skipped}건"""
+            }
+        },
+        {"type": "divider"}
+    ]
+    
+    class_map = {
+        "product_defect": {"emoji": "🔴", "title": "1. 제품 결함 후보 (Product Defect)"},
+        "requirement_review": {"emoji": "⚠️", "title": "2. 기획·요구사항 확인 필요 (Requirement Review Needed)"},
+        "environment_issue": {"emoji": "🔌", "title": "3. 테스트 환경·시뮬레이터 문제 (Test Env / Simulator Issue)"},
+        "automation_issue": {"emoji": "🤖", "title": "4. 자동화 코드 문제 (Automation Script Error)"},
+        "not_executed": {"emoji": "🚧", "title": "5. 조건 부족으로 미실행 (Not Executed)"}
     }
-
+    
+    grouped_results = {}
+    for res in report_data.get('results', []):
+        cls = res.get('qa_classification', 'none')
+        if cls == 'none' or res.get('result') == 'passed':
+            continue
+        if cls not in grouped_results:
+            grouped_results[cls] = []
+        grouped_results[cls].append(res)
+        
+    for cls_key, items in grouped_results.items():
+        info = class_map.get(cls_key, {"emoji": "❓", "title": f"분류: {cls_key}"})
+        
+        text_lines = [f"{info['emoji']} *{info['title']}*"]
+        
+        for item in items:
+            test_id = item.get('test_id', 'Unknown')
+            if "::" in test_id:
+                test_id = test_id.split("::")[-1]
+            desc = item.get('description', '')
+            reason = item.get('failure_reason', '상세 사유 없음')
+            text_lines.append(f"> *[{item.get('tc_id', test_id)}]* {desc}\n> └─ 상세 사유: {reason}")
+            
+        blocks.append({
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "\n".join(text_lines)
+            }
+        })
+        
+    blocks.append({"type": "divider"})
+    
+    blocks.append({
+        "type": "context",
+        "elements": [
+            {
+                "type": "mrkdwn",
+                "text": f"""*테스트 환경*: Virtual Central Controller Simulator
+*실행 일시*: {report_data.get('generated_at', '')}
+*자동화 엔진*: Playwright v1.40+
+*Run ID*: {report_data.get('run_id', '')}
+*TCM 대시보드*: <https://notion.so|Notion Database 열기 ↗>"""
+            }
+        ]
+    })
+    
+    return {"blocks": blocks}
 
 def send_to_slack(payload: dict[str, Any]) -> bool:
     """검증된 결과만 Slack Webhook으로 전송한다."""
@@ -484,11 +544,48 @@ def send_to_notion(report_data: dict[str, Any]) -> bool:
         query_results = resp.json().get("results", [])
         
         # (2) 속성 정의
+        status_map = {
+            "passed": "Pass",
+            "failed": "Fail",
+            "skipped": "Review Needed",
+            "error": "Blocker"
+        }
+        notion_status = status_map.get(tc.get("result", "").lower(), "Blocked")
+        
+        desc = tc.get("description", "")
+        # 구분 자동 판별 로직
+        category = "엣지케이스"
+        if "해피패스" in desc:
+            category = "해피패스"
+        elif "결함" in desc or "예외" in desc or tc.get("result") == "failed":
+            category = "예외/결함"
+            
+        # 우선순위 자동 판별 로직
+        priority = "P1" if "해피패스" in desc or tc.get("result") == "failed" else "P2"
+        
+        # 앞의 숫자 제거 ("1. 제품 결함 후보" -> "제품 결함 후보")
+        raw_reason = tc.get("failure_reason", "")
+        clean_reason = re.sub(r'^\d+\.\s*', '', raw_reason)
+        
+        # Pass 인 경우 '결과' 컬럼에 '정상 동작' 명시
+        if tc.get("result") == "passed" and not clean_reason:
+            clean_reason = "정상 동작"
+            
+        # 테스트 제목에서 [TC-XXX] 접두사 제거
+        clean_desc = re.sub(r'^\[TC-[^\]]+\]\s*', '', desc)
+        
+        # 불필요한 영문 텍스트 및 꼬리표(Finding: ...) 제거
+        clean_desc = re.sub(r'\s*—\s*Finding:\s*[A-Z0-9-]+', '', clean_desc)
+        clean_desc = clean_desc.replace('Playwright TimeoutError', '시간 초과 오류 발생')
+        clean_desc = clean_desc.replace('(Simulator Timeout)', '').strip()
+        
         properties = {
             "TC-ID": {"title": [{"text": {"content": tc_id}}]},
-            "Status": {"select": {"name": tc.get("result", "").upper()}},
-            "Finding Type": {"select": {"name": tc.get("finding_type", "none")}},
-            "Run ID": {"rich_text": [{"text": {"content": str(report_data.get('run_id', ''))}}]}
+            "테스트 제목": {"rich_text": [{"text": {"content": clean_desc[:2000]}}]},
+            "실행 결과": {"select": {"name": notion_status}},
+            "결과 ": {"rich_text": [{"text": {"content": clean_reason[:2000]}}]},
+            "구분": {"select": {"name": category}},
+            "우선 순위": {"select": {"name": priority}}
         }
         
         # (3) Upsert 분기
