@@ -3373,15 +3373,15 @@
         <!-- Progress bar -->
         <div style="background:#0d2016; border-radius:8px; padding:12px 14px; border:1px solid #14532d;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <span style="font-size:0.75rem; color:#86efac; font-weight:700; font-family:'Outfit',sans-serif;" id="runner-title">🟡 테스트 대기 중...</span>
-            <span style="font-size:0.72rem; color:#4ade80; font-family:'Outfit',monospace;" id="runner-count">0 / 0</span>
+            <span style="font-size:0.75rem; color:#86efac; font-weight:700; font-family:'Outfit',sans-serif;" id="runner-title">▶️ 테스트 대기 중...</span>
+            <span style="font-size:0.72rem; color:#e2e8f0; font-family:'Outfit',monospace;" id="runner-count">0 / 0</span>
           </div>
           <div style="background:#1a3020; border-radius:4px; height:8px; overflow:hidden;">
             <div id="runner-progress-bar" style="height:100%; width:0%; background:linear-gradient(90deg,#22c55e,#4ade80); border-radius:4px; transition:width 0.3s ease;"></div>
           </div>
           <div style="display:flex; gap:16px; margin-top:8px; font-size:0.66rem; color:#6b7280;">
-            <span>✅ PASS: <strong id="runner-pass-cnt" style="color:#4ade80;">0</strong></span>
-            <span>❌ FAIL: <strong id="runner-fail-cnt" style="color:#f87171;">0</strong></span>
+            <span>✅ PASS: <strong id="runner-pass-cnt" style="color:#e2e8f0;">0</strong></span>
+            <span>❌ FAIL: <strong id="runner-fail-cnt" style="color:#e2e8f0;">0</strong></span>
             <span>⏳ 대기: <strong id="runner-pending-cnt" style="color:#94a3b8;">0</strong></span>
           </div>
         </div>
@@ -3390,14 +3390,14 @@
         </div>
         <!-- Summary (hidden until done) -->
         <div id="runner-summary" style="display:none; background:#0d2016; border:1px solid #166534; border-radius:8px; padding:14px;">
-          <div style="font-size:0.8rem; font-weight:700; color:#4ade80; margin-bottom:8px;">🏁 테스트 실행 완료 — 최종 리포트</div>
+          <div style="font-size:0.8rem; font-weight:700; color:#e2e8f0; margin-bottom:8px;">🏁 테스트 실행 완료 — 최종 리포트</div>
           <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; text-align:center;">
             <div style="background:#052e16; border-radius:6px; padding:10px;">
-              <div style="font-size:1.4rem; font-weight:900; color:#4ade80;" id="summary-pass">18</div>
+              <div style="font-size:1.4rem; font-weight:900; color:#e2e8f0;" id="summary-pass">18</div>
               <div style="font-size:0.65rem; color:#86efac;">PASS</div>
             </div>
             <div style="background:#1c0a0a; border-radius:6px; padding:10px;">
-              <div style="font-size:1.4rem; font-weight:900; color:#f87171;" id="summary-fail">2</div>
+              <div style="font-size:1.4rem; font-weight:900; color:#e2e8f0;" id="summary-fail">2</div>
               <div style="font-size:0.65rem; color:#fca5a5;">FAIL (결함 후보)</div>
             </div>
             <div style="background:#0c1027; border-radius:6px; padding:10px;">
@@ -3810,7 +3810,7 @@
       document.getElementById('runner-pass-cnt').innerText = '0';
       document.getElementById('runner-fail-cnt').innerText = '0';
       document.getElementById('runner-pending-cnt').innerText = tcData.length;
-      document.getElementById('runner-title').innerText = '🟡 테스트 대기 중... ▶ 버튼을 클릭하세요.';
+      document.getElementById('runner-title').innerText = '▶️ 테스트 대기 중... ▶ 버튼을 클릭하세요.';
       document.getElementById('runner-summary').style.display = 'none';
       const startBtn = document.getElementById('runner-start-btn');
       startBtn.disabled = false;
@@ -3854,7 +3854,7 @@
           if (!row) return;
           list.scrollTop = row.offsetTop - 50;
 
-          if (tc.pass) {
+          if (tc.expected_pytest_status === 'passed') {
             passCnt++;
             row.className = 'runner-tc-row pass';
             row.innerHTML = `
@@ -3868,8 +3868,8 @@
               <span class="runner-tc-id">${tc.id}</span>
               <span class="runner-tc-badge fail">❌ FAIL</span>
               <span class="runner-tc-desc">${tc.desc}</span>
-              <span style="font-size:0.62rem;color:#e2e8f0;font-weight:700;white-space:nowrap;margin-left:auto;">${tc.bug}</span>`;
-            appendQALog('GATEWAY', `[에이전트 3번 (자동화)] ❌ E2E 검증 오류 - ${tc.id} FAIL: ${tc.desc} (${tc.bug})`, 'error');
+              <span style="font-size:0.62rem;color:#e2e8f0;font-weight:700;white-space:nowrap;margin-left:auto;">${tc.expected_classification !== 'none' ? tc.expected_classification : ''}</span>`;
+            appendQALog('GATEWAY', `[에이전트 3번 (자동화)] ❌ E2E 검증 오류 - ${tc.id} FAIL: ${tc.desc} (${tc.expected_classification !== 'none' ? tc.expected_classification : ''})`, 'error');
           }
 
           const done = passCnt + failCnt;
