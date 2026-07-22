@@ -630,7 +630,7 @@ def test_pipeline_001_alarm_ui_ambiguity_classification(page: Page):
     # 여기서 기획의 공백(Ambiguity) 발생
     # 기획서에는 "알람 시 에러 상태로 변경된다"라고만 되어 있고,
     # 카드의 배경색이 빨간색이 되어야 하는지, 테두리만 바뀌어야 하는지 스펙이 없음.
-    pytest.skip("2. 기획·요구사항 확인 필요: CH05 알람 발생 시 장치 카드 배경/UI 표시 색상 기획이 누락되어 Assert 불가.")
+    pytest.skip("기획·요구사항 확인 필요: CH05 알람 발생 시 장치 카드 배경/UI 표시 색상 기획이 누락되어 Assert 불가.")
 
 
 # ============================================================
@@ -645,7 +645,7 @@ def test_pipeline_002_simulator_timeout_classification(page: Page):
 
     # 5초간 기다렸으나 가상 환경에서 상태 갱신이 올라오지 않는 상황을 시뮬레이션
     raise SimulatorTimeoutError(
-        "3. 테스트 환경·시뮬레이터 문제: UI에서 전원 켜기 제어를 시도했으나, 5000ms 내에 가상 환경으로부터 응답을 받지 못했습니다."
+        "테스트 환경·시뮬레이터 문제: UI에서 전원 켜기 제어를 시도했으나, 5000ms 내에 가상 환경으로부터 응답을 받지 못했습니다."
     )
 
 
@@ -683,7 +683,7 @@ def test_pipeline_004_not_executed_condition_missing(page: Page):
     # ※ 이 skip 메시지에는 '기획' / '요구사항' 키워드가 없으므로 → not_executed 분류
     if not device_17_exists:
         pytest.skip(
-            "5. 조건 부족으로 미실행: 시뮬레이터 최대 장치 수(16대) 초과 — "
+            "조건 부족으로 미실행: 시뮬레이터 최대 장치 수(16대) 초과 — "
             "17번 장치(#device-card-17)가 DOM에 존재하지 않아 테스트 실행 불가."
         )
 
