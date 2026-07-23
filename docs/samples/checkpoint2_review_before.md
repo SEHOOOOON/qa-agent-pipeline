@@ -1,3 +1,11 @@
+---
+document_version: "1.0"
+source_document: "agent2_tc_draft.md"
+source_version: "1.0"
+reviewed_at: "2026-07-23"
+review_status: "Needs Revision"
+---
+
 # 🛑 Checkpoint 2: TC 품질 리뷰 리포트 (Review Before)
 
 ## 1. TC 총평
@@ -7,7 +15,7 @@
 ## 2. 9대 검토 기준 채점표
 | 검토 기준 | Pass/Fail | 사유 |
 | :--- | :---: | :--- |
-| 1. 기대결과 모호성 | Fail | TC-INT-02에 "100% 유지함" 이라는 모호한 표현 존재. |
+| 1. 기대결과 모호성 | Fail | TC-INT-02(초안의 잘못된 ID)에 "100% 유지함" 이라는 모호한 표현 존재. |
 | 2. 이중 단언(Double-Assert) 유무 | Fail | TC-02A의 Register Assert란에 값 대신 미적용 사유를 기재함. |
 | 3. 정보 부족 항목 분리 | Pass | 명시된 검증 제외 항목 활용 양호. |
 | 4. 추측성 검출 | Fail | TC-02A의 Risk Covered에 "하드웨어 에러 유발"이라는 가상의 위험을 추측하여 기재함. |
@@ -27,7 +35,7 @@
   - Cleanup에 '기기 설정 전체 초기화 버튼(Reset)' 클릭 또는 명시적인 `load_clean_simulator` 호출을 명시할 것.
 
 ### [TC-02A 피드백]
-- **위반 Rule**: Critical (기획에 없는 에러 상황을 임의로 지어냄)
+- **위반 Rule**: Critical (근거 없는 Risk가 Expected Result에 전파될 위험)
 - **수정 가이드**: 
   - Initial State를 `mode: COOL`로 설정하고, Steps에서 FAN 모드 버튼을 클릭하도록 Setup과 Steps의 역할을 분리할 것.
   - Register Assert 영역은 비워두거나 `[]`로 처리하고, `double_assert_policy`를 `UI-only`로 지정하여 미적용 사유를 시스템적으로 처리할 것.

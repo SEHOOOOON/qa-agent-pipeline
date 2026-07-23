@@ -2,8 +2,8 @@
 
 ## 1. 입력 수준 및 판정
 - **판정 Level**: Level 2 (Partially Testable)
-- **다음 단계 판정**: Partial Proceed
-- **판정 사유**: 주요 제어(모드, 온도, 전원) 동작과 도메인 예외 규칙(FAN 모드 등)은 명확하게 정의되어 핵심 제어 판정은 가능하나, 에러 발생 시의 UI 색상 정책, 타임아웃 텍스트, 온도 설정 허용 범위 등 일부 스펙이 누락되어 전체 통과는 불가. 명확한 범위만 부분 진행(Partial Proceed)으로 판정함.
+- **다음 단계 진행 권고**: Partial Proceed
+- **권고 사유**: 주요 제어 동작과 온도 경계값은 판정 가능하나, CH05 UI 표시 정책과 통신 타임아웃 Toast 문구가 정의되지 않아 명확한 범위만 부분 진행 가능.
 
 ## 2. 요구사항 근거 및 정보 분류 (가장 중요)
 
@@ -61,7 +61,7 @@
 - **사유 및 오염 위험**: 다중 장비에 대한 일괄 적용(Broadcast) 기능이 있으므로, 명령 대상이 아닌 비대상 장비의 상태가 변경되는 치명적 오염 위험이 있음.
 - **불변 유지 조건 (Required Invariants)**: 
   - 선택 장비에만 제어 명령(모드/온도 등)이 적용되어야 함.
-  - 사전 정의된 비교 대상 필드는 실행 전 상태와 동일해야 함.
+  - 비대상 장비의 power, mode, setTemp, locked 상태는 실행 전 Snapshot과 동일해야 함.
 
 ---
 
@@ -79,7 +79,7 @@ source_ids:
 
 input_assessment:
   level: "Level 2"
-  reason: "주요 제어 동작은 명확히 판정 가능하나, UI 색상/타임아웃 문구/온도 경계값 등 일부 스펙이 정의되지 않아 전체 통과 불가"
+  reason: "주요 제어 동작과 온도 경계값은 판정 가능하나, CH05 UI 표시 정책과 통신 타임아웃 Toast 문구가 정의되지 않아 명확한 범위만 부분 진행 가능"
 
 confirmed_facts:
   - fact_id: "FACT-001"
@@ -106,6 +106,11 @@ confirmed_facts:
     source_id: "REQ-TEMP-001"
     source_type: "Requirement"
     statement: "설정온도의 허용 범위는 16.0°C~30.0°C이며, 범위 초과 입력은 적용하지 않고 경고를 표시한다."
+    allowed_for_expected_result: true
+  - fact_id: "FACT-006"
+    source_id: "REQ-ERROR-001"
+    source_type: "Requirement"
+    statement: "CH05 오류 상태의 장비에는 제어 명령을 적용하지 않는다."
     allowed_for_expected_result: true
 
 inferred_facts: []
@@ -145,6 +150,10 @@ control_points:
     source_ids: ["REQ-001", "REQ-002", "DOMAIN-RULE-002"]
   - name: "Lock"
     source_ids: ["DOMAIN-RULE-003"]
+  - name: "Alarm/Error"
+    source_ids: ["REQ-ERROR-001"]
+  - name: "Communication"
+    source_ids: ["REQ-ERROR-002"]
 
 testable_scope:
   - scope_id: "SCOPE-001"
@@ -179,13 +188,13 @@ integration_assessment:
     - "비대상 장비 상태 오염"
   required_invariants:
     - "선택 장비에만 제어 명령 적용"
-    - "사전 정의된 비교 대상 필드는 실행 전 상태와 동일해야 함"
+    - "비대상 장비의 power, mode, setTemp, locked 상태는 실행 전 Snapshot과 동일해야 함"
 
-checkpoint_1:
-  status: "Partial Proceed"
+agent1_recommendation:
+  recommended_status: "Partial Proceed"
   passed_scope: ["SCOPE-001", "SCOPE-002", "SCOPE-003", "SCOPE-004", "SCOPE-005"]
   excluded_scope: ["EXCLUDED-001", "EXCLUDED-002"]
   blocking_gaps: ["GAP-001", "GAP-002"]
-  next_step: "Agent 2"
-  decision_reason: "명확한 범위(SCOPE-001~004)에 한해 TC 설계 가능"
+  recommended_next_step: "Checkpoint 1"
+  recommendation_reason: "명확한 범위(SCOPE-001~005)는 TC 설계가 가능하며, GAP-001~002와 연결된 범위는 요구사항 확인 전까지 제외할 것을 권고함"
 ```

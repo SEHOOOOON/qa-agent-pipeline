@@ -237,21 +237,21 @@ def test_tc_env_000_pre_environment_check(page: Page):
 #
 # 시나리오:
 #   1번 장치 카드 클릭 → 제어 패널에서 '난방(HEAT)' 모드 선택
-#   → 온도 조절 버튼으로 24°C 설정 → '적용' 버튼 클릭
+#   → 온도 조절 버튼으로 26°C 설정 → '적용' 버튼 클릭
 #   → QA 드로어를 열어 트랜잭션 로그 및 장치 카드 상태 검증
 #
 # 검증 포인트:
 #   ① HEAT 모드 버튼 active 클래스
 #   ② 설정온도 표시박스 heat 컬러 테마 바인딩 (Rule 1)
 #   ③ 트랜잭션 로그에 "운전모드: COOL -> HEAT" 기록
-#   ④ 트랜잭션 로그에 "설정온도" 및 "24" 값 기록
+#   ④ 트랜잭션 로그에 "설정온도" 및 "26" 값 기록
 #   ⑤ 장치 카드 모드 배지 '난방' 텍스트 및 mode-heat 클래스 동기화
 #
 # ※ 핵심 주의: QA 드로어는 적용 버튼 클릭 후에 열어야 한다.
 #              드로어가 열린 상태에서는 제어 패널 버튼이 클릭 불가.
 # ============================================================
 def test_tc_mode_001_heat_mode_and_temp_apply(page: Page):
-    """[TC-MODE-001] 해피패스 | 장치 #1 선택 → HEAT 모드 + 24°C 적용 → QA 로그 및 장치 카드 동기화 검증"""
+    """[TC-MODE-001] 해피패스 | 장치 #1 선택 → HEAT 모드 + 26°C 적용 → QA 로그 및 장치 카드 동기화 검증"""
     load_clean_simulator(page)
 
     # ── Step 1: 1번 장치 카드 선택 ('IDU-00', 초기: COOL 19°C) ──
@@ -327,12 +327,11 @@ def test_tc_mode_001_heat_mode_and_temp_apply(page: Page):
     expect(page.locator("#device-card-1")).to_have_class(re.compile(r"mode-heat"))
 
     # ── Step 7: [화면·내부 상태 동시 검증] ──
-    # 사용자 UI에 표시된 값과 내부 장치 상태(가상 레지스터)가 동일하게 반영되었는지 교차 검증
-    backend_device = page.evaluate(
-        "() => { return window.__vccs.devices.find(x => x.id === 1); }"
-    )
-    assert backend_device["mode"] == "HEAT", f"내부 장치 상태 모드 불일치: {backend_device['mode']}"
-    assert backend_device["setTemp"] == 26.0, f"내부 장치 상태 온도 불일치: {backend_device['setTemp']}"
+    # [화면·상태 동시 검증 C] 내부 장치 상태(가상 레지스터) 업데이트 검증
+    # UI에 속지 않고 백엔드 상태값이 실제로 변경되었는지 크로스체크 (Double-Assert)
+    backend_device = page.evaluate("() => window.__vccs.devices.find(x => x.id === 1)")
+    assert backend_device["mode"] == "HEAT"
+    assert backend_device["setTemp"] == pytest.approx(26.0)
 
 
 # ============================================================
@@ -421,7 +420,7 @@ def test_tc_lock_001_all_devices_full_inspection(page: Page):
         timeout=2000,
     )
 
-    # 12대 전수 루프 조사
+    # 16대 전수 루프 조사
     for device_id in range(1, TOTAL_DEVICE_COUNT + 1):
         card = page.locator(f"#device-card-{device_id}")
 
@@ -438,7 +437,7 @@ def test_tc_lock_001_all_devices_full_inspection(page: Page):
             f"장치 카드 {device_id}: 🔒 이모지 없음. 실제: '{lock_text}'"
         )
 
-    # 최종 locked 총 수 = 12
+    # 최종 locked 총 수 = 16
     assert page.locator(".ac-device-card.locked").count() == TOTAL_DEVICE_COUNT
 
     # 부가 검증: LOCK 상태에서 현장 리모컨 차단
@@ -457,11 +456,11 @@ def test_tc_err_001_ch05_fault_injection_control_block(page: Page):
     """[TC-ERR-001] 결함 주입 | CH05 과열 에러 강제 주입 → 제어 명령 차단 로그 및 Toast 검증"""
     load_clean_simulator(page)
 
-    # QA 드로어 먼저 열기 (에러 주입 버튼이 QA 드로어 내부에 있음)
-    open_qa_drawer(page)
-
-    # 4번 장치 카드 선택 (초기: OPERATION 상태)
+    # 1. QA 드로어가 닫힌 상태에서 장치 선택 (오버레이 충돌 방지)
     select_device_card(page, 4)
+
+    # 2. 에러 주입을 위해 QA 드로어 열기
+    open_qa_drawer(page)
     unit_name = page.locator("#det-unit-name").text_content()
     print(f"\n  [대상 기기] {unit_name}")
 
@@ -494,6 +493,9 @@ def test_tc_err_001_ch05_fault_injection_control_block(page: Page):
     page.click("#det-power-on-btn")
     page.click(".btn-apply-cmd")
 
+    # 적용 직후 Toast 알림 표시 먼저 검증 (DOM 구조상 빠른 확인)
+    expect(page.locator("#global-toast")).to_have_class(re.compile(r"show"), timeout=1000)
+
     # QA 드로어 재오픈 → 제어 차단 로그 확인
     open_qa_drawer(page)
     wait_for_log_containing(page, "제어 차단", timeout=LOG_RENDER_TIMEOUT)
@@ -508,9 +510,6 @@ def test_tc_err_001_ch05_fault_injection_control_block(page: Page):
         "() => { const d = window.__vccs.devices.find(x => x.id === 4); return d ? d.status : null; }"
     )
     assert device_status == "ERROR", f"상태가 변경됨 (기대: ERROR, 실제: {device_status})"
-
-    # Toast 알림 표시 검증
-    expect(page.locator("#global-toast")).to_have_class(re.compile(r"show"))
 
 
 # ============================================================

@@ -6,6 +6,7 @@ import pytest
 import json
 import re
 import uuid
+import html
 from datetime import datetime
 from pathlib import Path
 from test_controller import SimulatorTimeoutError
@@ -21,8 +22,12 @@ EXCLUDED_FROM_SUMMARY = {"TC-ENV-000"}
 
 # Global test results collector
 qa_results = []
-session_run_id = str(uuid.uuid4())
-session_start_time = datetime.now()
+session_run_id = ""
+
+def pytest_sessionstart(session):
+    global session_run_id
+    qa_results.clear()
+    session_run_id = str(uuid.uuid4())
 
 # -- 1. Viewport fixture -------------------------------------------------------
 @pytest.fixture(scope="session")
@@ -49,17 +54,17 @@ def pytest_runtest_makereport(item, call):
         report.failure_reason = ""
         if report.outcome == "skipped":
             if "기획" in str(report.longrepr) or "요구사항" in str(report.longrepr):
-                report.failure_reason = "2. 기획·요구사항 확인 필요"
+                report.failure_reason = "기획·요구사항 확인 필요"
             else:
-                report.failure_reason = "5. 조건 부족으로 미실행"
+                report.failure_reason = "조건 부족으로 미실행"
         elif report.failed and call.excinfo:
             exc_type = call.excinfo.type
             if exc_type.__name__ == 'SimulatorTimeoutError':
-                report.failure_reason = "3. 테스트 환경·시뮬레이터 문제"
+                report.failure_reason = "테스트 환경·시뮬레이터 문제"
             elif exc_type is AssertionError:
-                report.failure_reason = "1. 제품 결함 후보"
+                report.failure_reason = "제품 결함 후보"
             else:
-                report.failure_reason = "4. 자동화 코드 문제"
+                report.failure_reason = "자동화 코드 문제"
 
         # TC ID 추출: [TC-xxx-000] 형식 기준 (TC-ENV, TC-MODE, TC-LOCK, TC-ERR, TC-INT, TC-TEMP, TC-PIPE 등)
         tc_match = re.search(r'\[(TC-[^\]]+)\]', report.description)
@@ -116,17 +121,19 @@ def pytest_html_results_table_row(report, cells):
     
     # 실패 분류에 따른 색상 스타일링
     color_style = ""
-    if "1. 제품 결함 후보" in failure_reason:
+    if "제품 결함 후보" in failure_reason:
         color_style = "color: #f85149; font-weight: bold;" # Red
-    elif "2. 기획" in failure_reason:
+    elif "기획" in failure_reason:
         color_style = "color: #db6d28; font-weight: bold;" # Orange
-    elif "3. 테스트 환경" in failure_reason or "4. 자동화 코드" in failure_reason:
+    elif "환경" in failure_reason or "자동화" in failure_reason:
         color_style = "color: #d29922; font-weight: bold;" # Yellow
-    elif "5. 조건 부족" in failure_reason:
+    elif "조건 부족" in failure_reason:
         color_style = "color: #8b949e; font-style: italic;" # Gray
     
-    cells.insert(2, f'<td class="col-description">{description}</td>')
-    cells.insert(3, f'<td class="col-failure-reason" style="{color_style}">{failure_reason}</td>')
+    safe_description = html.escape(description)
+    safe_failure_reason = html.escape(failure_reason)
+    cells.insert(2, f'<td class="col-description">{safe_description}</td>')
+    cells.insert(3, f'<td class="col-failure-reason" style="{color_style}">{safe_failure_reason}</td>')
 
 # -- 5. Report title -----------------------------------------------------------
 def pytest_html_report_title(report):

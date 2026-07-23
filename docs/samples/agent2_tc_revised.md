@@ -1,5 +1,5 @@
-# 🟢 Agent 2: 테스트케이스 수정본 (Checkpoint 2 피드백 반영)
-*안내: Checkpoint 2의 수정 요청을 반영한 재검토 대상 산출물입니다. 최종 승인 여부는 Checkpoint 2 재검토 결과에서 결정합니다.*
+# 🟢 Agent 2: 테스트케이스 수정본 (Checkpoint 2 승인 완료)
+*안내: Checkpoint 2의 수정 요청을 반영하여 재검토한 산출물입니다. Checkpoint 2 재검토(Review After)에서 모든 TC가 **Approved** 판정을 받았습니다.*
 *본 문서는 전체 자동화 TC 중 품질 검토 과정을 보여주는 **대표 TC**만 수록합니다. 전체 TC 목록은 `tests/test_controller.py`를 참조하세요.*
 
 ```yaml
@@ -23,23 +23,26 @@ test_cases:
       - "장치 1 선택"
     steps: 
       - "제어 패널에서 [HEAT] 모드 버튼 클릭"
+      - "설정온도를 26.0°C로 변경"
       - "[Apply] 버튼 클릭"
     expected_ui: 
       - "모드 배지 텍스트가 '난방'으로 변경됨."
+      - "설정온도 표시값이 '26.0°C'임"
     expected_device_state: 
       - "devices.find(d => d.id === 1).mode === 'HEAT'"
+      - "devices.find(d => d.id === 1).setTemp === 26.0"
     negative_assertions: []
     unchanged_state_assertions: []
     excluded_assertions: []
     cleanup: 
       - "resetSimulatorState() 호출 (또는 기기 설정 전체 초기화 클릭)"
-    ui_state_sync_policy: "Required"
+    double_assert_policy: "Required"
     automation_level: "Automated"
     independent_execution: true
-    review_status: "Revised"
+    review_status: "Approved"
 
   - tc_id: "TC-MODE-002"
-    title: "Rule2 송풍모드 전환 UI/Register 동기화"
+    title: "FAN 모드 선택 시 설정온도 조절 UI 비활성화"
     requirement_ids: ["DOMAIN-RULE-002"]
     source_evidence: ["FAN 모드 지원"]
     qa_criteria: ["공통: 상태 전이 검증"]
@@ -54,53 +57,54 @@ test_cases:
       - "load_clean_simulator(page) 호출 후 장치 1 선택"
     steps: 
       - "제어 패널에서 [FAN] 모드 버튼 클릭"
-      - "[Apply] 버튼 클릭"
-    expected_ui: 
-      - "모드 배지 텍스트가 '송풍'으로 변경됨."
-    expected_device_state: 
-      - "devices.find(d => d.id === 1).mode === 'FAN'"
-    negative_assertions: []
-    unchanged_state_assertions: []
-    excluded_assertions: []
-    cleanup: 
-      - "resetSimulatorState() 호출"
-    ui_state_sync_policy: "Required"
-    automation_level: "Automated"
-    independent_execution: true
-    review_status: "Revised"
-
-  - tc_id: "TC-MODE-003"
-    title: "Rule2 송풍모드 시 온도조절 UI 비활성화"
-    requirement_ids: ["DOMAIN-RULE-002"]
-    source_evidence: ["FAN/DRY 모드 시 온도 조절 차단"]
-    qa_criteria: ["기능별: 모드별 제어 제한 (배타 제어)"]
-    quality_standard_ids: ["CRIT-MODE-002"]
-    risk_covered: ["FAN 모드에서 허용되지 않은 온도 제어가 전달되어 UI와 내부 제어 상태가 불일치할 위험 방지"]
-    initial_state: 
-      online: true
-      locked: false
-      mode: "FAN"
-    preconditions: 
-      - "기기가 이미 FAN 모드로 설정되어 있음"
-    setup: 
-      - "load_clean_simulator() 호출 (초기화)"
-      - "장치 1 선택"
-      - "FAN 모드 클릭 및 적용"
-    steps: 
-      - "온도 조절 영역 상태(Up/Down 버튼 등) 확인"
     expected_ui: 
       - "온도 UP 버튼 disabled === true"
       - "온도 DOWN 버튼 disabled === true"
+      - "설정온도 표시값이 '---'임"
     expected_device_state: []
     negative_assertions: []
     unchanged_state_assertions: []
     excluded_assertions: []
     cleanup: 
       - "resetSimulatorState() 호출"
-    ui_state_sync_policy: "UI-only"
+    double_assert_policy: "UI-only"
     automation_level: "Automated"
     independent_execution: true
-    review_status: "Revised"
+    review_status: "Approved"
+
+  - tc_id: "TC-MODE-003"
+    title: "DRY 모드 비활성화 후 COOL 복귀 시 온도 조절 재활성화"
+    requirement_ids: ["DOMAIN-RULE-002"]
+    source_evidence: ["FAN/DRY 모드 시 온도 조절 차단"]
+    qa_criteria: ["기능별: 모드별 제어 제한 (배타 제어)"]
+    quality_standard_ids: ["CRIT-MODE-002"]
+    risk_covered: ["모드 복귀 시 UI 활성화 상태가 갱신되지 않는 문제 방지"]
+    initial_state: 
+      online: true
+      locked: false
+      mode: "COOL"
+    preconditions: []
+    setup: 
+      - "load_clean_simulator() 호출"
+      - "장치 1 선택"
+    steps: 
+      - "제어 패널에서 [DRY] 모드 버튼 클릭"
+      - "온도 조절 UI 비활성화 확인"
+      - "제어 패널에서 [COOL] 모드 버튼 클릭"
+    expected_ui: 
+      - "DRY 모드에서 UP·DOWN 버튼 disabled === true"
+      - "COOL 복귀 후 UP·DOWN 버튼 disabled === false"
+      - "COOL 복귀 후 설정온도에 '°C'가 표시됨"
+    expected_device_state: []
+    negative_assertions: []
+    unchanged_state_assertions: []
+    excluded_assertions: []
+    cleanup: 
+      - "resetSimulatorState() 호출"
+    double_assert_policy: "UI-only"
+    automation_level: "Automated"
+    independent_execution: true
+    review_status: "Approved"
 
   - tc_id: "TC-INT-002"
     title: "복수 장비 일괄 제어 정합성"
@@ -127,15 +131,13 @@ test_cases:
       - "devices.find(d => d.id === 2).mode === 'HEAT'"
       - "devices.find(d => d.id === 3).mode === 'HEAT'"
     negative_assertions: []
-    unchanged_state_assertions: 
-      - "비대상 장비(4~16)의 mode 값이 실행 전 Snapshot과 동일함 (before_devices[i].mode === after_devices[i].mode)"
-      - "비대상 장비(4~16)의 setTemp 값이 실행 전 Snapshot과 동일함"
-      - "대상 장비(1~3)의 locked, online 등 제어 비대상 필드도 실행 전과 동일함"
-    excluded_assertions: []
+    unchanged_state_assertions: []
+    excluded_assertions: 
+      - "V1 자동화 코드에서는 미구현. 비대상 장비(4~16)의 실행 전·후 Snapshot 비교는 V2 자동화 고도화 범위"
     cleanup: 
       - "복수 제어 모드 해제 및 resetSimulatorState() 호출"
-    ui_state_sync_policy: "Required"
+    double_assert_policy: "Required"
     automation_level: "Automated"
     independent_execution: true
-    review_status: "Revised"
+    review_status: "Approved"
 ```

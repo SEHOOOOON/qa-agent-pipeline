@@ -35,6 +35,7 @@ Agent 1이 판정한 결과(Proceed / Partial Proceed)와 [확정 정보]를 바
 
 # Output Format (Data Contract)
 Agent 간의 시스템적인 파싱을 위해, 출력은 다음의 Markdown 포맷과 YAML/JSON 데이터 계약 구조를 반드시 준수하라.
+*주의*: `qa_criteria`는 사람이 읽는 기준명을 배열로 담고, `quality_standard_ids`는 기계적으로 추적하는 기준 ID 배열을 담는다.
 
 ```yaml
 tc_id: ""
@@ -42,6 +43,7 @@ title: ""
 requirement_ids: []
 source_evidence: []
 qa_criteria: []
+quality_standard_ids: []
 risk_covered: []
 
 initial_state: {}

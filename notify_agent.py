@@ -60,8 +60,8 @@ QA_CLASSIFICATIONS = {
 CLASSIFICATION_RULES = [
     (re.compile(r"제품\s*결함|product\s*defect", re.I), "product_defect"),
     (re.compile(r"기획|요구사항|requirement|spec", re.I), "requirement_review"),
-    (re.compile(r"환경|시뮬레이터|timeout|network|browser", re.I), "environment_issue"),
     (re.compile(r"자동화\s*코드|selector|locator|assert|wait|playwright", re.I), "automation_issue"),
+    (re.compile(r"환경|시뮬레이터|timeout|network|browser", re.I), "environment_issue"),
     (re.compile(r"미실행|조건\s*부족|not[_ -]?run|blocked", re.I), "not_executed"),
 ]
 
@@ -91,7 +91,7 @@ def classify_result(result: dict[str, Any]) -> str:
     """Pytest 상태를 바꾸지 않고 failure_reason만 5가지 원인으로 분류한다."""
     status = str(result.get("result", "")).strip().lower()
     reason = str(result.get("failure_reason", "") or "").strip()
-    if status == "passed" and not reason:
+    if status == "passed":
         return "none"
     for pattern, classification in CLASSIFICATION_RULES:
         if pattern.search(reason):
@@ -301,9 +301,11 @@ def determine_execution_result(status_counts: Counter) -> str:
 
 
 def determine_release_decision(
-    execution_result: str, classification_counts: Counter
+    execution_result: str, classification_counts: Counter, checkpoint_status: str
 ) -> str:
     """환경 문제도 실패이므로 릴리즈 통과로 보지 않고 HOLD 처리한다."""
+    if checkpoint_status != "VALIDATED":
+        return "HOLD"
     if execution_result != "PASSED":
         return "HOLD"
     if classification_counts.get("requirement_review", 0) > 0:
@@ -317,7 +319,9 @@ def build_summary(results: list[dict[str, Any]], validation: dict[str, Any]) -> 
     status_counts = Counter(row.get("result", "") for row in results)
     classification_counts = Counter(row.get("qa_classification", "none") for row in results)
     execution_result = determine_execution_result(status_counts)
-    release_decision = determine_release_decision(execution_result, classification_counts)
+    release_decision = determine_release_decision(
+        execution_result, classification_counts, validation["status"]
+    )
 
     return {
         "run_id": "RUN-" + datetime.now().strftime("%Y%m%d-%H%M%S"),
@@ -352,13 +356,15 @@ def format_slack_payload(report_data: dict[str, Any]) -> dict[str, Any]:
     pytest_summary = report_data["pytest_summary"]
     qa_summary = report_data["qa_classification_summary"]
     
+    execution_result = report_data['execution']['result']
     release_decision = report_data['execution']['release_decision']
-    if release_decision == "HOLD":
-        decision_text = "🔴 *HOLD (배포 반려)* - 치명적 제품 결함 또는 스크립트/환경 이슈 존재"
-    elif release_decision == "INCOMPLETE":
-        decision_text = "🟡 *INCOMPLETE* - 일부 테스트 미실행 또는 요구사항 확인 필요"
-    else:
+    
+    if release_decision == "PASS":
         decision_text = "🟢 *PASS (배포 승인)* - 모든 검증 통과 완료"
+    elif execution_result == "INCOMPLETE":
+        decision_text = "🟡 *HOLD* - 일부 테스트 미실행 또는 요구사항 확인 필요"
+    else:
+        decision_text = "🔴 *HOLD* - 비통과·미실행 또는 요구사항 확인 항목이 존재해 릴리즈 검토가 필요합니다."
 
     total = pytest_summary.get('total', 0)
     passed = pytest_summary.get('passed', 0)
@@ -510,12 +516,10 @@ def send_to_notion(report_data: dict[str, Any]) -> bool:
         "Content-Type": "application/json",
     }
     
-    # 1. 파일에서 결과 로드
-    results_path = Path("reports/qa_results.json")
-    if not results_path.exists():
+    # 1. 검증된 파이프라인 데이터에서 결과 로드
+    results = report_data.get("results", [])
+    if not results:
         return False
-    
-    results = json.loads(results_path.read_text(encoding="utf-8"))
     
     # 2. 개별 TC Upsert
     success = True
