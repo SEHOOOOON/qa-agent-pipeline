@@ -17,7 +17,7 @@
 | **Requirement** | REQ-001 | **FACT-001** (개별 제어) | CRIT-CTRL-001 | **TC-MODE-001** | Passed Scope | Approved |
 | **Requirement** | REQ-002 | **FACT-002** (일괄 제어) | CRIT-INT-001 | **TC-INT-002** | Passed Scope | Approved |
 | **Domain Rule** | DOMAIN-RULE-002 | **FACT-003** (FAN 모드 온도 조절 차단) | CRIT-MODE-002 | **TC-MODE-002** | Passed Scope | Approved |
-| **Domain Rule** | DOMAIN-RULE-002 | **FACT-003** (DRY 진입 차단 및 COOL 복귀 재활성화) | CRIT-MODE-002 | **TC-MODE-003** | Passed Scope | Approved |
+| **Domain Rule** | DOMAIN-RULE-002 | **FACT-003** (DRY 모드 온도 조절 차단 및 해제 검증) | CRIT-MODE-002 | **TC-MODE-003** | Passed Scope | Approved |
 | **Domain Rule** | DOMAIN-RULE-003 | **FACT-004** (전체 Lock 통제) | CRIT-LOCK-001 | **TC-LOCK-001** | Passed Scope | Approved |
 | **Requirement** | REQ-TEMP-001 | **FACT-005** (온도 경계 16~30°C) | CRIT-TEMP-001 | **TC-TEMP-001** | Passed Scope | Approved |
 | **Requirement** | REQ-ERROR-001 | **FACT-006** (에러 제어 차단) | CRIT-ERR-001 | **TC-ERR-001** | Passed Scope | Approved |

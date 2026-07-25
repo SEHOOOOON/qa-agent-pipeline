@@ -15,7 +15,7 @@ test_cases:
       online: true
       locked: false
       mode: "COOL"
-      setTemp: 24
+      setTemp: 24.0
     preconditions: 
       - "장비가 온라인 상태이며 제어권이 있음"
     setup: 
@@ -114,7 +114,7 @@ test_cases:
     quality_standard_ids: ["CRIT-INT-001"]
     risk_covered: ["일괄 제어 시 비대상 기기까지 상태가 변경되는 치명적 오염 오류 방지"]
     initial_state: 
-      devices: "모두 COOL 모드, 24도"
+      devices: "모두 COOL 모드, 24.0°C"
     preconditions: 
       - "복수 제어 모드가 활성화되어 있음"
     setup: 
