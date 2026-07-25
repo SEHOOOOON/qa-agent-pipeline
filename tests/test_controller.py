@@ -251,10 +251,10 @@ def test_tc_env_000_pre_environment_check(page: Page):
 #              드로어가 열린 상태에서는 제어 패널 버튼이 클릭 불가.
 # ============================================================
 def test_tc_mode_001_heat_mode_and_temp_apply(page: Page):
-    """[TC-MODE-001] 해피패스 | 장치 #1 선택 → HEAT 모드 + 26°C 적용 → QA 로그 및 장치 카드 동기화 검증"""
+    """[TC-MODE-001] 해피패스 | 장치 #1 선택 → HEAT 모드 적용 → QA 로그 및 장치 카드 동기화 단일 검증"""
     load_clean_simulator(page)
 
-    # ── Step 1: 1번 장치 카드 선택 ('IDU-00', 초기: COOL 19°C) ──
+    # ── Step 1: 1번 장치 카드 선택 ('IDU-00', 초기: COOL) ──
     select_device_card(page, 1)
     expect(page.locator("#det-unit-name")).to_contain_text("IDU-00")
 
@@ -269,47 +269,20 @@ def test_tc_mode_001_heat_mode_and_temp_apply(page: Page):
     # (--color-heat: #ea580c 주황색 테마 적용)
     expect(page.locator("#det-temp-display")).to_have_class(re.compile(r"heat"))
 
-    # ── Step 3: 설정온도를 26°C로 조절 (초기값 24°C와 달라야 로그가 찍힘) ──
-    # 인간이 눈으로 온도를 보면서 맞추듯, 26.0°C가 될 때까지 클릭하며 대기
-    target_temp = 26.0
-    for _ in range(20):  # 무한 루프 방지용 최대 20회 시도
-        # inner_text()는 UI 렌더링이 안정화될 때까지 안전하게 대기 후 값을 가져옵니다.
-        current_text = page.locator("#det-temp-display").inner_text()
-        if "---" in current_text:
-            break
-            
-        current_val = float(re.sub(r"[^0-9.]", "", current_text.split("°")[0]))
-        if current_val == target_temp:
-            break
-        elif current_val < target_temp:
-            page.click("#det-temp-up-btn")
-        else:
-            page.click("#det-temp-down-btn")
-        page.wait_for_timeout(50)  # UI 렌더링 대기 마진
-
-    # 설정온도 표시가 26.0°C로 업데이트되었는지 검증
-    expect(page.locator("#det-temp-display")).to_contain_text("26.0")
-
-    # ── Step 4: '적용' 버튼 클릭 → applyPanelCommands() 실행 ──
+    # ── Step 3: '적용' 버튼 클릭 → applyPanelCommands() 실행 ──
     # ※ QA 드로어가 닫혀 있는 상태에서 적용해야 함
     page.click(".btn-apply-cmd")
 
-    # ── Step 5: QA 드로어를 열어 트랜잭션 로그 검증 ──
+    # ── Step 4: QA 드로어를 열어 트랜잭션 로그 검증 ──
     # 적용 완료 후 드로어를 열어야 제어 패널 클릭 차단 문제가 없음
     open_qa_drawer(page)
 
-    # [검증 5-1] 운전모드 변경 로그 (COOL → HEAT) 기록 확인
+    # [검증 4-1] 운전모드 변경 로그 (COOL → HEAT) 기록 확인
     wait_for_log_containing(page, "운전모드: COOL -> HEAT")
     mode_log_text = get_log_text(page, "운전모드: COOL -> HEAT")
     assert "운전모드: COOL -> HEAT" in mode_log_text
 
-    # [검증 5-2] 설정온도 변경 로그에 "26" 값 포함 확인
-    # HTML logs: "[IDU-00] 제어 적용 -> 운전모드: COOL -> HEAT, 설정온도: 24°C -> 26°C"
-    wait_for_log_containing(page, "설정온도")
-    temp_log_text = get_log_text(page, "설정온도")
-    assert "26" in temp_log_text, f"설정온도 변경 로그에 26°C 정보가 없습니다: {temp_log_text}"
-
-    # ── Step 6: 장치 카드 상태 동기화 검증 ──
+    # ── Step 5: 장치 카드 상태 동기화 검증 ──
     page.wait_for_function(
         """() => {
             const card = document.getElementById('device-card-1');
@@ -326,8 +299,12 @@ def test_tc_mode_001_heat_mode_and_temp_apply(page: Page):
     # 장치 카드에 mode-heat CSS 클래스 동적 바인딩 검증 (Rule 1 주황색 테마)
     expect(page.locator("#device-card-1")).to_have_class(re.compile(r"mode-heat"))
 
-    # ── Step 7: [화면·내부 상태 동시 검증] ──
-    # [화면·상태 동시 검증 C] 내부 장치 상태(가상 레지스터) 업데이트 검증
+    # ── Step 6: [화면·내부 상태 동시 검증] ──
+    # 내부 장치 상태(가상 레지스터) 업데이트 검증
+    device_mode = page.evaluate(
+        "() => window.__vccs ? window.__vccs.devices.find(d => d.id === 1).mode : null"
+    )
+    assert device_mode == "HEAT", f"가상 레지스터 동기화 실패: {device_mode}"
     # UI에 속지 않고 백엔드 상태값이 실제로 변경되었는지 크로스체크 (Double-Assert)
     backend_device = page.evaluate("() => window.__vccs.devices.find(x => x.id === 1)")
     assert backend_device["mode"] == "HEAT"

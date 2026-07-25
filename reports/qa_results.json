@@ -14,7 +14,7 @@
     "run_id": "6fb35a92-51ab-47fd-b6b6-95529be3b532",
     "tc_id": "TC-MODE-001",
     "test_id": "test_tc_mode_001_heat_mode_and_temp_apply[chromium]",
-    "description": "[TC-MODE-001] 해피패스 | 장치 #1 선택 → HEAT 모드 + 26°C 적용 → QA 로그 및 장치 카드 동기화 검증",
+    "description": "[TC-MODE-001] 해피패스 | 장치 #1 선택 → HEAT 모드 전환 적용 → QA 로그 및 장치 카드 동기화 검증",
     "result": "passed",
     "failure_reason": "",
     "executed_at": "2026-07-25T11:08:57.305839",

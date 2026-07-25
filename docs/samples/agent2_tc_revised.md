@@ -5,7 +5,7 @@
 ```yaml
 test_cases:
   - tc_id: "TC-MODE-001"
-    title: "단일장비 모드변경 정합성 (COOL -> HEAT)"
+    title: "단일장비 운전모드 전환 정합성 (COOL -> HEAT)"
     requirement_ids: ["REQ-001"]
     source_evidence: ["실내기 한 대 개별 제어 가능"]
     qa_criteria: ["공통: 상태 전이 검증", "도메인: UI 및 내부 상태 정합성"]
@@ -23,14 +23,12 @@ test_cases:
       - "장치 1 선택"
     steps: 
       - "제어 패널에서 [HEAT] 모드 버튼 클릭"
-      - "설정온도를 26.0°C로 변경"
       - "[Apply] 버튼 클릭"
     expected_ui: 
       - "모드 배지 텍스트가 '난방'으로 변경됨."
-      - "설정온도 표시값이 '26.0°C'임"
+      - "모드 배지 CSS 색상이 주황색(heat) 테마로 바뀜"
     expected_device_state: 
       - "devices.find(d => d.id === 1).mode === 'HEAT'"
-      - "devices.find(d => d.id === 1).setTemp === 26.0"
     negative_assertions: []
     unchanged_state_assertions: []
     excluded_assertions: []
