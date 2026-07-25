@@ -350,8 +350,117 @@ function filterTcTable(type, btn) {
 <section id="verified"><div class="wrap"><div class="shead"><div><span class="label"><b>9</b> 프로젝트 가치</span><h2>프로젝트를 통해 입증한 QA 가치</h2></div><p>단순히 AI와 기술을 사용하는 것을 넘어, 이 프로젝트에서 실제로 확인한 QA 역량과 의미입니다.</p></div><div class="grid3"><article class="card"><h3>QA 판단 기준의 구조화</h3><p>경험에 머물던 QA 판단 기준을 공통 QA, 중앙제어 도메인, 기능별 품질 기준으로 구분하고 반복 적용할 수 있도록 정리했습니다.</p></article><article class="card"><h3>AI 결과에 대한 품질 통제</h3><p>AI가 만든 결과를 그대로 사용하지 않고 근거, 독립성, 판정 가능성과 추적성을 검토해 승인된 결과만 다음 단계로 전달했습니다.</p></article><article class="card"><h3>실행 결과 기반 의사결정</h3><p>자동화 상태와 실패 원인을 분리하고, Report와 결과 데이터의 정합성을 확인해 릴리즈 권고까지 연결했습니다.</p></article></div><div class="story" style="margin-top: 24px; border-color: rgba(88,166,255,.3); background: rgba(88,166,255,.045);"><b style="color: var(--blue);">핵심 의미</b><span style="font-size: 14px; color: #fff;">AI를 많이 사용하는 것보다, 동일한 QA 기준이 요구사항부터 실행 결과와 보고까지 유지되도록 만드는 것이 이 프로젝트의 핵심입니다.</span></div></div></section>
 <section><div class="wrap"><div class="shead"><div><span class="label"><b>10</b> 현재 한계점</span><h2>시스템 구조적 한계점</h2></div><p>V1 단계에서의 환경적 제약과 확장 전 보완이 필요한 제약사항을 정리했습니다.</p></div><div class="limits"><article class="limit"><b>01</b><h3>가상 환경 중심 검증</h3><p>실제 H/W·ModBus 통신이 아닌 브라우저 내부 상태와 시뮬레이터 화면을 검증합니다.</p></article><article class="limit"><b>02</b><h3>실행 증거 보완 중</h3><p>실제 Run 결과, Screenshot과 상태값 저장 구조를 최종 정리하고 있습니다.</p></article><article class="limit"><b>03</b><h3>AI 검토의 한계</h3><p>AI가 만든 결과를 AI만으로 검토하지 않고 규칙 기반 검사와 실제 실행을 함께 사용해야 합니다.</p></article><article class="limit"><b>04</b><h3>호출 비용과 처리 시간</h3><p>모든 Agent 분석을 매번 수행하면 실행 시간과 모델 호출 비용이 증가할 수 있습니다.</p></article></div></div></section>
 <section><div class="wrap"><div class="shead"><div><span class="label"><b>11</b> 향후 로드맵</span><h2>고도화 및 확장 계획</h2></div><p>단일 TC 정의, 실행 결과 데이터 구조와 추적성 자동 검증을 중심으로 보완합니다.</p></div><div class="road"><article class="roaditem"><h3>단일 TC 정의 파일</h3><p>문서·Notion·코드에서 같은 ID와 품질 기준 사용</p></article><article class="roaditem"><h3>실행 결과 자동 판정</h3><p>환경 점검·기대값 확인·증거 완전성 기록</p></article><article class="roaditem"><h3>추적성 자동 검사</h3><p>요구사항·품질 기준·TC·함수·실행 결과 연결 누락 검출</p></article></div></div></section>
-<section><div class="wrap"><div class="shead"><div><span class="label"><b>12</b> 핵심 역량</span><h2>적용 기술과 QA 역량</h2></div><p>중앙제어 도메인 경험을 품질 기준 정의, 요구사항 정제, TC 설계, 자동화 실행과 결과 분석으로 연결했습니다.</p></div><div class="grid2"><article class="card"><h3>기술 스택</h3><div class="skills"><span class="skill">Playwright</span><span class="skill">Python</span><span class="skill">Pytest</span><span class="skill">Slack</span><span class="skill">Notion</span></div></article><article class="card"><h3>핵심 QA 역량</h3><p>근거 있는 기대결과, 일관된 품질 기준, 테스트 독립성, 실행 증거와 실패 원인 분류를 구조화합니다.</p></article></div></div></section>
-<section id="docs"><div class="wrap"><div class="shead"><div><span class="label"><b>13</b> 주요 산출물</span><h2>주요 문서와 실행 결과</h2></div><p>품질 기준, 샘플 산출물, 자동화 코드와 실행 증거를 확인할 수 있습니다.</p></div><div class="docs"><article class="doc"><span class="file">README.md</span><h3>프로젝트 상세 설명</h3><p>전체 구조와 실행 방법</p><a href="./README.md">문서 보기</a></article><article class="doc"><span class="file">agent1_output_sample.md</span><h3>요구사항 정제 결과</h3><p>확정·추정·정보 부족</p><a href="./agent1_output_sample.md">문서 보기</a></article><article class="doc"><span class="file">agent2_tc_revised.md</span><h3>TC 설계 결과</h3><p>시작 상태·기대결과·복구 절차</p><a href="./docs/samples/agent2_tc_revised.md">문서 보기</a></article><article class="doc"><span class="file">traceability_matrix.md</span><h3>추적성 매트릭스</h3><p>요구사항부터 실행 결과까지</p><a href="./traceability_matrix.md">문서 보기</a></article><article class="doc"><span class="file">test_controller.py</span><h3>자동화 코드</h3><p>승인된 대표 TC 실행</p><a href="./test_controller.py">문서 보기</a></article><article class="doc"><span class="file">report.html</span><h3>실행 리포트</h3><p>실제 결과와 증거</p><a href="./reports/report.html">문서 보기</a></article></div></div></section>
+<section id="experience"><div class="wrap"><div class="shead"><div>
+  <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+    <span class="label" style="margin-bottom: 0;"><b>12</b> 실무 경력 및 핵심 역량</span>
+    <span style="background: rgba(88,166,255,0.12); border: 1px solid rgba(88,166,255,0.3); color: var(--blue); padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; font-family: var(--mono);">3년 6개월 QA · QE 실무 경력</span>
+  </div>
+  <h2>QA / QE 실무 경력과 기술 역량</h2>
+</div>
+<div style="display: flex; align-items: flex-end; justify-content: flex-end;">
+  <span style="font-size: 11px; color: var(--muted); letter-spacing: -0.02em;">↓ 각 경력을 클릭하면 상세 내용을 접거나 펼칠 수 있습니다</span>
+</div></div>
+
+<!-- 1. Timeline Experience (Top) -->
+<div style="position: relative; padding-left: 28px; border-left: 2px solid var(--line); margin-bottom: 36px;">
+  
+  <!-- Item 1: 테스트코윈 -->
+  <div style="position: relative; margin-bottom: 32px;">
+    <!-- Timeline Dot -->
+    <div style="position: absolute; left: -34px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 10px rgba(88, 166, 255, 0.8);"></div>
+    
+    <!-- Line 1: Date & Company -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 12px; color: var(--blue); font-family: var(--mono); font-weight: 700; letter-spacing: 0.03em;">
+      <span>2024.11 – 현재 (재직중) · 테스트코윈</span>
+      <span class="skill" style="font-size: 10px; padding: 2px 8px;">SQA · 제어 통신 QE</span>
+    </div>
+    
+    <!-- Line 2: Role & Sub-summary below -->
+    <div style="margin: 6px 0 10px 0; cursor: pointer;" onclick="document.getElementById('exp-testcowin').classList.toggle('open')">
+      <h3 style="color: #fff; font-size: 18px; margin: 0 0 6px 0; font-weight: 700;">
+        ES 제어 QE팀 · 대리 <span style="font-size: 14px; color: var(--muted); font-weight: normal;">(SQA)</span>
+      </h3>
+      <div style="font-size: 13px; color: var(--muted); line-height: 1.5;">
+        중앙제어 에어컨 / ES 제어 시스템 SQA,<br/>
+        통신 프로토콜 연동 및 회귀 품질 검증
+      </div>
+    </div>
+
+    <!-- Toggle Box (Collapsed by default) -->
+    <div id="exp-testcowin" class="exp-box" onclick="this.classList.toggle('open')" style="cursor: pointer; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; transition: all 0.25s; box-shadow: 0 8px 24px rgba(0,0,0,0.2); margin-top: 10px;">
+      <div style="display: flex; flex-direction: column; gap: 9px;">
+        <div style="color: var(--text); font-size: 13px; line-height: 1.6;"><span style="color: var(--blue); font-weight: bold; margin-right: 8px;">→</span><strong style="color: #fff;">신규 및 변경 기능 검증:</strong> 요구사항 기반 TC 설계 및 실행, 실제 환경 동작 검증, 변경 영향도 분석, UI/UX 사용성 검증</div>
+        <div style="color: var(--text); font-size: 13px; line-height: 1.6;"><span style="color: var(--blue); font-weight: bold; margin-right: 8px;">→</span><strong style="color: #fff;">회귀 테스트 & 릴리즈 품질 관리:</strong> 버전 업데이트 시 핵심 기능 중심 회귀 테스트 수행, 과거 이슈 재발 검증, 현장 이슈 재현 변수화</div>
+        <div style="color: var(--text); font-size: 13px; line-height: 1.6;"><span style="color: var(--blue); font-weight: bold; margin-right: 8px;">→</span><strong style="color: #fff;">장비·프로토콜 연동 테스트:</strong> Modbus, MQTT, FLAT, LGAP 통신 데이터 검증, 통신 끊김·지연·재연결 예외 상황 재현 검증</div>
+        <div style="color: var(--text); font-size: 13px; line-height: 1.6;"><span style="color: var(--blue); font-weight: bold; margin-right: 8px;">→</span><strong style="color: #fff;">API 기반 상태 검증 테스트:</strong> Postman 활용 API 테스트, ACP API를 통한 장치 상태/데이터 조회 후 UI 및 실제 상태 비교 검증</div>
+        <div style="color: var(--text); font-size: 13px; line-height: 1.6;"><span style="color: var(--blue); font-weight: bold; margin-right: 8px;">→</span><strong style="color: #fff;">버그 추적 & 개발 협업:</strong> Jira 기반 이슈 등록/이력 관리, 재현 조건 기반 상세 리포트 작성, 개발/기획팀 협업 문제 해결</div>
+        <div style="color: var(--text); font-size: 13px; line-height: 1.6;"><span style="color: var(--blue); font-weight: bold; margin-right: 8px;">→</span><strong style="color: #fff;">테스트 문서화 & 품질 자산 관리:</strong> TC · 시나리오 · 체크리스트 작성 및 유지보수, 테스트 결과 보고서 작성 자산화</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Item 2: ㈜빌트온 -->
+  <div style="position: relative;">
+    <!-- Timeline Dot -->
+    <div style="position: absolute; left: -34px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 10px rgba(88, 166, 255, 0.8);"></div>
+    
+    <!-- Line 1: Date & Company -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 12px; color: var(--blue); font-family: var(--mono); font-weight: 700; letter-spacing: 0.03em;">
+      <span>2021.12 – 2023.08 (1년 9개월) · ㈜빌트온</span>
+      <span class="skill" style="font-size: 10px; padding: 2px 8px;">Data QC · 표준화</span>
+    </div>
+    
+    <!-- Line 2: Role & Sub-summary below -->
+    <div style="margin: 6px 0 10px 0; cursor: pointer;" onclick="document.getElementById('exp-builton').classList.toggle('open')">
+      <h3 style="color: #fff; font-size: 18px; margin: 0 0 6px 0; font-weight: 700;">
+        데이터 센터 · 사원 <span style="font-size: 14px; color: var(--muted); font-weight: normal;">(Data QA/QC)</span>
+      </h3>
+      <div style="font-size: 13px; color: var(--muted); line-height: 1.5;">
+        Python 기반 Data QC Logic 개발,<br/>
+        데이터 정합성 검수 및 수시 모니터링
+      </div>
+    </div>
+
+    <!-- Toggle Box (Collapsed by default) -->
+    <div id="exp-builton" class="exp-box" onclick="this.classList.toggle('open')" style="cursor: pointer; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; transition: all 0.25s; box-shadow: 0 8px 24px rgba(0,0,0,0.2); margin-top: 10px;">
+      <div style="display: flex; flex-direction: column; gap: 9px;">
+        <div style="color: var(--text); font-size: 13px; line-height: 1.6;"><span style="color: var(--blue); font-weight: bold; margin-right: 8px;">→</span><strong style="color: #fff;">데이터 유효성 검수 & QC 로직 개발:</strong> 수집 데이터 정합성·유효성 검수, 이상 데이터 자동 필터링을 위한 Python 기반 Data QC Logic 개발 및 검수 자동화</div>
+        <div style="color: var(--text); font-size: 13px; line-height: 1.6;"><span style="color: var(--blue); font-weight: bold; margin-right: 8px;">→</span><strong style="color: #fff;">수집 요건 정의 & 데이터 표준화:</strong> 데이터 수집 요건 정의, 메타 값 및 컬럼 정의서 작성, 데이터 특성에 맞는 품질 표준화 프로세스 설립</div>
+        <div style="color: var(--text); font-size: 13px; line-height: 1.6;"><span style="color: var(--blue); font-weight: bold; margin-right: 8px;">→</span><strong style="color: #fff;">수집 점검 & 수시 데이터 모니터링:</strong> 쇼핑몰별 시간대/일별 데이터 수집 누락 여부 점검 및 수집 상태 모니터링을 통한 누락 이상 조기 포착</div>
+        <div style="color: var(--text); font-size: 13px; line-height: 1.6;"><span style="color: var(--blue); font-weight: bold; margin-right: 8px;">→</span><strong style="color: #fff;">아이템 마스터 맵핑 & 데이터 무결성 검증:</strong> 정확한 상품 맵핑을 위한 아이템 마스터 생성/업데이트 및 데이터 정합성 검증 작업 수행</div>
+        <div style="color: var(--text); font-size: 13px; line-height: 1.6;"><span style="color: var(--blue); font-weight: bold; margin-right: 8px;">→</span><strong style="color: #fff;">고객사 품질 챌린지 대응 & 반출 조율:</strong> 고객사 데이터 이슈 챌린지 원인 분석 및 재발 예방책 고안, 데이터 반출 일정 및 사전 품질 조율</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 2. Core Competency Summary Card Grid (Bottom) -->
+<div class="grid2" style="margin-top: 24px;">
+  <article class="card">
+    <h3>기술 스택 & 도구</h3>
+    <div class="skills" style="margin-top: 10px;">
+      <span class="skill">Playwright</span><span class="skill">Python</span><span class="skill">Pytest</span><span class="skill">Postman</span><span class="skill">Jira</span><span class="skill">Slack</span><span class="skill">Notion</span><span class="skill">Modbus / MQTT</span>
+    </div>
+  </article>
+  <article class="card">
+    <h3>핵심 QA/QE 역량</h3>
+    <div class="skills" style="margin-top: 10px;">
+      <span class="skill">제어 프로토콜 연동 SQA</span>
+      <span class="skill">API & 데이터 정합성 검증</span>
+      <span class="skill">Python Data QC 로직 개발</span>
+      <span class="skill">QA 품질 기준 체계화</span>
+      <span class="skill">회귀 테스트 자산화</span>
+      <span class="skill">Jira 결함 추적 & 협업</span>
+    </div>
+  </article>
+</div>
+
+<style>
+.exp-box { display: block; }
+.exp-box:not(.open) { display: none; }
+</style>
+</div></section>
 </main><footer><div class="wrap footer"><span>Central Control · Quality Standard Driven QA Workflow</span><span>Notion·Slack 확인 완료 · 2026-07-25 실행 검증 완료</span></div></footer>
 <script>const bs=document.querySelectorAll('.tabbtn'),ps=document.querySelectorAll('.tab'),tc=document.querySelector('.tabs');function stable(){if(!tc||innerWidth<=700){if(tc)tc.style.removeProperty('--tabh');return}let m=0;ps.forEach(p=>{let d=p.style.display,o=p.style.position,v=p.style.visibility;p.style.display='grid';p.style.position='absolute';p.style.visibility='hidden';p.style.width=tc.clientWidth+'px';m=Math.max(m,p.scrollHeight);p.style.display=d;p.style.position=o;p.style.visibility=v;p.style.width=''});tc.style.setProperty('--tabh',Math.ceil(m)+'px')}bs.forEach(b=>b.onclick=()=>{bs.forEach(x=>x.classList.remove('on'));ps.forEach(x=>x.classList.remove('on'));b.classList.add('on');document.getElementById(b.dataset.tab).classList.add('on')});addEventListener('load',stable);addEventListener('resize',stable)</script>
 </body></html>
