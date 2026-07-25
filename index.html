@@ -81,11 +81,11 @@
             <div><strong style="color: #fbbf24;">🐾 테스트 절차 (Steps):</strong>
               <ol style="margin: 4px 0 0 18px; padding: 0; color: #94a3b8;">
                 <li>브라우저 컨텍스트 생성 및 virtual-controller.html 로드</li>
-                <li>16대 IDU 장치 카드 DOM 렌더링 확인 (#device-card-1 ~ #device-card-16)</li>
+                <li>16대 IDU 장치 카드 화면 렌더링 확인 (#device-card-1 ~ #device-card-16)</li>
                 <li>ModBus 통신 레지스터 메모리 및 JS 전역 변수 devices 초기 상태 조회</li>
               </ol>
             </div>
-            <div><strong style="color: #3fb950;">🎯 기대 결과 (Expected Results):</strong> <span style="color: #c9d1d9;">16대 장치 카드 100% DOM 정상 로드 및 레지스터 오류 코드(0x00) 확인</span></div>
+            <div><strong style="color: #3fb950;">🎯 기대 결과 (Expected Results):</strong> <span style="color: #c9d1d9;">16대 장치 카드 100% 화면 정상 로드 및 레지스터 오류 코드(0x00) 확인</span></div>
             <div style="border-top: 1px solid rgba(148,163,184,0.1); padding-top: 8px; font-size: 11px; color: #8b949e;"><strong>⏱️ Playwright 실행 상세:</strong> 실행 시간 14.61초 | <code>test_tc_env_000_pre_environment_check[chromium]</code></div>
           </div>
         </td></tr>
@@ -275,7 +275,7 @@
                 <li>존재하지 않는 17번 장치(IDU-17) 제어 시도</li>
               </ol>
             </div>
-            <div><strong style="color: #3fb950;">🎯 기대 결과 (Expected Results):</strong> <span style="color: #c9d1d9;">IDU-17 DOM 미존재 ➔ Checkpoint-3에서 "선행 조건 부족으로 미실행(SKIP)"으로 자동 분류</span></div>
+            <div><strong style="color: #3fb950;">🎯 기대 결과 (Expected Results):</strong> <span style="color: #c9d1d9;">IDU-17 장비 미존재 ➔ Checkpoint-3에서 "선행 조건 부족으로 미실행(SKIP)"으로 자동 분류</span></div>
             <div style="border-top: 1px solid rgba(148,163,184,0.1); padding-top: 8px; font-size: 11px; color: #8b949e;"><strong>⏱️ Playwright 실행 상세:</strong> 실행 시간 1.48초 | <code>test_pipeline_004_not_executed_condition_missing[chromium]</code></div>
           </div>
         </td></tr>
