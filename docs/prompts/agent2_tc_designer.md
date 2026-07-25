@@ -39,6 +39,7 @@ Agent 간의 시스템적인 파싱을 위해, 출력은 다음의 Markdown 포�
 
 ```yaml
 tc_id: ""
+tc_category: "사전 점검 | 해피패스 | 엣지케이스 | 예외/결함"
 title: ""
 requirement_ids: []
 source_evidence: []

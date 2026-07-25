@@ -42,6 +42,7 @@ test_cases:
     review_status: "Approved"
 
   - tc_id: "TC-MODE-002"
+    tc_category: "엣지케이스"
     title: "FAN 모드 선택 시 설정온도 조절 UI 비활성화"
     requirement_ids: ["DOMAIN-RULE-002"]
     source_evidence: ["FAN 모드 지원"]
@@ -73,7 +74,8 @@ test_cases:
     review_status: "Approved"
 
   - tc_id: "TC-MODE-003"
-    title: "DRY 모드 비활성화 후 COOL 복귀 시 온도 조절 재활성화"
+    tc_category: "엣지케이스"
+    title: "Rule 2 양방향 | 제습(DRY) 비활성화 → 냉방(COOL) 복귀 시 설정온도 관제점 재활성화"
     requirement_ids: ["DOMAIN-RULE-002"]
     source_evidence: ["FAN/DRY 모드 시 온도 조절 차단"]
     qa_criteria: ["기능별: 모드별 제어 제한 (배타 제어)"]
@@ -107,7 +109,8 @@ test_cases:
     review_status: "Approved"
 
   - tc_id: "TC-INT-002"
-    title: "복수 장비 일괄 제어 정합성"
+    tc_category: "엣지케이스"
+    title: "복수 선택 일괄 제어 | 3대 선택 → HEAT 일괄 적용 → 내부 상태(devices[].mode) 검증"
     requirement_ids: ["REQ-002"]
     source_evidence: ["다중 선택 후 일괄 명령 전송 가능"]
     qa_criteria: ["기능별: 모드별 제어 제한 (배타 제어)", "도메인: 다중 장비 제어 일치성"]
