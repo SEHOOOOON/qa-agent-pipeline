@@ -17,7 +17,7 @@
 #   TC-MODE-001: 해피패스 관제 제어 (HEAT 모드 + 24°C 적용 → 로그·카드 동기화 검증)
 #   TC-MODE-002: Rule 2 예외 차단 - FAN 모드 시 설정온도 관제점 비활성화
 #   TC-MODE-003: Rule 2 양방향 - DRY 비활성화 → COOL 복귀 재활성화
-#   TC-LOCK-001: LOCK 관제점 전수 검사 (16대 루프 + 자물쇠 아이콘 + 현장 리모컨 차단)
+#   TC-LOCK-001: LOCK 관제점 전수 검사 (16대 루프 + 중앙/현장 제어 차단 + 상태 불변)
 #   TC-ERR-001: 결함 주입 후 제어 차단 (CH05 에러 주입 → 차단 로그 타임아웃 방어 검증)
 #   TC-INT-002: 복수 선택 일괄 제어 (3대 선택 → HEAT 일괄 적용 → 내부 상태 검증)
 #   TC-TEMP-001: 온도 상한 경계값 방어 (30°C 초과 시 Toast + 값 차단 검증)
@@ -27,7 +27,7 @@
 #   TC-PIPE-002: 시뮬레이터 환경 이슈 (Timeout → environment_issue)
 #   TC-PIPE-003: 자동화 코드 오류 (잘못된 셀렉터 사용 → automation_issue)
 #   TC-PIPE-004: 조건 부족 미실행 (17번 장치 미존재 → not_executed)
-#   TC-PIPE-005: 제품 결함 후보 (QA 로그 JSON 포맷 미준수 → product_defect)
+#   TC-TEMP-002: 제품 결함 후보 (AUTO 모드 하한 18°C 위반 → product_defect)
 #
 # 【실행 방법】
 #   pip install pytest pytest-playwright pytest-html
@@ -221,14 +221,14 @@ def get_log_text(page: Page, has_text: str) -> str:
 def test_tc_env_000_pre_environment_check(page: Page):
     """[TC-ENV-000] 사전 환경 검증 (Pre-check) | 테스트 실행 전 가상 환경 및 레지스터 로드 상태 검증"""
     page.goto(VIRTUAL_CONTROLLER_URL, wait_until="domcontentloaded")
-    
+
     # 1. UI 렌더링 검증 (첫 번째 장치 카드가 보일 때까지 대기)
     expect(page.locator("#device-card-1")).to_be_visible(timeout=5000)
-    
+
     # 2. 내부 장치 상태(가상 레지스터) 객체 존재 및 16대 로드 검증
     device_count = page.evaluate("() => window.__vccs ? window.__vccs.devices.length : 0")
     assert device_count == 16, f"환경 에러: 16대 장비 로드 실패 (실제 로드 수: {device_count})"
-    
+
     # 3. QA 드로어 주입 검증
     expect(page.locator(".qa-drawer")).to_be_attached()
 
@@ -237,14 +237,14 @@ def test_tc_env_000_pre_environment_check(page: Page):
 #
 # 시나리오:
 #   1번 장치 카드 클릭 → 제어 패널에서 '난방(HEAT)' 모드 선택
-#   → 온도 조절 버튼으로 26°C 설정 → '적용' 버튼 클릭
+#   → 초기 설정온도 24°C를 유지한 채 '적용' 버튼 클릭
 #   → QA 드로어를 열어 트랜잭션 로그 및 장치 카드 상태 검증
 #
 # 검증 포인트:
 #   ① HEAT 모드 버튼 active 클래스
 #   ② 설정온도 표시박스 heat 컬러 테마 바인딩 (Rule 1)
 #   ③ 트랜잭션 로그에 "운전모드: COOL -> HEAT" 기록
-#   ④ 트랜잭션 로그에 "설정온도" 및 "26" 값 기록
+#   ④ 설정온도는 초기값 24°C를 유지
 #   ⑤ 장치 카드 모드 배지 '난방' 텍스트 및 mode-heat 클래스 동기화
 #
 # ※ 핵심 주의: QA 드로어는 적용 버튼 클릭 후에 열어야 한다.
@@ -308,7 +308,7 @@ def test_tc_mode_001_heat_mode_and_temp_apply(page: Page):
     # UI에 속지 않고 백엔드 상태값이 실제로 변경되었는지 크로스체크 (Double-Assert)
     backend_device = page.evaluate("() => window.__vccs.devices.find(x => x.id === 1)")
     assert backend_device["mode"] == "HEAT"
-    assert backend_device["setTemp"] == pytest.approx(26.0)
+    assert backend_device["setTemp"] == pytest.approx(24.0)
 
 
 # ============================================================
@@ -373,7 +373,7 @@ def test_tc_mode_003_dry_mode_then_cool_reactivation(page: Page):
 # 【TC-LOCK-001】LOCK 관제점 전수 검사
 # ============================================================
 def test_tc_lock_001_all_devices_full_inspection(page: Page):
-    """[TC-LOCK-001] LOCK 전수 검사 | 16대 전체 잠금 주입 → 🔒 아이콘·CSS·현장 리모컨 차단 루프 검증"""
+    """[TC-LOCK-001] LOCK 전수 검사 | 16대 잠금 표시 + 중앙/현장 제어 차단 및 상태 불변 검증"""
     load_clean_simulator(page)
 
     # 초기: locked 카드 0개
@@ -417,7 +417,42 @@ def test_tc_lock_001_all_devices_full_inspection(page: Page):
     # 최종 locked 총 수 = 16
     assert page.locator(".ac-device-card.locked").count() == TOTAL_DEVICE_COUNT
 
-    # 부가 검증: LOCK 상태에서 현장 리모컨 차단
+    # LOCK 상태 장치의 기준 상태 저장
+    before = page.evaluate("""() => {
+        const device = window.__vccs.devices[0];
+        return {
+            status: device.status,
+            mode: device.mode,
+            setTemp: device.setTemp,
+            fanSpeed: device.fanSpeed,
+            purify: device.purify
+        };
+    }""")
+
+    # 중앙 관제 패널에서 다른 관제점 변경을 시도해도 실제 장치 상태는 불변
+    page.click("#device-card-1 .card-body-split")
+    page.click("#det-mode-heat")
+    page.click("#det-fan-high")
+    page.click(".btn-apply-cmd")
+
+    after = page.evaluate("""() => {
+        const device = window.__vccs.devices[0];
+        return {
+            status: device.status,
+            mode: device.mode,
+            setTemp: device.setTemp,
+            fanSpeed: device.fanSpeed,
+            purify: device.purify
+        };
+    }""")
+    assert after == before, f"LOCK 상태에서 중앙 관제점 값이 변경됨: before={before}, after={after}"
+
+    open_qa_drawer(page)
+    wait_for_log_containing(page, "LOCK 상태로", timeout=LOG_RENDER_TIMEOUT)
+    central_lock_log = page.locator(".qa-log-text").filter(has_text="LOCK 상태로").first
+    expect(central_lock_log).to_be_visible()
+
+    # LOCK 상태에서 현장 리모컨도 차단
     open_qa_drawer(page)
     page.click("button:has-text('물리 전원 토글')")
     wait_for_log_containing(page, "ALL LOCK", timeout=LOG_RENDER_TIMEOUT)
@@ -569,7 +604,7 @@ def test_tc_temp_001_upper_limit_boundary(page: Page):
             break
         page.click("#det-temp-up-btn")
         page.wait_for_timeout(50)
-        
+
     expect(page.locator("#det-temp-display")).to_contain_text("29.0")
 
     # 30°C 달성 (정상 범위 내 마지막 허용값)
@@ -598,11 +633,11 @@ def test_pipeline_001_alarm_ui_ambiguity_classification(page: Page):
     # QA Drawer가 덮기 전에 장치를 먼저 선택합니다.
     select_device_card(page, 5)
     open_qa_drawer(page)
-    
+
     # 에러 주입
     page.click("button:has-text('CH05 과열 에러')")
     wait_for_log_containing(page, "알람 발생")
-    
+
     # 여기서 기획의 공백(Ambiguity) 발생
     # 기획서에는 "알람 시 에러 상태로 변경된다"라고만 되어 있고,
     # 카드의 배경색이 빨간색이 되어야 하는지, 테두리만 바뀌어야 하는지 스펙이 없음.
@@ -613,7 +648,7 @@ def test_pipeline_001_alarm_ui_ambiguity_classification(page: Page):
 # 【TC-PIPE-002】시뮬레이터 환경 이슈 분류
 # ============================================================
 def test_pipeline_002_simulator_timeout_classification(page: Page):
-    """[TC-PIPE-002] 시뮬레이터 환경 이슈 분류 | 제어 명령 후 가상 환경 미반응 (Simulator Timeout) — Finding: ENV-001"""
+    """[TC-PIPE-002] 시뮬레이터 환경 이슈 분류 | 제어 명령 후 가상 환경 미반응 (Simulator Timeout)"""
     load_clean_simulator(page)
     # QA Drawer가 덮기 전에 장치를 먼저 선택합니다.
     select_device_card(page, 1)
@@ -626,31 +661,31 @@ def test_pipeline_002_simulator_timeout_classification(page: Page):
 
 
 # ============================================================
-# 【TC-PIPE-003】자동화 코드 오류 분류 — Finding: AUT-001
+# 【TC-PIPE-003】자동화 코드 오류 분류
 # 분류 목적: 자동화 스크립트의 잘못된 셀렉터가 Playwright TimeoutError를
 #           유발하는 경우를 'automation_issue'로 정확하게 분류하는지 검증
 # ============================================================
 def test_pipeline_003_automation_code_error_classification(page: Page):
-    """[TC-PIPE-003] 자동화 코드 오류 분류 | 존재하지 않는 셀렉터(#qa-result-panel) 사용으로 인한 Playwright TimeoutError — Finding: AUT-001"""
+    """[TC-PIPE-003] 파이프라인 분류 검증 | UI 변경 후 자동화 스크립트의 요소 식별 정보 불일치로 인한 Playwright TimeoutError"""
     load_clean_simulator(page)
 
     # 자동화 코드 오류 시뮬레이션:
-    # #qa-result-panel 은 virtual-controller.html에 존재하지 않는 셀렉터입니다.
-    # 실무에서는 기획이나 DOM 변경 후 셀렉터를 업데이트하지 않았을 때 발생합니다.
+    # UI 변경 후 기존 요소 식별 정보가 더 이상 유효하지 않은 상황을 재현합니다.
+    # 실무에서는 화면 구조가 변경됐지만 자동화 스크립트가 갱신되지 않았을 때 발생합니다.
     # 이 에러는 SimulatorTimeoutError도 AssertionError도 아니므로 → automation_issue 분류
     page.locator("#qa-result-panel").click(timeout=2000)
 
 
 # ============================================================
-# 【TC-PIPE-004】조건 부족 미실행 분류 — Finding: SKIP-001
+# 【TC-PIPE-004】조건 부족 미실행 분류
 # 분류 목적: 기획·요구사항 문제가 아닌, 순수하게 테스트 실행 조건이
 #           충족되지 않아 미실행 처리하는 경우를 'not_executed'로 분류하는지 검증
 # ============================================================
 def test_pipeline_004_not_executed_condition_missing(page: Page):
-    """[TC-PIPE-004] 조건 부족 미실행 | 시뮬레이터 최대 장치 수(16대) 초과 — 17번 장치 미존재로 실행 불가 — Finding: SKIP-001"""
+    """[TC-PIPE-004] 조건 부족 미실행 | 시뮬레이터 지원 범위(16대)를 초과한 17번 장치가 없어 실행 보류"""
     load_clean_simulator(page)
 
-    # 실행 조건 선행 검사: 17번 장치 카드가 DOM에 존재하는지 확인
+    # 실행 조건 선행 검사: 가상 관제 화면의 장치 목록에 17번 장치가 제공되는지 확인
     device_17_exists = page.evaluate(
         "() => !!document.getElementById('device-card-17')"
     )
@@ -660,7 +695,7 @@ def test_pipeline_004_not_executed_condition_missing(page: Page):
     if not device_17_exists:
         pytest.skip(
             "조건 부족으로 미실행: 시뮬레이터 최대 장치 수(16대) 초과 — "
-            "17번 장치(#device-card-17)가 DOM에 존재하지 않아 테스트 실행 불가."
+            "가상 관제 화면의 장치 목록에 17번 장치가 제공되지 않아 테스트 실행 불가."
         )
 
     # 17번 장치가 존재하는 경우 (현재 시뮬레이터에서는 도달 불가)
@@ -668,12 +703,12 @@ def test_pipeline_004_not_executed_condition_missing(page: Page):
 
 
 # ============================================================
-# 【TC-PIPE-005】제품 결함 후보 분류 — Finding: LOG-001
+# 【TC-TEMP-002】제품 결함 후보 분류
 # 분류 목적: 실제 제품 동작이 기획 요건과 다를 때 AssertionError가 발생하고
 #           이를 'product_defect'으로 정확하게 분류하는지 검증
 # ============================================================
 def test_tc_temp_002_auto_mode_lower_limit(page: Page):
-    """[TC-TEMP-002] 제품 결함 후보 | AUTO 모드 온도 하한(18.0°C) 방어 실패 — 17.0°C 설정 허용 결함 — Finding: DEF-001"""
+    """[TC-TEMP-002] 제품 결함 후보 | AUTO 모드 온도 하한(18.0°C) 방어 실패 — 17.0°C 설정 허용 결함"""
     load_clean_simulator(page)
     select_device_card(page, 1)
 
@@ -701,7 +736,7 @@ def test_tc_temp_002_auto_mode_lower_limit(page: Page):
 
     # 이 Assert는 시뮬레이터에 AUTO 모드 온도 제한 로직이 누락되었기 때문에 반드시 실패하여 제품 결함으로 분류됨
     assert has_toast and "18.0" in current_text, (
-        f"[Finding: DEF-001] 제품 결함 후보: AUTO 모드 온도 하한(18.0°C) 방어 로직 누락. "
+        f"제품 결함 후보: AUTO 모드 온도 하한(18.0°C) 방어 로직 누락. "
         f"신규 기획 요건: AUTO 모드 시 설정 온도는 18.0°C ~ 30.0°C. "
         f"실제 결과: Toast 노출({has_toast}), 현재 표시온도({current_text})"
     )

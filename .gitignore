@@ -6,7 +6,9 @@ __pycache__/
 # QA Reports (로컬 실행 시 생성되는 동적 결과물)
 qa_results.json
 report.html
-assets/
+assets/*
+!assets/playwright_pipeline_demo.mp4
+reports/assets/
 
 # Security 가드레일 (절대 GitHub에 올라가면 안 되는 파일)
 .env

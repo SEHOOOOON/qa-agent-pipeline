@@ -13,6 +13,7 @@
 - Checkpoint 4의 VALIDATED는 데이터 정합성 확인 완료를 뜻한다.
 """
 
+import argparse
 import html
 import json
 import os
@@ -39,6 +40,8 @@ RESULTS_PATH = REPORTS_DIR / "qa_results.json"
 HTML_REPORT_PATH = REPORTS_DIR / "report.html"
 SUMMARY_PATH = REPORTS_DIR / "agent4_summary.json"
 CHECKPOINT4_PATH = REPORTS_DIR / "checkpoint4_validation.json"
+PORTFOLIO_PATH = BASE_DIR / "index.html"
+TRACEABILITY_PATH = BASE_DIR / "docs" / "samples" / "traceability_matrix.md"
 
 PYTEST_STATUSES = {
     "passed", "failed", "skipped", "error", "xfailed", "xpassed", "rerun"
@@ -255,11 +258,11 @@ def checkpoint4_validate(
         if match:
             html_summary_count = int(match.group(1))
             html_actual_count = html_report.get("total", 0)
-            
+
             # 실제 실행 건수 = 전체 건수 - (skipped + xfailed)
             skipped_count = sum(1 for r in results if r.get("result") in ("skipped", "xfailed"))
             expected_run_count = html_actual_count - skipped_count
-            
+
             if html_summary_count != expected_run_count:
                 warnings.append(
                     {
@@ -355,10 +358,10 @@ def format_slack_payload(report_data: dict[str, Any]) -> dict[str, Any]:
     """풍부한 포맷(Block Kit)을 사용하여 Slack 메시지를 구성합니다."""
     pytest_summary = report_data["pytest_summary"]
     qa_summary = report_data["qa_classification_summary"]
-    
+
     execution_result = report_data['execution']['result']
     release_decision = report_data['execution']['release_decision']
-    
+
     if release_decision == "PASS":
         decision_text = "🟢 *PASS (배포 승인)* - 모든 검증 통과 완료"
     elif execution_result == "INCOMPLETE":
@@ -370,7 +373,7 @@ def format_slack_payload(report_data: dict[str, Any]) -> dict[str, Any]:
     passed = pytest_summary.get('passed', 0)
     failed = pytest_summary.get('failed', 0) + pytest_summary.get('error', 0)
     skipped = pytest_summary.get('skipped', 0) + pytest_summary.get('xfailed', 0)
-    
+
     blocks = [
         {
             "type": "header",
@@ -399,7 +402,7 @@ def format_slack_payload(report_data: dict[str, Any]) -> dict[str, Any]:
         },
         {"type": "divider"}
     ]
-    
+
     class_map = {
         "product_defect": {"emoji": "🔴", "title": "1. 제품 결함 후보 (Product Defect)"},
         "requirement_review": {"emoji": "⚠️", "title": "2. 기획·요구사항 확인 필요 (Requirement Review Needed)"},
@@ -407,7 +410,7 @@ def format_slack_payload(report_data: dict[str, Any]) -> dict[str, Any]:
         "automation_issue": {"emoji": "🤖", "title": "4. 자동화 코드 문제 (Automation Script Error)"},
         "not_executed": {"emoji": "🚧", "title": "5. 조건 부족으로 미실행 (Not Executed)"}
     }
-    
+
     grouped_results = {}
     for res in report_data.get('results', []):
         cls = res.get('qa_classification', 'none')
@@ -416,20 +419,24 @@ def format_slack_payload(report_data: dict[str, Any]) -> dict[str, Any]:
         if cls not in grouped_results:
             grouped_results[cls] = []
         grouped_results[cls].append(res)
-        
-    for cls_key, items in grouped_results.items():
-        info = class_map.get(cls_key, {"emoji": "❓", "title": f"분류: {cls_key}"})
-        
+
+    for cls_key, info in class_map.items():
+        items = grouped_results.get(cls_key, [])
+        if not items:
+            continue
+
         text_lines = [f"{info['emoji']} *{info['title']}*"]
-        
+
         for item in items:
             test_id = item.get('test_id', 'Unknown')
             if "::" in test_id:
                 test_id = test_id.split("::")[-1]
             desc = item.get('description', '')
+            desc = re.sub(r'^\[TC-[^\]]+\]\s*', '', desc)
+            desc = re.sub(r'\s*—\s*Finding:\s*[A-Z0-9-]+', '', desc)
             reason = item.get('failure_reason', '상세 사유 없음')
             text_lines.append(f"> *[{item.get('tc_id', test_id)}]* {desc}\n> └─ 상세 사유: {reason}")
-            
+
         blocks.append({
             "type": "section",
             "text": {
@@ -437,9 +444,9 @@ def format_slack_payload(report_data: dict[str, Any]) -> dict[str, Any]:
                 "text": "\n".join(text_lines)
             }
         })
-        
+
     blocks.append({"type": "divider"})
-    
+
     blocks.append({
         "type": "context",
         "elements": [
@@ -449,15 +456,20 @@ def format_slack_payload(report_data: dict[str, Any]) -> dict[str, Any]:
 *실행 일시*: {report_data.get('generated_at', '')}
 *자동화 엔진*: Playwright v1.40+
 *Run ID*: {report_data.get('run_id', '')}
-*TCM 대시보드*: <https://notion.so|Notion Database 열기 ↗>"""
+*외부 전송*: 기본 Dry-run / `--send`에서 Slack·Notion API 호출"""
             }
         ]
     })
-    
+
     return {"blocks": blocks}
 
-def send_to_slack(payload: dict[str, Any]) -> bool:
+def send_to_slack(payload: dict[str, Any], *, dry_run: bool = True) -> bool:
     """검증된 결과만 Slack Webhook으로 전송한다."""
+    if dry_run:
+        print("[DRY-RUN] Slack payload 미리보기 (외부 전송 없음)")
+        print(json.dumps(payload, ensure_ascii=False, indent=2))
+        return False
+
     webhook_url = os.getenv("SLACK_WEBHOOK_URL", "").strip()
     if not webhook_url or "여기에" in webhook_url:
         print("[INFO] SLACK_WEBHOOK_URL 미설정: Slack payload 콘솔 미리보기")
@@ -469,19 +481,29 @@ def send_to_slack(payload: dict[str, Any]) -> bool:
     return True
 
 
-def send_to_notion(report_data: dict[str, Any]) -> bool:
+def send_to_notion(report_data: dict[str, Any], *, dry_run: bool = True) -> bool:
     """실행 요약 및 개별 TC 결과를 Notion DB에 Upsert (TC ID 기반 업데이트) 한다.
 
     [구현 목적]
     - 매 실행마다 중복 페이지를 생성하지 않고, TC ID를 기준으로 기존 페이지를 찾아 상태(결과, 로그 등)만 업데이트(PATCH) 합니다.
     - 기존에 없는 TC라면 새 페이지를 생성(POST) 합니다.
     """
-    notion_token = os.getenv("NOTION_API_KEY", "").strip()
-    database_id = os.getenv("NOTION_DATABASE_ID", "").strip()
+    if dry_run:
+        print("[DRY-RUN] Notion TC-ID 기반 Upsert 미리보기 (외부 변경 없음)")
+        for tc in report_data.get("results", []):
+            print(
+                f"       - [UPSERT] {tc.get('tc_id', 'UNKNOWN')} | "
+                f"Status: {str(tc.get('result', '')).upper()} | "
+                f"Classification: {tc.get('qa_classification', 'none')}"
+            )
+        return False
 
-    if not notion_token or not database_id:
-        print("[INFO] Notion 환경변수 미설정: Notion TC-ID 기반 Upsert 시뮬레이션(콘솔 미리보기)")
-        
+    notion_token = os.getenv("NOTION_API_KEY", "").strip()
+    data_source_id = os.getenv("NOTION_DATA_SOURCE_ID", "").strip()
+
+    if not notion_token or not data_source_id:
+        print("[INFO] Notion 환경변수 미설정(NOTION_API_KEY, NOTION_DATA_SOURCE_ID): Notion TC-ID 기반 Upsert 시뮬레이션(콘솔 미리보기)")
+
         # 1. qa_results.json의 테스트 결과를 불러옵니다.
         try:
             results_path = Path("reports/qa_results.json")
@@ -491,43 +513,43 @@ def send_to_notion(report_data: dict[str, Any]) -> bool:
             results = []
 
         print(f"       총 {len(results)}개의 TC에 대해 Upsert(수정/추가)를 시뮬레이션합니다.")
-        
+
         # 2. 각 TC별로 Upsert 로직 (시뮬레이션 출력)
         for tc in results:
             tc_id = tc.get("tc_id", "UNKNOWN")
             result = tc.get("result", "")
-            finding_type = tc.get("finding_type", "none")
-            
+            finding_type = tc.get("qa_classification", "none")
+
             # 실제 API 호출이라면 아래와 같이 동작합니다.
             # 2-1) Notion Query API (filter: TC-ID == tc_id)
             # 2-2) 결과(results)가 있으면 -> PATCH (업데이트)
             # 2-3) 결과(results)가 없으면 -> POST (신규 생성)
-            
+
             action = "PATCH (Update)" if tc_id.startswith("TC-") else "POST (Create)"
             print(f"       - [{action}] {tc_id} | Status: {result.upper()} | Finding: {finding_type}")
-            
+
         print("       Notion 전송 시뮬레이션 완료.")
         return False
 
     # 실제 Notion 연동 로직 (환경변수 존재 시 동작)
     headers = {
         "Authorization": f"Bearer {notion_token}",
-        "Notion-Version": "2022-06-28",
+        "Notion-Version": "2026-03-11",
         "Content-Type": "application/json",
     }
-    
+
     # 1. 검증된 파이프라인 데이터에서 결과 로드
     results = report_data.get("results", [])
     if not results:
         return False
-    
+
     # 2. 개별 TC Upsert
     success = True
     for tc in results:
         tc_id = tc.get("tc_id")
         if not tc_id:
             continue
-            
+
         # (1) 페이지 존재 여부 쿼리
         query_payload = {
             "filter": {
@@ -536,17 +558,18 @@ def send_to_notion(report_data: dict[str, Any]) -> bool:
             }
         }
         resp = requests.post(
-            f"https://api.notion.com/v1/databases/{database_id}/query",
+            f"https://api.notion.com/v1/data_sources/{data_source_id}/query",
             headers=headers,
             json=query_payload,
             timeout=10,
         )
         if resp.status_code != 200:
+            print(f"[ERROR] Notion Query 실패 ({tc_id}): HTTP {resp.status_code} {resp.text[:300]}")
             success = False
             continue
-            
+
         query_results = resp.json().get("results", [])
-        
+
         # (2) 속성 정의
         status_map = {
             "passed": "Pass",
@@ -555,7 +578,7 @@ def send_to_notion(report_data: dict[str, Any]) -> bool:
             "error": "Blocker"
         }
         notion_status = status_map.get(tc.get("result", "").lower(), "Blocked")
-        
+
         desc = tc.get("description", "")
         # 구분 자동 판별 로직
         category = "엣지케이스"
@@ -563,26 +586,26 @@ def send_to_notion(report_data: dict[str, Any]) -> bool:
             category = "해피패스"
         elif "결함" in desc or "예외" in desc or tc.get("result") == "failed":
             category = "예외/결함"
-            
+
         # 우선순위 자동 판별 로직
         priority = "P1" if "해피패스" in desc or tc.get("result") == "failed" else "P2"
-        
+
         # 앞의 숫자 제거 ("1. 제품 결함 후보" -> "제품 결함 후보")
         raw_reason = tc.get("failure_reason", "")
         clean_reason = re.sub(r'^\d+\.\s*', '', raw_reason)
-        
+
         # Pass 인 경우 '결과' 컬럼에 '정상 동작' 명시
         if tc.get("result") == "passed" and not clean_reason:
             clean_reason = "정상 동작"
-            
+
         # 테스트 제목에서 [TC-XXX] 접두사 제거
         clean_desc = re.sub(r'^\[TC-[^\]]+\]\s*', '', desc)
-        
+
         # 불필요한 영문 텍스트 및 꼬리표(Finding: ...) 제거
         clean_desc = re.sub(r'\s*—\s*Finding:\s*[A-Z0-9-]+', '', clean_desc)
         clean_desc = clean_desc.replace('Playwright TimeoutError', '시간 초과 오류 발생')
         clean_desc = clean_desc.replace('(Simulator Timeout)', '').strip()
-        
+
         properties = {
             "TC-ID": {"title": [{"text": {"content": tc_id}}]},
             "테스트 제목": {"rich_text": [{"text": {"content": clean_desc[:2000]}}]},
@@ -591,29 +614,127 @@ def send_to_notion(report_data: dict[str, Any]) -> bool:
             "구분": {"select": {"name": category}},
             "우선 순위": {"select": {"name": priority}}
         }
-        
+
         # (3) Upsert 분기
         if query_results:
             page_id = query_results[0]["id"]
-            requests.patch(
+            mutation_response = requests.patch(
                 f"https://api.notion.com/v1/pages/{page_id}",
                 headers=headers,
                 json={"properties": properties},
                 timeout=10,
             )
         else:
-            requests.post(
+            mutation_response = requests.post(
                 "https://api.notion.com/v1/pages",
                 headers=headers,
-                json={"parent": {"database_id": database_id}, "properties": properties},
+                json={
+                    "parent": {
+                        "type": "data_source_id",
+                        "data_source_id": data_source_id,
+                    },
+                    "properties": properties,
+                },
                 timeout=10,
             )
+
+        if not mutation_response.ok:
+            print(
+                f"[ERROR] Notion Upsert 실패 ({tc_id}): "
+                f"HTTP {mutation_response.status_code} {mutation_response.text[:300]}"
+            )
+            success = False
 
     return success
 
 
-def main() -> int:
-    print("\n[Agent 4] 결과 분석 및 Checkpoint 4 검증 시작\n")
+def sync_portfolio_outputs(report_data: list[dict[str, Any]], summary: dict[str, Any]) -> None:
+    """최신 실행 결과를 Section 7과 추적성 문서에 동기화한다."""
+    portfolio = PORTFOLIO_PATH.read_text(encoding="utf-8")
+    status_view = {
+        "passed": ("result-pass", "Pass"),
+        "failed": ("badge-fail", "Fail"),
+        "skipped": ("result-review", "Review Needed"),
+        "error": ("badge-fail", "Error"),
+    }
+
+    for result in report_data:
+        tc_id = result["tc_id"]
+        row_pattern = re.compile(
+            rf'(<tr class="tc-row"[^>]*>\s*<td[^>]*>{re.escape(tc_id)}</td>.*?</tr>)',
+            re.S,
+        )
+        row_match = row_pattern.search(portfolio)
+        if not row_match:
+            raise ValueError(f"Section 7에서 {tc_id} 행을 찾을 수 없습니다.")
+
+        row = row_match.group(1)
+        css_class, label = status_view.get(result["result"], ("result-review", result["result"]))
+        row, status_count = re.subn(
+            r'<span class="(?:result|badge)-[^"]+">[^<]+</span>',
+            f'<span class="{css_class}">{label}</span>',
+            row,
+            count=1,
+        )
+        executed_date = str(result["executed_at"])[:10]
+        row, date_count = re.subn(
+            r'(<td style="color:#94a3b8; font-size:11px;">)[^<]+(</td>)',
+            rf'\g<1>{executed_date}\g<2>',
+            row,
+            count=1,
+        )
+        if status_count != 1 or date_count != 1:
+            raise ValueError(f"Section 7의 {tc_id} 상태/실행일 형식이 예상과 다릅니다.")
+        portfolio = portfolio[:row_match.start()] + row + portfolio[row_match.end():]
+
+        duration_pattern = re.compile(
+            rf'(<td[^>]*>{re.escape(tc_id)}</td>.*?<tr class="tc-details".*?실행 시간\s+)([0-9.]+)(초)',
+            re.S,
+        )
+        portfolio, duration_count = duration_pattern.subn(
+            rf'\g<1>{result["duration"]}\g<3>', portfolio, count=1
+        )
+        if duration_count != 1:
+            raise ValueError(f"Section 7의 {tc_id} 실행시간을 찾을 수 없습니다.")
+
+    PORTFOLIO_PATH.write_text(portfolio, encoding="utf-8")
+
+    trace = TRACEABILITY_PATH.read_text(encoding="utf-8")
+    source_run_ids = {row["run_id"] for row in report_data}
+    if len(source_run_ids) != 1:
+        raise ValueError("qa_results.json의 Source Run ID가 단일 값이 아닙니다.")
+    source_run_id = next(iter(source_run_ids))
+    agent_run_id = summary["run_id"]
+    trace, source_count = re.subn(
+        r'(- \*\*Source Test Run ID\*\*: `)[^`]+(`)',
+        rf'\g<1>{source_run_id}\g<2>',
+        trace,
+        count=1,
+    )
+    trace, agent_count = re.subn(
+        r'(- \*\*Agent 4 Analysis Run ID\*\*: `)[^`]+(`)',
+        rf'\g<1>{agent_run_id}\g<2>',
+        trace,
+        count=1,
+    )
+    if source_count != 1 or agent_count != 1:
+        raise ValueError("추적성 문서의 Run ID 표식을 찾을 수 없습니다.")
+    TRACEABILITY_PATH.write_text(trace, encoding="utf-8")
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Agent 4 결과 분석 및 외부 보고")
+    parser.add_argument(
+        "--send",
+        action="store_true",
+        help="검증 통과 후 Slack/Notion에 실제 전송합니다. 기본값은 Dry-run입니다.",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv)
+    mode = "LIVE SEND" if args.send else "DRY-RUN"
+    print(f"\n[Agent 4] 결과 분석 및 Checkpoint 4 검증 시작 ({mode})\n")
 
     try:
         report_data = parse_report()
@@ -623,6 +744,7 @@ def main() -> int:
 
         summary = build_summary(report_data, validation)
         write_json(SUMMARY_PATH, summary)
+        sync_portfolio_outputs(report_data, summary)
 
         print(f"[Checkpoint 4 데이터 검증] {validation['status']}")
         print(f"[실제 실행 결과] {summary['execution']['result']}")
@@ -639,8 +761,8 @@ def main() -> int:
         for warning in validation["warnings"]:
             print(f"[WARNING] {warning['code']}: {warning['message']}")
 
-        slack_sent = send_to_slack(format_slack_payload(summary))
-        notion_sent = send_to_notion(summary)
+        slack_sent = send_to_slack(format_slack_payload(summary), dry_run=not args.send)
+        notion_sent = send_to_notion(summary, dry_run=not args.send)
 
         print(f"[Agent 4] Slack 전송: {'완료' if slack_sent else '생략/미리보기'}")
         print(f"[Agent 4] Notion 전송: {'완료' if notion_sent else '생략'}")

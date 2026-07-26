@@ -2694,6 +2694,7 @@
       
       let appliedCount = 0;
       let errorCount = 0;
+      let lockedCount = 0;
 
       selectedUnitIds.forEach(uid => {
         const device = devices.find(d => d.id === uid);
@@ -2702,6 +2703,19 @@
         if (device.status === 'ERROR') {
           errorCount++;
           appendQALog('SYSTEM', `제어 차단: [${device.name}] 에러 발생 상태(코드: ${device.errorCode})로 제어 거부됨.`, 'error');
+          return;
+        }
+
+        // 3. LOCK restriction: 잠금 상태에서는 잠금 해제 외 모든 중앙 관제점 명령 차단
+        if (device.locked) {
+          if (pendingState.locked === false) {
+            device.locked = false;
+            appliedCount++;
+            appendQALog('SYSTEM', `[${device.name}] 잠금 해제 적용 -> 이후 중앙 관제점 제어 허용`, 'info');
+          } else {
+            lockedCount++;
+            appendQALog('SYSTEM', `제어 차단: [${device.name}] LOCK 상태로 운전/모드/온도/풍량/공기청정 관제점 명령이 무시됨.`, 'warn');
+          }
           return;
         }
 
@@ -2805,6 +2819,9 @@
       
       if (errorCount > 0) {
         showToast(`에러 상태의 ${errorCount}대 기기는 제어가 차단되었습니다.`, false);
+      }
+      if (lockedCount > 0) {
+        showToast(`LOCK 상태의 ${lockedCount}대 기기는 다른 관제점 제어가 차단되었습니다.`, false);
       }
       
       renderGrid();
@@ -3289,7 +3306,7 @@
             <tr><td>TC-TEMP-001</td><td>경계값</td><td>온도 상한 방어 (30°C 상한 초과 시도 시 경고 및 차단)</td><td style="color:#e2e8f0; font-weight:bold;">🟢 PASS</td></tr>
             <tr><td>TC-PIPE-001</td><td>의도적 검증</td><td>요구사항 모호성 (알람 발생 시 색상 변경 기준 부재로 인한 Assert 불가)</td><td style="color:#94a3b8; font-weight:bold;">⚪ SKIP</td></tr>
             <tr><td>TC-PIPE-002</td><td>의도적 검증</td><td>시뮬레이터 환경 이슈 (제어 명령 후 가상 환경 미반응 Timeout)</td><td style="color:#ef4444; font-weight:bold;">🔴 FAIL</td></tr>
-            <tr><td>TC-PIPE-003</td><td>의도적 검증</td><td>자동화 코드 오류 (존재하지 않는 셀렉터 사용 Playwright Error)</td><td style="color:#ef4444; font-weight:bold;">🔴 FAIL</td></tr>
+            <tr><td>TC-PIPE-003</td><td>의도적 검증</td><td>자동화 코드 오류 (UI 변경 후 요소 식별 정보 불일치)</td><td style="color:#ef4444; font-weight:bold;">🔴 FAIL</td></tr>
             <tr><td>TC-PIPE-004</td><td>의도적 검증</td><td>조건 부족 미실행 (시뮬레이터 최대 장치 수 초과 대상 지정)</td><td style="color:#94a3b8; font-weight:bold;">⚪ SKIP</td></tr>
             <tr><td>TC-TEMP-002</td><td>의도적 검증</td><td>제품 결함 후보 (AUTO 모드 온도 하한 18.0°C 방어 실패 로직 누락)</td><td style="color:#ef4444; font-weight:bold;">🔴 FAIL</td></tr>
           </tbody>
@@ -3464,7 +3481,7 @@
           <!-- Stage 5 -->
           <div class="cicd-stage" id="cicd-stage-5">
             <div class="cicd-stage-icon" id="cicd-icon-5">📡</div>
-            <div class="cicd-stage-name">외부 보고</div>
+            <div class="cicd-stage-name">외부 보고 Demo</div>
             <div class="cicd-stage-status" id="cicd-status-5">대기</div>
           </div>
         </div>
@@ -3792,7 +3809,7 @@
       { id:'TC-TEMP-001', category:'경계값', desc:'온도 상한 방어 (30°C 상한 초과 시도 시 경고 및 차단)', expected_pytest_status: 'passed', expected_classification: 'none' },
       { id:'TC-PIPE-001', category:'의도적 검증', desc:'요구사항 모호성 (알람 발생 시 색상 변경 기준 부재로 인한 Assert 불가)', expected_pytest_status: 'skipped', expected_classification: 'requirement_review' },
       { id:'TC-PIPE-002', category:'의도적 검증', desc:'시뮬레이터 환경 이슈 (제어 명령 후 가상 환경 미반응 Timeout)', expected_pytest_status: 'failed', expected_classification: 'environment_issue' },
-      { id:'TC-PIPE-003', category:'의도적 검증', desc:'자동화 코드 오류 (존재하지 않는 셀렉터 사용 Playwright Error)', expected_pytest_status: 'failed', expected_classification: 'automation_issue' },
+      { id:'TC-PIPE-003', category:'의도적 검증', desc:'자동화 코드 오류 (UI 변경 후 요소 식별 정보 불일치)', expected_pytest_status: 'failed', expected_classification: 'automation_issue' },
       { id:'TC-PIPE-004', category:'의도적 검증', desc:'조건 부족 미실행 (시뮬레이터 최대 장치 수 초과 대상 지정)', expected_pytest_status: 'skipped', expected_classification: 'not_executed' },
       { id:'TC-TEMP-002', category:'의도적 검증', desc:'제품 결함 후보 (AUTO 모드 온도 하한 18.0°C 방어 실패 로직 누락)', expected_pytest_status: 'failed', expected_classification: 'product_defect' },
     ];
@@ -3898,14 +3915,14 @@
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // AGENT 4 — CI/CD 파이프라인 (Jira 연동 & 빌드 배포 자동화)
+    // AGENT 4 — CI/CD 및 외부 보고 Workflow Demo (실제 API 전송은 notify_agent.py --send)
     // ═══════════════════════════════════════════════════════════════
     const cicdStages = [
       { id:1, name:'실행 수집', icon:'📥', log:'Pytest qa_results.json 실행 결과 수집 완료 (Total: 13건)', duration: 800 },
       { id:2, name:'원인 분석', icon:'🔎', log:'QA 5대 원인 분류 완료 (제품결함:1, 환경:1, 자동화코드:1, 요구사항:1, 조건미달:1)', duration: 1200 },
-      { id:3, name:'교차 검증', icon:'⚖️', log:'[Checkpoint 4] 기획(Agent 2) 예상 결과 vs 실제(Agent 3) 결과 정합성 교차 검증 완료', isWarn:true, duration: 1500 },
+      { id:3, name:'교차 검증', icon:'⚖️', log:'[Checkpoint 4] report.html vs qa_results.json ID·상태·건수 교차 검증 완료', isWarn:true, duration: 1500 },
       { id:4, name:'릴리즈 판정', icon:'🏁', log:'실제 제품 결함(1건) 잔존 확인 -> 릴리즈 의사결정: HOLD', duration: 1000 },
-      { id:5, name:'외부 보고', icon:'📡', log:'Slack / Notion 담당자 알림 전송 및 DEFECTS.md 자동 첨부 완료', isWarn:true, duration: 1200 }
+      { id:5, name:'외부 보고', icon:'📡', log:'[DEMO] Slack / Notion 보고 Payload 미리보기 완료 (외부 전송 없음)', isWarn:true, duration: 1200 }
     ];
 
     let isCICDRunning = false;
@@ -3981,10 +3998,10 @@
           if (idx === cicdStages.length - 1) {
             setTimeout(() => {
               document.getElementById('cicd-jira-area').style.display = 'block';
-              appendCICDLog('🎫 Notion TCM 적재 완료: 결함 리포트 9건 동기화', '#e2e8f0');
-              appendCICDLog('📨 Slack 채널 알림 발송 완료: #hvac-qa-alerts', '#e2e8f0');
-              setTowerStatus('리포팅 완료 (대기)', '#34d399');
-              appendQALog('GATEWAY', '[에이전트 4번 (리포팅)] Slack 및 Notion 결함 리포트 동기화 완료.', 'info');
+              appendCICDLog('🎫 [DEMO] Notion TCM Upsert 미리보기: 13건 결과 / 5종 원인 분류', '#e2e8f0');
+              appendCICDLog('📨 [DEMO] Slack Block Kit Payload 미리보기 완료 (실제 발송 없음)', '#e2e8f0');
+              setTowerStatus('리포팅 Demo 완료', '#34d399');
+              appendQALog('GATEWAY', '[에이전트 4번 (리포팅 Demo)] Payload 미리보기 완료. 실제 API 전송은 notify_agent.py --send에서 수행.', 'info');
               isCICDRunning = false;
             }, 500);
           }

@@ -7,6 +7,13 @@
 본 파이프라인은 복잡한 중앙제어 시스템 도메인에서 발생하는 요구사항 모호성, TC 품질 저하, 테스트 환경 문제, 스크립트 결함 등을 조기에 차단하고 검증하기 위해 구축되었습니다.
 단순 UI 자동화가 아닌, 도메인 지식(3-Tier QA 기준)과 상태 전이 로직을 반영한 **신뢰할 수 있는 QA 자동화 생태계**를 목표로 합니다.
 
+### 구현 경계
+
+* **Agent 1·2 / Checkpoint 1·2**: 프롬프트·샘플 산출물과 `virtual-controller.html`의 인터랙티브 Workflow Demo로 판단 흐름을 표현합니다.
+* **Agent 3**: `tests/test_controller.py`의 Playwright/Pytest 코드가 실제 브라우저를 제어하고 원본 결과를 생성합니다.
+* **Agent 4 / Checkpoint 4**: `notify_agent.py`의 결정적 규칙 기반 분류·교차검증 코드가 실제로 실행됩니다. 기본 실행은 외부 변경 없는 Dry-run이며, `--send`에서만 Slack·Notion API를 호출합니다.
+* UI 데모 로그는 실행 증거가 아닙니다. 실행 증거의 기준은 `report.html`, `qa_results.json`, `agent4_summary.json`, `checkpoint4_validation.json`입니다.
+
 ## 2. 전체 프로세스
 
 파이프라인의 근본 원칙은 다음과 같습니다.
@@ -39,7 +46,7 @@
 *   **Agent 1**: 정제된 요구사항 생성, 영향 관제점 분석, 테스트 가능 범위 확정. (UI, TC 생성 및 Pass/Fail 판정 **금지**)
 *   **Agent 2**: 3-Tier QA 기준(공통/도메인/기능)을 적용하여 테스트케이스(TC) 생성.
 *   **Agent 3**: 승인된 TC와 매핑된 Playwright 자동화 테스트 실행 및 증거(로그, 상태) 기록. (TC를 코드로 변환하는 로직 **없음**)
-*   **Agent 4**: 5가지 QA 원인 분류 수행, 최종 실행 결과 및 릴리즈 판정 계산.
+*   **Agent 4**: `notify_agent.py`의 규칙 기반 엔진으로 5가지 QA 원인 분류, 최종 실행 결과와 릴리즈 판정을 계산합니다.
 
 ### Checkpoint별 책임
 *   **Checkpoint 1**: 모호하고 충돌하는 요구사항의 파이프라인 유입 차단.
@@ -57,7 +64,7 @@
 4.  검증 결과를 포함해 전체 **Execution(실행 상태)** 계산.
 5.  최종 **Release(릴리즈 권고)** 계산.
 6.  **`agent4_summary.json`** 저장 확정.
-7.  VALIDATED인 경우 **Slack·Notion 전송** (외부 보고용 Payload).
+7.  VALIDATED인 경우 Slack·Notion Payload를 생성합니다. 기본 Dry-run은 콘솔 미리보기만 수행하고, `python notify_agent.py --send`에서만 실제 API 전송을 수행합니다.
 
 ## 6. 상태값과 릴리즈 판정
 

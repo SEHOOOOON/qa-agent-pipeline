@@ -8,6 +8,11 @@ from pathlib import Path
 from collections import Counter
 
 try:
+    sys.stdout.reconfigure(encoding="utf-8")
+except AttributeError:
+    pass
+
+try:
     from bs4 import BeautifulSoup
 except ImportError:
     print("ERROR: beautifulsoup4 not installed")
@@ -166,6 +171,135 @@ for r in json_data:
         issues.append(f"[8] tc_id field={field_tc} but description has [{desc_tc}]")
     print(f"    {field_tc:15s} desc=[{desc_tc}] {'OK' if ok else 'MISMATCH'}")
 
+# ── 9. Agent 4 Summary ↔ 원본 JSON 필드 검증 ──
+print()
+print("=" * 60)
+print("[9] Agent 4 Summary <-> qa_results.json")
+print("=" * 60)
+
+summary_by_test = {row.get("test_id", ""): row for row in summary.get("results", [])}
+json_by_test = {row.get("test_id", ""): row for row in json_data}
+if set(summary_by_test) != set(json_by_test):
+    issues.append("[9] Agent 4 results와 qa_results.json의 test_id 집합이 다릅니다.")
+
+for test_id in sorted(set(summary_by_test) & set(json_by_test)):
+    source = json_by_test[test_id]
+    derived = summary_by_test[test_id]
+    mismatched = [
+        field
+        for field in ("run_id", "tc_id", "description", "result", "failure_reason", "executed_at", "duration")
+        if source.get(field) != derived.get(field)
+    ]
+    if mismatched:
+        issues.append(f"[9] {test_id}: Agent 4 필드 불일치 {mismatched}")
+
+expected_counts = Counter(row.get("result", "") for row in json_data)
+summary_counts = summary.get("pytest_summary", {})
+for status in ("passed", "failed", "skipped", "error", "xfailed", "xpassed", "rerun"):
+    if summary_counts.get(status, 0) != expected_counts.get(status, 0):
+        issues.append(
+            f"[9] pytest_summary.{status}={summary_counts.get(status, 0)} "
+            f"!= source {expected_counts.get(status, 0)}"
+        )
+print(f"  Compared results: {len(set(summary_by_test) & set(json_by_test))}")
+
+# ── 10. Portfolio Section 5·7·13 검증 ──
+print()
+print("=" * 60)
+print("[10] Portfolio index.html Consistency")
+print("=" * 60)
+
+portfolio_path = ROOT / "index.html"
+portfolio_text = portfolio_path.read_text(encoding="utf-8")
+portfolio = BeautifulSoup(portfolio_text, "html.parser")
+
+required_fragments = [
+    "13</b><span>전체 실행",
+    "8</b><span>통과",
+    "3</b><span>실패",
+    "2</b><span>Skipped",
+    "5</b><span>QA 원인 분류",
+]
+for fragment in required_fragments:
+    if fragment not in portfolio_text:
+        issues.append(f"[10] Section 5 필수 집계 누락: {fragment}")
+
+forbidden_fragments = [
+    "22건 중 1건 실패",
+    "pytest.approx(26.0)",
+    "3000ms 초과 타임아웃",
+    "test_pipeline_003_automation_script_error_classification",
+    "test_tc_temp_002_lower_limit_boundary",
+]
+for fragment in forbidden_fragments:
+    if fragment in portfolio_text:
+        issues.append(f"[10] index.html에 과거 표현 잔존: {fragment}")
+
+results_section = portfolio.find("section", id="test-results")
+if results_section is None:
+    issues.append("[10] Section 7 #test-results를 찾을 수 없습니다.")
+else:
+    portfolio_rows = {}
+    result_map = {"pass": "passed", "fail": "failed", "review needed": "skipped"}
+    for row in results_section.select("tr.tc-row"):
+        cells = row.find_all("td", recursive=False)
+        if len(cells) < 7:
+            continue
+        tc_id = cells[0].get_text(" ", strip=True)
+        result_text = cells[3].get_text(" ", strip=True).lower()
+        details = row.find_next_sibling("tr")
+        details_text = details.get_text(" ", strip=True) if details else ""
+        duration_match = re.search(r"실행 시간\s+([0-9.]+)초", details_text)
+        portfolio_rows[tc_id] = {
+            "result": result_map.get(result_text, result_text),
+            "date": cells[6].get_text(" ", strip=True),
+            "duration": float(duration_match.group(1)) if duration_match else None,
+        }
+
+    json_by_tc = {row["tc_id"]: row for row in json_data}
+    if set(portfolio_rows) != set(json_by_tc):
+        issues.append("[10] Section 7 TC ID 집합이 qa_results.json과 다릅니다.")
+    for tc_id in sorted(set(portfolio_rows) & set(json_by_tc)):
+        page_row = portfolio_rows[tc_id]
+        source = json_by_tc[tc_id]
+        if page_row["result"] != source["result"]:
+            issues.append(f"[10] {tc_id}: Section 7={page_row['result']} JSON={source['result']}")
+        if page_row["duration"] != float(source["duration"]):
+            issues.append(f"[10] {tc_id}: 실행시간 Section 7={page_row['duration']} JSON={source['duration']}")
+        if page_row["date"] != str(source["executed_at"])[:10]:
+            issues.append(f"[10] {tc_id}: 실행일 Section 7={page_row['date']} JSON={str(source['executed_at'])[:10]}")
+    print(f"  Section 7 rows: {len(portfolio_rows)}")
+
+if portfolio.find("section", id="docs") is None:
+    issues.append("[10] Section 13 #docs가 없습니다.")
+
+# ── 11. 추적성 문서 Run ID·함수명 검증 ──
+print()
+print("=" * 60)
+print("[11] Traceability Matrix Consistency")
+print("=" * 60)
+
+trace_path = ROOT / "docs" / "samples" / "traceability_matrix.md"
+trace_text = trace_path.read_text(encoding="utf-8")
+source_run_ids = {row.get("run_id", "") for row in json_data}
+if len(source_run_ids) != 1:
+    issues.append(f"[11] Source Run ID가 하나가 아닙니다: {source_run_ids}")
+else:
+    source_run_id = next(iter(source_run_ids))
+    if source_run_id not in trace_text:
+        issues.append(f"[11] 추적성 문서에 최신 Source Run ID 누락: {source_run_id}")
+if summary.get("run_id", "") not in trace_text:
+    issues.append(f"[11] 추적성 문서에 최신 Agent 4 Run ID 누락: {summary.get('run_id', '')}")
+
+required_functions = [
+    "test_pipeline_003_automation_code_error_classification",
+    "test_tc_temp_002_auto_mode_lower_limit",
+]
+for function_name in required_functions:
+    if function_name not in trace_text:
+        issues.append(f"[11] 추적성 문서 함수명 누락: {function_name}")
+print("  Run IDs and function mappings checked")
+
 # ── FINAL ──
 print()
 print("=" * 60)
@@ -178,3 +312,4 @@ if issues:
 else:
     print("  ALL CHECKS PASSED (0 issues)")
 print()
+sys.exit(1 if issues else 0)

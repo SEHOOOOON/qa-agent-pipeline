@@ -18,8 +18,9 @@
 | **Requirement** | REQ-002 | **FACT-002** (일괄 제어) | CRIT-INT-001 | **TC-INT-002** | Passed Scope | Approved |
 | **Domain Rule** | DOMAIN-RULE-002 | **FACT-003** (FAN 모드 온도 조절 차단) | CRIT-MODE-002 | **TC-MODE-002** | Passed Scope | Approved |
 | **Domain Rule** | DOMAIN-RULE-002 | **FACT-003** (DRY 모드 온도 조절 차단 및 해제 검증) | CRIT-MODE-002 | **TC-MODE-003** | Passed Scope | Approved |
-| **Domain Rule** | DOMAIN-RULE-003 | **FACT-004** (전체 Lock 통제) | CRIT-LOCK-001 | **TC-LOCK-001** | Passed Scope | Approved |
-| **Requirement** | REQ-TEMP-001 | **FACT-005** (온도 경계 16~30°C) | CRIT-TEMP-001 | **TC-TEMP-001** | Passed Scope | Approved |
+| **Domain Rule** | DOMAIN-RULE-003 | **FACT-004** (LOCK 시 중앙·현장 관제점 제어 차단) | CRIT-LOCK-001 | **TC-LOCK-001** | Passed Scope | Approved |
+| **Requirement** | REQ-TEMP-001 | **FACT-005** (일반 모드 온도 경계 16~30°C) | CRIT-TEMP-001 | **TC-TEMP-001** | Passed Scope | Approved |
+| **Requirement** | REQ-TEMP-002 | **FACT-007** (AUTO 모드 온도 경계 18~30°C) | CRIT-TEMP-002 | **TC-TEMP-002** | Passed Scope | Approved |
 | **Requirement** | REQ-ERROR-001 | **FACT-006** (에러 제어 차단) | CRIT-ERR-001 | **TC-ERR-001** | Passed Scope | Approved |
 | **Spec Gap** | REQ-ERROR-001 | **GAP-001** (에러 시 색상 정책) | Information Gap | - | Excluded | Not Applicable |
 | **Spec Gap** | REQ-ERROR-002 | **GAP-002** (타임아웃 문구) | Information Gap | - | Excluded | Not Applicable |
@@ -27,12 +28,12 @@
 ---
 
 ## B. 실행 추적성 매트릭스 (Execution Traceability)
-설계된 TC가 실제 자동화 함수(`test_controller.py`)와 매핑되어 실행된 결과와 결함(Finding) 발생 현황을 추적합니다.
+설계된 TC가 실제 자동화 함수(`tests/test_controller.py`)와 매핑되어 실행된 결과와 결함(Finding) 발생 현황을 추적합니다.
 
-> **현재 상태**: 2026-07-21 통합 Run 실행 완료 (전체 13건 / 사전 환경 1건 Passed / 기능 검증 7건 Passed / Pipeline Validation 3건 Failed, 2건 Skipped)
+> **현재 상태**: 2026-07-26 통합 Run 실행 완료 (전체 13건 / Passed 8건 / Failed 3건 / Skipped 2건)
 
-- **Source Test Run ID**: `6e5301de-2e8b-4c56-aeee-35a1f57c8c91`
-- **Agent 4 Analysis Run ID**: `RUN-20260721-230230`
+- **Source Test Run ID**: `3b6b4d33-ffca-4cdf-b8b4-3700b83cdb4f`
+- **Agent 4 Analysis Run ID**: `RUN-20260726-184617`
 
 | TC ID | 자동화 함수 (Automation Function) | Checkpoint 3 | 실행 상태 (Result) | 실행 증거 (Evidence) |
 | :--- | :--- | :---: | :---: | :--- |
@@ -57,9 +58,9 @@
 | :--- | :--- | :---: | :---: |
 | 요구사항 확인 필요 검증 | `test_pipeline_001_alarm_ui_ambiguity_classification` (TC-PIPE-001) | **Skipped** | `requirement_review` |
 | 환경·시뮬레이터 문제 검증 | `test_pipeline_002_simulator_timeout_classification` (TC-PIPE-002) | **Failed** | `environment_issue` (ENV-001) |
-| 자동화 코드 문제 검증 | `test_pipeline_003_automation_script_error_classification` (TC-PIPE-003) | **Failed** | `automation_issue` (AUT-001) |
+| 자동화 코드 문제 검증 | `test_pipeline_003_automation_code_error_classification` (TC-PIPE-003) | **Failed** | `automation_issue` (AUT-001) |
 | 조건 부족으로 미실행 검증 | `test_pipeline_004_not_executed_skip_classification` (TC-PIPE-004) | **Skipped** | `not_executed` (SKIP-001) |
-| 제품 결함 후보 검증 | `test_tc_temp_002_lower_limit_boundary` (TC-TEMP-002) | **Failed** | `product_defect` (DEF-001) |
+| 제품 결함 후보 검증 | `test_tc_temp_002_auto_mode_lower_limit` (TC-TEMP-002) | **Failed** | `product_defect` (DEF-001) |
 
 ---
 
