@@ -291,12 +291,13 @@ else:
 if summary.get("run_id", "") not in trace_text:
     issues.append(f"[11] 추적성 문서에 최신 Agent 4 Run ID 누락: {summary.get('run_id', '')}")
 
-required_functions = [
-    "test_pipeline_003_automation_code_error_classification",
-    "test_tc_temp_002_auto_mode_lower_limit",
-]
-for function_name in required_functions:
-    if function_name not in trace_text:
+required_functions = {
+    row.get("test_id", "").split("[", 1)[0]
+    for row in json_data
+    if row.get("tc_id") != "TC-ENV-000"
+}
+for function_name in sorted(required_functions):
+    if function_name and function_name not in trace_text:
         issues.append(f"[11] 추적성 문서 함수명 누락: {function_name}")
 print("  Run IDs and function mappings checked")
 

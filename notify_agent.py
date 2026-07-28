@@ -42,6 +42,7 @@ SUMMARY_PATH = REPORTS_DIR / "agent4_summary.json"
 CHECKPOINT4_PATH = REPORTS_DIR / "checkpoint4_validation.json"
 PORTFOLIO_PATH = BASE_DIR / "index.html"
 TRACEABILITY_PATH = BASE_DIR / "docs" / "samples" / "traceability_matrix.md"
+NOTION_REQUEST_TIMEOUT = 30
 
 PYTEST_STATUSES = {
     "passed", "failed", "skipped", "error", "xfailed", "xpassed", "rerun"
@@ -50,6 +51,17 @@ PYTEST_STATUSES = {
 # conftest.py와 동일하게 유지: HTML 요약 카운트에서 제외되는 TC 목록
 # TC-ENV-000은 사전 환경 검증(Pre-check) 단계이며 비즈니스 TC가 아닙니다.
 EXCLUDED_FROM_SUMMARY = {"TC-ENV-000"}
+
+# 테스트 우선순위는 실행 결과가 아니라 기능 중요도와 장애 영향 범위로 결정한다.
+# P1: 핵심 제어, 안전·제어 차단, 다중 장비 영향 또는 릴리즈 차단 결함
+# P2: 환경 점검, 보조 도메인 규칙, 경계값 및 파이프라인 분류 검증
+P1_TEST_CASES = {
+    "TC-MODE-001",
+    "TC-LOCK-001",
+    "TC-ERR-001",
+    "TC-INT-002",
+    "TC-TEMP-002",
+}
 
 QA_CLASSIFICATIONS = {
     "product_defect": "제품 결함 후보",
@@ -561,7 +573,7 @@ def send_to_notion(report_data: dict[str, Any], *, dry_run: bool = True) -> bool
             f"https://api.notion.com/v1/data_sources/{data_source_id}/query",
             headers=headers,
             json=query_payload,
-            timeout=10,
+            timeout=NOTION_REQUEST_TIMEOUT,
         )
         if resp.status_code != 200:
             print(f"[ERROR] Notion Query 실패 ({tc_id}): HTTP {resp.status_code} {resp.text[:300]}")
@@ -582,13 +594,15 @@ def send_to_notion(report_data: dict[str, Any], *, dry_run: bool = True) -> bool
         desc = tc.get("description", "")
         # 구분 자동 판별 로직
         category = "엣지케이스"
-        if "해피패스" in desc:
+        if tc_id == "TC-ENV-000":
+            category = "사전 점검"
+        elif "해피패스" in desc:
             category = "해피패스"
         elif "결함" in desc or "예외" in desc or tc.get("result") == "failed":
             category = "예외/결함"
 
-        # 우선순위 자동 판별 로직
-        priority = "P1" if "해피패스" in desc or tc.get("result") == "failed" else "P2"
+        # 기능 중요도와 장애 영향 범위에 따른 명시적 우선순위
+        priority = "P1" if tc_id in P1_TEST_CASES else "P2"
 
         # 앞의 숫자 제거 ("1. 제품 결함 후보" -> "제품 결함 후보")
         raw_reason = tc.get("failure_reason", "")
@@ -622,7 +636,7 @@ def send_to_notion(report_data: dict[str, Any], *, dry_run: bool = True) -> bool
                 f"https://api.notion.com/v1/pages/{page_id}",
                 headers=headers,
                 json={"properties": properties},
-                timeout=10,
+                timeout=NOTION_REQUEST_TIMEOUT,
             )
         else:
             mutation_response = requests.post(
@@ -635,7 +649,7 @@ def send_to_notion(report_data: dict[str, Any], *, dry_run: bool = True) -> bool
                     },
                     "properties": properties,
                 },
-                timeout=10,
+                timeout=NOTION_REQUEST_TIMEOUT,
             )
 
         if not mutation_response.ok:

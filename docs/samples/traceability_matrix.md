@@ -59,7 +59,7 @@
 | 요구사항 확인 필요 검증 | `test_pipeline_001_alarm_ui_ambiguity_classification` (TC-PIPE-001) | **Skipped** | `requirement_review` |
 | 환경·시뮬레이터 문제 검증 | `test_pipeline_002_simulator_timeout_classification` (TC-PIPE-002) | **Failed** | `environment_issue` (ENV-001) |
 | 자동화 코드 문제 검증 | `test_pipeline_003_automation_code_error_classification` (TC-PIPE-003) | **Failed** | `automation_issue` (AUT-001) |
-| 조건 부족으로 미실행 검증 | `test_pipeline_004_not_executed_skip_classification` (TC-PIPE-004) | **Skipped** | `not_executed` (SKIP-001) |
+| 조건 부족으로 미실행 검증 | `test_pipeline_004_not_executed_condition_missing` (TC-PIPE-004) | **Skipped** | `not_executed` (SKIP-001) |
 | 제품 결함 후보 검증 | `test_tc_temp_002_auto_mode_lower_limit` (TC-TEMP-002) | **Failed** | `product_defect` (DEF-001) |
 
 ---
