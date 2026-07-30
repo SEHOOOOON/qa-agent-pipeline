@@ -1,0 +1,162 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="오세훈 Software QA Engineer 포트폴리오">
+  <title>오세훈 · Software QA Engineer</title>
+  <link rel="stylesheet" href="./site.css">
+</head>
+<body>
+  <nav class="top-nav" aria-label="메인 메뉴">
+    <a class="nav-brand" href="#top">OH SEHOON</a>
+    <div class="nav-menu">
+      <a href="#competencies">핵심 역량</a>
+      <a href="#built">프로젝트</a>
+      <a href="#approach">업무 방식</a>
+      <a href="#stack">기술 스택</a>
+      <a class="nav-cta" href="#contact">연락하기</a>
+    </div>
+  </nav>
+
+  <header class="main-hero" id="top">
+    <div class="hero-layout">
+      <div class="hero-copy">
+        <p class="status">[ PASS ] SOFTWARE QA ENGINEER</p>
+        <h1>검증 기준을 설계하는<br>QA 엔지니어</h1>
+        <p>요구사항과 실제 결과의 차이를 근거로 확인합니다. 데이터와 시스템을 검증해 온 경험을 바탕으로 품질 기준을 문서와 자동화 자산으로 연결합니다.</p>
+        <div class="hero-links">
+          <a class="button primary" href="./index_sub.html">프로젝트 포트폴리오</a>
+          <a class="button" href="https://github.com/SEHOOOOON">GitHub ↗</a>
+        </div>
+      </div>
+      <div class="hero-console" aria-label="QA 역량 요약">
+        <div class="console-head"><i></i><i></i><i></i><span>qa — portfolio.test</span></div>
+        <div class="console-body">
+          <p>$ qa run --profile oh-sehoon</p>
+          <p class="ok">✓ requirement.analysis</p>
+          <p class="ok">✓ system.verification</p>
+          <p class="ok">✓ data.quality_control</p>
+          <p class="ok">✓ test.automation</p>
+          <p class="result">ALL CHECKS READY</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="main-section" id="competencies">
+      <div class="main-container">
+        <header class="section-header">
+          <p class="section-label">CORE COMPETENCIES</p>
+          <h2>다섯 가지 핵심 역량</h2>
+        </header>
+        <div class="competency-grid five-grid">
+          <article class="simple-card">
+            <span>01</span><h3>검증 기준 설계</h3>
+            <p>요구사항에서 확정 정보와 정보 부족을 분리하고 판정 가능한 기대결과를 정의합니다.</p>
+            <div class="tags"><b>요구사항</b><b>TC 설계</b></div>
+          </article>
+          <article class="simple-card">
+            <span>02</span><h3>정합성 검증</h3>
+            <p>UI, 데이터, 로그와 시스템 상태가 동일한 결과를 유지하는지 비교합니다.</p>
+            <div class="tags"><b>UI</b><b>DATA</b><b>LOG</b></div>
+          </article>
+          <article class="simple-card">
+            <span>03</span><h3>문제 재현</h3>
+            <p>발생 순서, 입력값, 상태와 영향 범위를 다음 조치가 가능한 정보로 구체화합니다.</p>
+            <div class="tags"><b>Jira</b><b>원인 분석</b></div>
+          </article>
+          <article class="simple-card">
+            <span>04</span><h3>품질 자산화</h3>
+            <p>반복 사용하는 기준을 TC, 체크리스트, 데이터 정의와 결과 문서로 관리합니다.</p>
+            <div class="tags"><b>문서화</b><b>추적성</b></div>
+          </article>
+          <article class="simple-card">
+            <span>05</span><h3>검증 자동화</h3>
+            <p>반복 검증은 자동화하고 사람의 판단이 필요한 영역과 결과 신뢰 조건을 분리합니다.</p>
+            <div class="tags"><b>Python</b><b>Playwright</b></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="main-section section-tone" id="built">
+      <div class="main-container">
+        <header class="section-header">
+          <p class="section-label">WHAT I BUILT</p>
+          <h2>실제로 만든 것</h2>
+          <p>역량을 설명하는 데 그치지 않고, 수행 경험과 구현 결과로 확인할 수 있게 정리했습니다.</p>
+        </header>
+        <article class="featured-work">
+          <div>
+            <p class="work-type">MINI PROJECT · QA AUTOMATION</p>
+            <h3>QA 판단 기준 기반 Multi-Agent Workflow</h3>
+            <p>요구사항 정제, TC 품질 심사, Playwright 실행과 비통과 원인 분석을 4-Agent + 4-Checkpoint 흐름으로 연결했습니다.</p>
+            <div class="tags"><b>Python</b><b>Pytest</b><b>Playwright</b><b>Human Review</b></div>
+          </div>
+          <div class="work-actions">
+            <a class="button primary" href="https://SEHOOOOON.github.io/qa-agent-pipeline/">구현 상세 ↗</a>
+            <a class="button" href="https://github.com/SEHOOOOON/qa-agent-pipeline">GitHub ↗</a>
+          </div>
+        </article>
+        <div class="sub-work-grid">
+          <a class="sub-work" href="./index_sub.html#project-08">
+            <p class="work-type">CAREER PROJECT 01</p>
+            <h3>ES 중앙제어 시스템 품질 검증</h3>
+            <p>요구사항 · 기능/통합/회귀 · 시스템 상태 정합성</p>
+          </a>
+          <a class="sub-work" href="./index_sub.html#project-09">
+            <p class="work-type">CAREER PROJECT 02</p>
+            <h3>수집 데이터 품질 검증과 Python QC</h3>
+            <p>데이터 정의 · QC 로직 · 누락/이상 모니터링</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="main-section" id="approach">
+      <div class="main-container">
+        <header class="section-header">
+          <p class="section-label">HOW I WORK</p>
+          <h2>업무 방식</h2>
+        </header>
+        <div class="approach-list">
+          <article><span>01</span><div><h3>판단 기준부터 확인합니다</h3><p>요구사항의 근거와 정보 부족을 분리한 뒤 테스트 가능한 범위와 기대결과를 정합니다.</p></div></article>
+          <article><span>02</span><div><h3>연결된 결과를 함께 봅니다</h3><p>화면의 정상 표시만으로 판단하지 않고 데이터, 로그와 내부 상태를 같은 시점에 비교합니다.</p></div></article>
+          <article><span>03</span><div><h3>다음 검증에 사용할 수 있게 남깁니다</h3><p>재현 조건, 영향 범위와 결과를 문서화하고 반복 가능한 항목은 품질 자산과 자동화로 연결합니다.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="main-section section-tone" id="stack">
+      <div class="main-container">
+        <header class="section-header">
+          <p class="section-label">TECH STACK</p>
+          <h2>사용 도구 & 기술</h2>
+        </header>
+        <div class="stack-list">
+          <div><strong>Automation</strong><p>Playwright · Pytest · Python</p></div>
+          <div><strong>API & Data</strong><p>Postman · Data QC · JSON</p></div>
+          <div><strong>System</strong><p>Modbus · MQTT · System Log</p></div>
+          <div><strong>Collaboration</strong><p>Jira · Slack · Notion</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact-section" id="contact">
+      <div class="contact-inner">
+        <p class="section-label">CONTACT</p>
+        <h2>함께 일할 QA를 찾고 계신다면</h2>
+        <p>경력과 프로젝트를 더 자세히 확인할 수 있습니다.</p>
+        <div>
+          <a class="button primary" href="./index_sub.html">프로젝트 포트폴리오</a>
+          <a class="button" href="https://github.com/SEHOOOOON">GitHub ↗</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="main-footer"><span>© 2026 OH SEHOON</span><span>Software QA · Quality Evidence</span></footer>
+</body>
+</html>
