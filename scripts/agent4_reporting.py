@@ -28,20 +28,21 @@ import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
-load_dotenv()
+ROOT_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(ROOT_DIR / ".env")
 try:
     sys.stdout.reconfigure(encoding="utf-8")
 except AttributeError:
     pass
 
-BASE_DIR = Path(__file__).resolve().parent
-REPORTS_DIR = BASE_DIR / "reports"
+
+REPORTS_DIR = ROOT_DIR / "reports"
 RESULTS_PATH = REPORTS_DIR / "qa_results.json"
 HTML_REPORT_PATH = REPORTS_DIR / "report.html"
 SUMMARY_PATH = REPORTS_DIR / "agent4_summary.json"
 CHECKPOINT4_PATH = REPORTS_DIR / "checkpoint4_validation.json"
-PORTFOLIO_PATH = BASE_DIR / "index.html"
-TRACEABILITY_PATH = BASE_DIR / "docs" / "samples" / "traceability_matrix.md"
+PORTFOLIO_PATH = ROOT_DIR / "project.html"
+TRACEABILITY_PATH = ROOT_DIR / "docs" / "samples" / "traceability_matrix.md"
 NOTION_REQUEST_TIMEOUT = 30
 
 PYTEST_STATUSES = {

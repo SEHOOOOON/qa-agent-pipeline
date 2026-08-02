@@ -3915,7 +3915,7 @@
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // AGENT 4 — CI/CD 및 외부 보고 Workflow Demo (실제 API 전송은 notify_agent.py --send)
+    // AGENT 4 — CI/CD 및 외부 보고 Workflow Demo (실제 API 전송은 scripts/agent4_reporting.py --send)
     // ═══════════════════════════════════════════════════════════════
     const cicdStages = [
       { id:1, name:'실행 수집', icon:'📥', log:'Pytest qa_results.json 실행 결과 수집 완료 (Total: 13건)', duration: 800 },
@@ -4001,7 +4001,7 @@
               appendCICDLog('🎫 [DEMO] Notion TCM Upsert 미리보기: 13건 결과 / 5종 원인 분류', '#e2e8f0');
               appendCICDLog('📨 [DEMO] Slack Block Kit Payload 미리보기 완료 (실제 발송 없음)', '#e2e8f0');
               setTowerStatus('리포팅 Demo 완료', '#34d399');
-              appendQALog('GATEWAY', '[에이전트 4번 (리포팅 Demo)] Payload 미리보기 완료. 실제 API 전송은 notify_agent.py --send에서 수행.', 'info');
+              appendQALog('GATEWAY', '[에이전트 4번 (리포팅 Demo)] Payload 미리보기 완료. 실제 API 전송은 scripts/agent4_reporting.py --send에서 수행.', 'info');
               isCICDRunning = false;
             }, 500);
           }

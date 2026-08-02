@@ -1,6 +1,7 @@
 # ── QA 파이프라인 핵심 의존성 ──────────────────────────────────
 pytest>=8.0.0
 pytest-html>=4.1.0          # HTML 리포트 생성
+pytest-json-report>=1.5.0   # JSON 실행 결과 생성
 pytest-playwright>=0.4.0    # Playwright E2E 테스트
 playwright>=1.40.0          # Playwright 브라우저 자동화
 

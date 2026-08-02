@@ -18,8 +18,8 @@ except ImportError:
     print("ERROR: beautifulsoup4 not installed")
     sys.exit(1)
 
-REPORTS = Path(__file__).parent
-ROOT = REPORTS.parent
+ROOT = Path(__file__).resolve().parent.parent
+REPORTS = ROOT / "reports"
 
 html_path = REPORTS / "report.html"
 json_path = REPORTS / "qa_results.json"
