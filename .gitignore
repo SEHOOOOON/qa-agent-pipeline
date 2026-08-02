@@ -12,3 +12,10 @@ reports/assets/
 
 # Security 가드레일 (절대 GitHub에 올라가면 안 되는 파일)
 .env
+
+# Local backups
+_backup/
+
+# Local demo recording tools
+record_demo.py
+demo_tests/

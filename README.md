@@ -83,18 +83,79 @@ python -m pytest
 python notify_agent.py
 python reports/validate_outputs.py
 
-# 영상용 정상 회귀 12건 및 MP4 재생성
-python -m pytest demo_tests/test_demo_regression.py -q --browser chromium -o "addopts="
-python record_demo.py
 ```
 
 - 통합 Run: 전체 13건 / Passed 8 / Failed 3 / Skipped 2
-- 영상용 정상 회귀: 통합 분류 보고서를 덮어쓰지 않는 별도 12건 스위트이며, 모두 통과한 실행 로그를 Section 8 영상에 사용합니다.
-- `python record_demo.py`: Agent 1~4 Workflow Demo, 실제 LOCK 관제점 제어 차단, `12 passed` 로그, Notion TC 테이블과 Slack 최신 알림 캡처를 순서대로 연결해 `assets/playwright_pipeline_demo.mp4`를 생성합니다.
 - `python notify_agent.py`: 기본 Dry-run. Agent 4·Checkpoint 4 산출물과 Slack/Notion Payload만 생성하며 외부 전송은 하지 않습니다.
 - `python notify_agent.py --send`: 환경변수가 설정된 경우에만 Slack Webhook 및 Notion TC-ID Upsert를 실제 수행합니다.
 - 실제 전송 환경변수: `SLACK_WEBHOOK_URL`, `NOTION_API_KEY`, `NOTION_DATA_SOURCE_ID` (Notion API `2026-03-11`).
 - 실행 결과가 `FAILED`여도 데이터 정합성이 맞으면 Checkpoint 4는 `VALIDATED`, Release는 `HOLD`가 됩니다.
+---
+
+## 6. 파일·폴더 구성
+
+### 웹페이지 및 실행 설정
+
+| 파일 | 용도 |
+|------|------|
+| `index.html` | 오세훈 QA 포트폴리오의 대표 홈 페이지 |
+| `project.html` | Multi-Agent QA Workflow의 아키텍처·TC·실행 결과·영상·산출물을 설명하는 프로젝트 상세 페이지 |
+| `virtual-controller.html` | Playwright 자동화 대상인 가상 중앙제어 시스템 시뮬레이터 |
+| `notify_agent.py` | Agent 4 결과 집계, 5가지 원인 분류, Checkpoint 4 정합성 검증 및 Slack·Notion Payload 생성 |
+| `pytest.ini` | Pytest 실행 옵션과 HTML 보고서 생성 경로 설정 |
+| `requirements.txt` | 테스트·보고 파이프라인 실행에 필요한 Python 패키지 목록 |
+| `.gitignore` | 실행 중 생성되는 결과, 보안 정보와 로컬 전용 도구의 Git 추적 제외 규칙 |
+| `README.md` | 프로젝트 목표, 구조, 실행 방법과 파일 구성 안내 |
+
+### 자동화 테스트
+
+| 파일 | 용도 |
+|------|------|
+| `tests/test_controller.py` | 모드·온도·잠금·장애·다중 제어 검증과 5가지 비통과 분류 사례를 포함한 13건의 Playwright 테스트 |
+| `tests/conftest.py` | 브라우저 실행 조건, 테스트 결과 수집, `qa_results.json` 및 Pytest HTML 보고서 생성을 담당하는 공통 설정 |
+
+### Agent 4 및 Checkpoint 4 결과
+
+| 파일 | 용도 |
+|------|------|
+| `reports/report.html` | Pytest 원본 실행 보고서로, Agent 4 결과 분석과 Checkpoint 4 대조의 기준 자료 |
+| `reports/qa_results.json` | 13건의 TC별 상태·실패 사유·분류 결과를 구조화한 원본 데이터 |
+| `reports/agent4_summary.json` | Agent 4가 집계한 통과·실패·미실행 수치, 5가지 원인 분류와 릴리즈 판단 결과 |
+| `reports/checkpoint4_validation.json` | Report·JSON·Run ID·분류 수치의 일치 여부를 검증한 Checkpoint 4 결과 |
+| `reports/validate_outputs.py` | 보고서·JSON·포트폴리오 표의 TC 수치와 매핑이 일치하는지 재검증하는 도구 |
+
+### 포트폴리오 자산
+
+| 파일 | 용도 |
+|------|------|
+| `assets/playwright_pipeline_demo.mp4` | Agent 1~4 흐름, Playwright 제어, `12 passed` 로그와 Notion·Slack 결과를 보여주는 구현 영상 |
+
+### 설계·면접·샘플 문서
+
+| 파일 | 용도 |
+|------|------|
+| `docs/architecture/QA_PIPELINE_ARCHITECTURE.md` | Agent와 Checkpoint의 역할, 데이터 흐름과 최종 판정 구조 설명 |
+| `docs/architecture/agent2_3tier_qa_criteria.md` | 공통 QA·중앙제어 도메인·기능별 기준으로 구성된 3-Tier TC 설계 원칙 |
+| `docs/architecture/production_adoption_considerations.md` | 실제 서비스 적용 단계, AI 비결정성 통제, 중복 전송과 보안 고려사항 |
+| `docs/interview/BUSINESS_ROI_AND_IMPACT.md` | 자동화 파이프라인의 업무 효과와 비즈니스 관점 설명 자료 |
+| `docs/interview/PORTFOLIO_INTERVIEW_POINTS.md` | 프로젝트 의도, 한계와 예상 기술 면접 질문에 대한 답변 가이드 |
+| `docs/prompts/agent1_requirement_analyst.md` | Agent 1의 요구사항 확정·추정·정보 부족 분리 규칙 |
+| `docs/prompts/agent2_tc_designer.md` | Agent 2의 테스트케이스 설계 역할과 출력 기준 |
+| `docs/prompts/checkpoint2_tc_reviewer.md` | Checkpoint 2의 TC 승인·수정 요청·실행 제외 심사 기준 |
+| `docs/samples/agent1_output_sample.md` | Agent 1 요구사항 분석 결과 예시 |
+| `docs/samples/agent2_tc_draft.md` | Checkpoint 검토 전 Agent 2 테스트케이스 초안 |
+| `docs/samples/agent2_tc_revised.md` | Checkpoint 2 피드백을 반영한 테스트케이스 수정본 |
+| `docs/samples/checkpoint2_review_before.md` | 품질 기준 미충족 TC의 반려 근거 예시 |
+| `docs/samples/checkpoint2_review_after.md` | 수정 TC의 품질 기준 충족 및 승인 결과 예시 |
+| `docs/samples/traceability_matrix.md` | 요구사항·TC ID·자동화 함수·Finding·릴리즈 판정을 연결한 추적성 표 |
+
+### 로컬 전용 파일(GitHub 미공개)
+
+| 파일 | 용도 |
+|------|------|
+| `record_demo.py` | 구현 영상 MP4를 다시 제작할 때만 사용하는 로컬 녹화 스크립트 |
+| `demo_tests/test_demo_regression.py` | 영상에 표시되는 정상 회귀 `12 passed` 장면을 만들기 위한 로컬 테스트 스위트 |
+| `.env` | Slack·Notion 연동 인증정보를 보관하는 로컬 환경변수 파일 |
 
 <div align="center">
 

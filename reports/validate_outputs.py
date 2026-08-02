@@ -203,13 +203,13 @@ for status in ("passed", "failed", "skipped", "error", "xfailed", "xpassed", "re
         )
 print(f"  Compared results: {len(set(summary_by_test) & set(json_by_test))}")
 
-# ── 10. Portfolio Section 5·7·13 검증 ──
+# ── 10. Portfolio Section 5·7·12 검증 ──
 print()
 print("=" * 60)
-print("[10] Portfolio index.html Consistency")
+print("[10] Portfolio project.html Consistency")
 print("=" * 60)
 
-portfolio_path = ROOT / "index.html"
+portfolio_path = ROOT / "project.html"
 portfolio_text = portfolio_path.read_text(encoding="utf-8")
 portfolio = BeautifulSoup(portfolio_text, "html.parser")
 
@@ -233,7 +233,7 @@ forbidden_fragments = [
 ]
 for fragment in forbidden_fragments:
     if fragment in portfolio_text:
-        issues.append(f"[10] index.html에 과거 표현 잔존: {fragment}")
+        issues.append(f"[10] project.html에 과거 표현 잔존: {fragment}")
 
 results_section = portfolio.find("section", id="test-results")
 if results_section is None:
@@ -271,7 +271,7 @@ else:
     print(f"  Section 7 rows: {len(portfolio_rows)}")
 
 if portfolio.find("section", id="docs") is None:
-    issues.append("[10] Section 13 #docs가 없습니다.")
+    issues.append("[10] Section 12 #docs가 없습니다.")
 
 # ── 11. 추적성 문서 Run ID·함수명 검증 ──
 print()

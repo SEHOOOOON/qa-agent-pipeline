@@ -8,6 +8,3 @@ playwright>=1.40.0          # Playwright 브라우저 자동화
 beautifulsoup4>=4.12.0      # report.html 파싱 (Checkpoint 4)
 python-dotenv>=1.0.0        # .env 파일 로드
 requests>=2.31.0            # Slack Webhook / Notion API 전송
-
-# ── 구현 영상 생성 의존성 ────────────────────────────────────
-imageio-ffmpeg>=0.6.0       # Playwright WebM → H.264 MP4 변환
