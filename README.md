@@ -1,6 +1,6 @@
 <div align="center">
 
-<!-- 2026-10-09: 야간 검토 브랜치 안내. V1 실행 코드·기준 자산은 수정하지 않음. -->
+<!-- 2026-10-10: 기존 야간 검토 브랜치를 제출 후보로 유지. V1 실행 코드·기준 자산은 수정하지 않음. -->
 
 <h1>QA 판단 기준 기반 Multi-Agent Workflow</h1>
 
@@ -19,7 +19,7 @@
 
 ## 프로젝트 한눈에 보기
 
-> **야간 검토본 안내 (2026-10-09)**: `codex/night-review-20261009`의 `index.html`은 최신 메인 소개 페이지입니다. 아래 기존 구현 설명과 `project.html`은 V1 Fixture 기반 Workflow Prototype 기록이며, 현재 모델 기반 프로젝트1은 `SEHOOOOON/qa-agent-pipeline-v2`, 평가 프로젝트2는 `SEHOOOOON/agent-evaluation-framework`의 동명 브랜치에서 확인합니다. 메인 페이지의 형제 저장소 링크는 세 저장소를 함께 둔 로컬/클라우드 검토용입니다. 이 브랜치 저장은 main 반영이나 공개 사이트 배포가 아닙니다. 소개 페이지의 미커밋 수정은 검토본으로 보존하며 V1 제품·SRS·TC는 변경하지 않았습니다.
+> **야간 검토본 안내 (2026-10-09)**: `codex/night-review-20261009`의 `index.html`은 최신 메인 소개 페이지입니다. 아래 기존 구현 설명과 `project.html`은 V1 Fixture 기반 Workflow Prototype 기록이며, 현재 모델 기반 프로젝트1은 `SEHOOOOON/qa-agent-pipeline-v2`, 평가 프로젝트2는 `SEHOOOOON/agent-evaluation-framework`의 동명 브랜치에서 확인합니다. 메인 페이지의 형제 저장소 링크는 세 저장소를 함께 둔 로컬/클라우드 검토용입니다. 이 브랜치 저장은 main 반영이나 공개 사이트 배포가 아닙니다. 2026-10-10에는 세 페이지의 표현·배치와 공개용 근거를 정리해 이 브랜치의 제출 후보로 보존했습니다. 메인/P1/P2는 같은 이름의 브랜치를 기준으로 확인하며, V1 제품·SRS·TC는 변경하지 않았습니다. 공개 배포와 실제 제출 URL 확인은 별도입니다.
 
 - **4-Agent · 4-Checkpoint** — 생성 역할과 검토 책임을 분리했습니다.
 - **3-Tier QA 기준** — 공통 QA, 중앙제어 도메인, 기능별 품질 기준으로 TC를 설계합니다.
