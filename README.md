@@ -2,63 +2,51 @@
 
 <h1>QA 판단 기준 기반 Multi-Agent Workflow</h1>
 
-<p>요구사항 정제부터 테스트 설계, Playwright 실행, 비통과 원인 분류와 보고까지<br/>QA 변경 검증 흐름을 4개의 Agent와 4개의 Checkpoint로 구조화한 개인 프로젝트입니다.</p>
+<p>요구사항 분석부터 시험 설계, 실제 화면 시험, 결과 보고까지 QA 변경 검증 흐름을 AI Agent로 구조화하고,<br/>그 Agent들이 기준대로 일하는지를 별도 도구로 평가한 개인 프로젝트 포트폴리오입니다.</p>
 
-[![포트폴리오 홈](https://img.shields.io/badge/Portfolio-Home-58A6FF?style=for-the-badge&labelColor=0b1220)](https://SEHOOOOON.github.io/qa-agent-pipeline/)
-[![프로젝트 상세](https://img.shields.io/badge/Project-Detail-58A6FF?style=for-the-badge&labelColor=0b1220)](https://SEHOOOOON.github.io/qa-agent-pipeline/project.html)
-[![가상 관제 화면](https://img.shields.io/badge/Live-Simulator-58A6FF?style=for-the-badge&labelColor=0b1220)](https://SEHOOOOON.github.io/qa-agent-pipeline/virtual-controller.html)
+<p><b>작업 브랜치 미리보기</b> (<code>claude/fixes-20261015</code>, 공개 사이트 배포 전)</p>
+
+[![메인 포트폴리오](https://img.shields.io/badge/%EB%A9%94%EC%9D%B8_%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4-%EC%97%B4%EA%B8%B0-2ea44f?style=for-the-badge&labelColor=0b1220)](https://htmlpreview.github.io/?https://github.com/SEHOOOOON/qa-agent-pipeline/blob/claude/fixes-20261015/main.html)
+[![프로젝트1 소개](https://img.shields.io/badge/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B81_%EC%86%8C%EA%B0%9C-%EC%97%B4%EA%B8%B0-2ea44f?style=for-the-badge&labelColor=0b1220)](https://htmlpreview.github.io/?https://github.com/SEHOOOOON/qa-agent-pipeline-v2/blob/claude/fixes-20261015/project.html)
+[![프로젝트2 소개](https://img.shields.io/badge/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B82_%EC%86%8C%EA%B0%9C-%EC%97%B4%EA%B8%B0-2ea44f?style=for-the-badge&labelColor=0b1220)](https://htmlpreview.github.io/?https://github.com/SEHOOOOON/agent-evaluation-framework/blob/claude/fixes-20261015/portfolio/index.html)
+[![프로젝트2 평가 결과](https://img.shields.io/badge/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B82_%ED%8F%89%EA%B0%80_%EA%B2%B0%EA%B3%BC-%EC%97%B4%EA%B8%B0-2ea44f?style=for-the-badge&labelColor=0b1220)](https://htmlpreview.github.io/?https://github.com/SEHOOOOON/agent-evaluation-framework/blob/claude/fixes-20261015/portfolio/report.html)
+
+<sub>페이지 안의 다른 페이지 이동 버튼은 세 저장소를 PC에 나란히 둔 경우 기준이라, 웹 미리보기에서는 위 버튼으로 이동하세요.</sub>
 
 </div>
 
 ---
 
 > AI가 만든 산출물을 그대로 신뢰하지 않습니다.<br/>
-> 각 단계의 입력·출력과 판단 근거를 QA Checkpoint에서 검토한 뒤 다음 단계로 전달합니다.
+> 단계마다 자동 검사와 근거 검토를 거치고, 최종 등록은 사람이 결정합니다. 그리고 Agent 자체를 별도 도구로 평가합니다.
 
-## 프로젝트 한눈에 보기
+## 저장소 구성
 
-- **4-Agent · 4-Checkpoint** — 생성 역할과 검토 책임을 분리했습니다.
-- **3-Tier QA 기준** — 공통 QA, 중앙제어 도메인, 기능별 품질 기준으로 TC를 설계합니다.
-- **Playwright · Pytest 실행** — UI 동작과 내부 장치 상태를 함께 검증합니다.
-- **5가지 비통과 원인 분류** — 제품 결함, 요구사항 확인, 환경, 자동화 코드, 조건 부족으로 구분합니다.
-- **결과 정합성 검증** — Report·JSON·Run ID·포트폴리오 수치를 Checkpoint 4에서 교차 확인합니다.
+| 저장소 | 내용 |
+|---|---|
+| **qa-agent-pipeline** (이 저장소) | 포트폴리오 메인 페이지(`main.html`), 가상 관제 화면, 초기 V1 시제품 |
+| [qa-agent-pipeline-v2](https://github.com/SEHOOOOON/qa-agent-pipeline-v2) · 프로젝트 1 | 변경 요청을 받아 Agent 1~4가 분석·시험 설계·실제 화면 시험·보고를 하고 사람이 최종 승인하는 QA 파이프라인 |
+| [agent-evaluation-framework](https://github.com/SEHOOOOON/agent-evaluation-framework) · 프로젝트 2 | 프로젝트 1의 Agent들이 기준대로, 일관되게 일하는지 평가하고 찾은 문제를 개선 보고서로 남기는 평가 도구 |
 
-## 검증 흐름
+## 프로젝트 1 · QA Agent Pipeline V2
 
-| 단계 | Agent | QA Checkpoint |
-|------|-------|---------------|
-| 1. 요구사항 정제 | 확정·추정·정보 부족 분리 | 테스트 가능한 범위와 보류 항목 판단 |
-| 2. 테스트케이스 설계 | 3-Tier 기준으로 TC 작성 | 근거·독립성·명확성·자동화 적합성 심사 |
-| 3. 자동화 실행 | Playwright로 승인 TC 실행 | 환경·재현 절차·수집 증거의 유효성 확인 |
-| 4. 결과 분석·보고 | 비통과 원인과 Payload 생성 | Report·JSON·Run ID 대조 및 릴리즈 판단 |
+- **흐름**: Agent 1 요구사항 분석 → Agent 2 시험 설계(기존 TC 재사용·고쳐 쓰기 판단) → Agent 3 자동화·실제 화면 시험·원상 복원 → Agent 4 결과 분류·보고 → 사람 최종 판단.
+- **안전장치**: 단계마다 자동 검사(Checkpoint)와 AI 근거 검토, 애매한 요구사항은 추측하지 않고 질문을 남기고 멈춤, SRS 수정과 공식 TC 등록은 사람 승인 때만.
+- **최근 결과**: 대표 요청 5개 중 4개(전원·풍량·모드·온도)는 끝까지 실행했고 잠금은 정책이 정해지지 않아 질문을 남기고 멈췄습니다(의도한 동작). 또 시험 설계를 시나리오별 3번 반복해 전원·풍량·모드는 3번 모두 같은 정답 구조가 나왔습니다.
 
-## 무엇을 구현했나
+## 프로젝트 2 · Agent Evaluation Framework
 
-**가상 중앙제어 시스템**
+- **평가**: 26개 기준(0~5점). 사람이 확정한 정답지가 있는 부분은 코드가, 나머지는 생성과 다른 회사의 AI(Claude)가 근거 번호를 골라 채점하고, 사람 대조로 채점을 검증합니다(누적 27개 중 23개 일치).
+- **개선 절차**: 문제를 찾으면 발견 → 사람 확인 → 재발 확인 → 원인 → 수정 → 재검증 순서로 사례마다 보고서를 남깁니다.
+- **사례**: 온도 시험 설계가 준비 단계에서 바꾼 모드의 복원 확인을 빠뜨리는 문제를 4번 중 4번 찾아, 원인인 프로젝트 1의 계약까지 고친 뒤 3번 중 3번 포함으로 확인했습니다.
 
-16대 장비의 모드·온도·잠금·장애·다중 제어 상태를 HTML 시뮬레이터로 구현했습니다.
+## 초기 V1 시제품 (2026-07~08)
 
-**13건 통합 분류 파이프라인**
+이 저장소의 실행 코드는 프로젝트 1 이전에 만든 시제품입니다. AI 호출 없이 미리 만든 산출물(Fixture)로 4-Agent · 4-Checkpoint 흐름을 검증했습니다.
 
-전체 13건을 실행해 Passed 8건, Failed 3건, Skipped 2건으로 집계하고 비통과 대표 사례를 5가지 QA 원인으로 분류합니다.
-
-**Agent 4 · Checkpoint 4**
-
-실행 결과를 규칙 기반으로 집계하고, 원본 Report와 JSON의 수치·TC ID·Run ID가 일치할 때만 Slack·Notion 보고 Payload를 생성합니다.
-
-**구현 영상**
-
-Agent 1~4 흐름, Playwright의 잠금 제어 검증, 영상용 정상 회귀 <code>12 passed</code>, Notion TC와 Slack 보고 화면을 순서대로 확인할 수 있습니다.
-
-## 기술 스택
-
-![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
-![Playwright](https://img.shields.io/badge/Playwright-2EAD33?style=flat-square&logo=playwright&logoColor=white)
-![Pytest](https://img.shields.io/badge/Pytest-0A9EDC?style=flat-square&logo=pytest&logoColor=white)
-![Slack](https://img.shields.io/badge/Slack-4A154B?style=flat-square&logo=slack&logoColor=white)
-![Notion](https://img.shields.io/badge/Notion-000000?style=flat-square&logo=notion&logoColor=white)
-
-## 실행 및 검증
+- 16대 장비의 모드·온도·잠금·장애 상태를 HTML 시뮬레이터(`virtual-controller.html`)로 구현했습니다.
+- Playwright·Pytest로 13건을 실행해 Passed 8 / Failed 3 / Skipped 2로 집계하고, 비통과를 5가지 원인(제품 결함, 요구사항 확인, 환경, 자동화 코드, 조건 부족)으로 분류했습니다. 분류 검증용 실패가 포함되어 있어 전체 결과는 의도적으로 FAILED입니다.
+- Agent 4는 결과를 규칙 기반으로 집계하고, Report·JSON·Run ID가 일치할 때만 Slack·Notion 보고 내용을 만듭니다(기본은 미리보기, `--send`일 때만 전송).
 
 ~~~bash
 pip install -r requirements.txt
@@ -69,46 +57,19 @@ python scripts/agent4_reporting.py
 python scripts/validate_outputs.py
 ~~~
 
-- 통합 Run: **전체 13건 / Passed 8 / Failed 3 / Skipped 2**
-- 분류 검증용 실패·보류 시나리오가 포함되어 전체 Pytest 결과는 의도적으로 FAILED입니다.
-- Agent 4는 기본적으로 외부 변경이 없는 Dry-run으로 실행됩니다.
-- 실제 Slack·Notion 전송은 환경변수 설정 후 <code>python scripts/agent4_reporting.py --send</code>에서만 수행합니다.
-- 실행 결과가 FAILED여도 데이터 정합성이 맞으면 Checkpoint 4는 VALIDATED, 릴리즈 판단은 HOLD가 됩니다.
+| 자료 | 내용 |
+|---|---|
+| [Pytest 보고서](reports/report.html) · [QA 결과](reports/qa_results.json) | 13건 실행 결과와 실패 상세 |
+| [Agent 4 요약](reports/agent4_summary.json) · [Checkpoint 4 검증](reports/checkpoint4_validation.json) | 집계·분류·릴리즈 판단, 산출물 정합성 |
+| [구현 영상](assets/playwright_pipeline_demo.mp4) | 자동 제어, 실행 로그, Notion·Slack 보고 화면 |
+| [V1 설계 문서](docs/architecture/QA_PIPELINE_ARCHITECTURE.md) · [3-Tier QA 기준](docs/architecture/agent2_3tier_qa_criteria.md) · [추적성 표](docs/samples/traceability_matrix.md) | V1 당시의 설계·기준·샘플 (현재 프로젝트 1과 구조가 다름) |
 
-## 결과 확인
+## 기술 스택
 
-| 결과물 | 확인 내용 |
-|--------|-----------|
-| [Pytest HTML Report](reports/report.html) | 13건의 원본 실행 결과와 실패 상세 |
-| [QA Results](reports/qa_results.json) | TC별 상태·실행시간·원인 분류 데이터 |
-| [Agent 4 Summary](reports/agent4_summary.json) | 실행 집계, 5가지 QA 분류와 릴리즈 판단 |
-| [Checkpoint 4 Validation](reports/checkpoint4_validation.json) | Report·JSON·Run ID 정합성 검증 결과 |
-| [구현 영상](assets/playwright_pipeline_demo.mp4) | 자동 제어, 12 passed 로그, Notion·Slack 보고 화면 |
-
-## 상세 문서
-
-- [QA Pipeline Architecture](docs/architecture/QA_PIPELINE_ARCHITECTURE.md) — Agent·Checkpoint 역할과 데이터 흐름
-- [3-Tier QA Criteria](docs/architecture/agent2_3tier_qa_criteria.md) — 공통·도메인·기능 품질 기준
-- [Production Adoption Considerations](docs/architecture/production_adoption_considerations.md) — 실무 도입 시 한계와 통제 방안
-- [Traceability Matrix](docs/samples/traceability_matrix.md) — 요구사항·TC·자동화·Finding 추적성
-- [Interview Points](docs/interview/PORTFOLIO_INTERVIEW_POINTS.md) — 프로젝트 의도와 예상 면접 질문
-
-## 프로젝트 구조
-
-~~~text
-qa-agent-pipeline/
-├─ assets/                   # 구현 영상
-├─ docs/                     # 설계·면접·샘플 문서
-├─ reports/                  # 실행 결과만 보관
-├─ scripts/                  # 결과 분석·검증 실행 도구
-│  ├─ agent4_reporting.py    # Agent 4 집계·분류·외부 보고
-│  └─ validate_outputs.py    # Checkpoint 4 산출물 교차 검증
-├─ tests/                    # Playwright 테스트
-├─ .gitignore                # 비공개·로컬 파일 제외
-├─ README.md                 # 프로젝트 소개·실행·구조 안내
-├─ index.html                # 포트폴리오 대표 홈
-├─ project.html              # 프로젝트 상세 페이지
-├─ virtual-controller.html   # 가상 관제 시뮬레이터
-├─ pytest.ini                # Pytest 결과 생성 설정
-└─ requirements.txt          # Python 의존성
-~~~
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
+![Playwright](https://img.shields.io/badge/Playwright-2EAD33?style=flat-square&logo=playwright&logoColor=white)
+![Pytest](https://img.shields.io/badge/Pytest-0A9EDC?style=flat-square&logo=pytest&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI_API-412991?style=flat-square&logo=openai&logoColor=white)
+![Claude](https://img.shields.io/badge/Claude_API-D97757?style=flat-square&logo=anthropic&logoColor=white)
+![Slack](https://img.shields.io/badge/Slack-4A154B?style=flat-square&logo=slack&logoColor=white)
+![Notion](https://img.shields.io/badge/Notion-000000?style=flat-square&logo=notion&logoColor=white)
