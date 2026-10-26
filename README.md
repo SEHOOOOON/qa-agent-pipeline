@@ -4,14 +4,14 @@
 
 <p>요구사항 분석부터 시험 설계, 실제 화면 시험, 결과 보고까지 QA 변경 검증 흐름을 AI Agent로 구조화하고,<br/>그 Agent들이 기준대로 일하는지를 별도 도구로 평가한 개인 프로젝트 포트폴리오입니다.</p>
 
-<p><b>작업 브랜치 미리보기</b> (<code>claude/fixes-20261015</code>, 공개 사이트 배포 전)</p>
+<p><b>포트폴리오 바로 보기</b></p>
 
-[![메인 포트폴리오](https://img.shields.io/badge/%EB%A9%94%EC%9D%B8_%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4-%EC%97%B4%EA%B8%B0-2ea44f?style=for-the-badge&labelColor=0b1220)](https://htmlpreview.github.io/?https://github.com/SEHOOOOON/qa-agent-pipeline/blob/claude/fixes-20261015/main.html)
-[![프로젝트1 소개](https://img.shields.io/badge/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B81_%EC%86%8C%EA%B0%9C-%EC%97%B4%EA%B8%B0-2ea44f?style=for-the-badge&labelColor=0b1220)](https://htmlpreview.github.io/?https://github.com/SEHOOOOON/qa-agent-pipeline-v2/blob/claude/fixes-20261015/project.html)
-[![프로젝트2 소개](https://img.shields.io/badge/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B82_%EC%86%8C%EA%B0%9C-%EC%97%B4%EA%B8%B0-2ea44f?style=for-the-badge&labelColor=0b1220)](https://htmlpreview.github.io/?https://github.com/SEHOOOOON/agent-evaluation-framework/blob/claude/fixes-20261015/portfolio/index.html)
-[![프로젝트2 평가 결과](https://img.shields.io/badge/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B82_%ED%8F%89%EA%B0%80_%EA%B2%B0%EA%B3%BC-%EC%97%B4%EA%B8%B0-2ea44f?style=for-the-badge&labelColor=0b1220)](https://htmlpreview.github.io/?https://github.com/SEHOOOOON/agent-evaluation-framework/blob/claude/fixes-20261015/portfolio/report.html)
+[![메인 포트폴리오](https://img.shields.io/badge/%EB%A9%94%EC%9D%B8_%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4-%EC%97%B4%EA%B8%B0-2ea44f?style=for-the-badge&labelColor=0b1220)](https://sehooooon.github.io/qa-agent-pipeline/main.html)
+[![프로젝트1 소개](https://img.shields.io/badge/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B81_%EC%86%8C%EA%B0%9C-%EC%97%B4%EA%B8%B0-2ea44f?style=for-the-badge&labelColor=0b1220)](https://sehooooon.github.io/qa-agent-pipeline-v2/project.html)
+[![프로젝트2 소개](https://img.shields.io/badge/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B82_%EC%86%8C%EA%B0%9C-%EC%97%B4%EA%B8%B0-2ea44f?style=for-the-badge&labelColor=0b1220)](https://sehooooon.github.io/agent-evaluation-framework/portfolio/index.html)
+[![프로젝트2 평가 결과](https://img.shields.io/badge/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B82_%ED%8F%89%EA%B0%80_%EA%B2%B0%EA%B3%BC-%EC%97%B4%EA%B8%B0-2ea44f?style=for-the-badge&labelColor=0b1220)](https://sehooooon.github.io/agent-evaluation-framework/portfolio/report.html)
 
-<sub>페이지 안의 다른 페이지 이동 버튼은 세 저장소를 PC에 나란히 둔 경우 기준이라, 웹 미리보기에서는 위 버튼으로 이동하세요.</sub>
+<sub>세 페이지는 상단 메뉴로 서로 이동할 수 있습니다. 프로젝트1에는 대표 사례를 실제 화면으로 녹화한 약 1분 영상이 있습니다.</sub>
 
 </div>
 
