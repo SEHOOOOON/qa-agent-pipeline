@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>면접 예상 질문과 답변</title>
+<style>
+:root{--bg:#0b0f15;--panel:#121821;--line:#232c39;--text:#dce6f3;--sub:#9aa8ba;--accent:#58a6ff;--warn:#f0b35a;--ok:#58c08a;--chip:#1a2330}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#f7f8fa;--panel:#fff;--line:#e2e6ec;--text:#1b2430;--sub:#5b6878;--accent:#1f6feb;--warn:#a5650b;--ok:#1f8a4c;--chip:#eef2f7}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.75 Pretendard,"Noto Sans KR",-apple-system,"Malgun Gothic",sans-serif;word-break:keep-all}
+.wrap{width:min(980px,calc(100% - 32px));margin:0 auto;padding:40px 0 80px}
+header h1{font-size:30px;margin:0 0 8px;letter-spacing:-.02em}
+header p{color:var(--sub);margin:4px 0}
+.note{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:14px 18px;margin:20px 0;color:var(--sub);font-size:14.5px}
+.note b{color:var(--text)}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 8px}
+nav.toc a{background:var(--chip);color:var(--text);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:14px}
+nav.toc a:hover{border-color:var(--accent)}
+h2{font-size:22px;margin:48px 0 6px;padding-top:12px;border-top:1px solid var(--line)}
+h2 small{display:block;font-size:14px;color:var(--sub);font-weight:400;margin-top:4px}
+.qa{border:1px solid var(--line);background:var(--panel);border-radius:12px;margin:12px 0;overflow:hidden}
+.qa>summary{cursor:pointer;list-style:none;padding:14px 18px;font-weight:700;display:flex;gap:10px;align-items:flex-start}
+.qa>summary::-webkit-details-marker{display:none}
+.qa>summary .no{color:var(--accent);font-variant-numeric:tabular-nums;flex:0 0 auto}
+.qa>summary::after{content:"+";margin-left:auto;color:var(--sub);font-weight:400}
+.qa[open]>summary::after{content:"−"}
+.qa .body{padding:0 18px 16px 18px;border-top:1px solid var(--line)}
+.label{display:inline-block;font-size:12.5px;font-weight:700;color:var(--accent);margin:14px 0 2px}
+.label.warn{color:var(--warn)}
+.label.ok{color:var(--ok)}
+.body p{margin:4px 0}
+.body ul{margin:4px 0;padding-left:20px}
+.body li{margin:2px 0}
+code{background:var(--chip);border-radius:5px;padding:1px 5px;font-size:.88em}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14.5px}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{color:var(--sub);font-weight:600}
+td.n{white-space:nowrap;font-weight:700}
+.tools{display:flex;gap:8px;margin:10px 0}
+.tools button{background:var(--chip);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font:inherit;font-size:14px;cursor:pointer}
+footer{margin-top:56px;color:var(--sub);font-size:14px}
+footer a{color:var(--accent)}
+@media (max-width:600px){header h1{font-size:24px}h2{font-size:19px}.qa>summary{padding:12px 14px}.qa .body{padding:0 14px 14px}table{font-size:13.5px}th,td{padding:7px 6px}}
+@media print{.qa .body{display:block}.tools,nav.toc{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>면접 예상 질문과 답변</h1>
+<p>프로젝트1(QA 에이전트 파이프라인)과 프로젝트2(에이전트 결과 검증)에 대해 나올 만한 질문을 모았습니다.</p>
+<p>답변의 숫자와 사례는 모두 실제 실행 기록과 개선 기록(IMP-001~018)에서 가져왔습니다.</p>
+</header>
+
+<div class="note"><b>읽는 법</b> · 질문을 누르면 답이 열립니다. <b>짧은 답</b>은 30초 안에 말할 내용, <b>근거</b>는 꼬리 질문이 나왔을 때 꺼낼 숫자와 기록, <b>조심할 점</b>은 과장하지 않기 위해 지켜야 할 선입니다.</div>
+
+<div class="tools"><button type="button" id="open-all">모두 펼치기</button><button type="button" id="close-all">모두 접기</button></div>
+
+<nav class="toc" aria-label="질문 묶음">
+<a href="#numbers">핵심 숫자</a><a href="#intro">자기소개·연결</a><a href="#p1">프로젝트1 설계</a><a href="#cases">대표 사례</a><a href="#p2">프로젝트2 평가</a><a href="#judge">평가 AI</a><a href="#repeat">반복·안정성</a><a href="#role">AI 활용·본인 역할</a><a href="#limits">한계·다음 단계</a>
+</nav>
+
+<h2 id="numbers">핵심 숫자<small>질문에 숫자로 답해야 할 때 여기서 확인합니다. 단위와 분모를 같이 말합니다.</small></h2>
+<table>
+<thead><tr><th>항목</th><th>숫자</th><th>무엇의 몇 개인가</th></tr></thead>
+<tbody>
+<tr><td>대표 요청</td><td class="n">5종</td><td>전원·풍량·모드·온도·잠금. 기능별로 1개씩, 실제 AI로 분석부터 보고까지 실행</td></tr>
+<tr><td>대상 환경</td><td class="n">가상 제품 1개 · 장비 1대</td><td>실제 회사 시스템·자료는 쓰지 않음</td></tr>
+<tr><td>평가 기준</td><td class="n">26개</td><td>역할별 20개(Agent 1~4 각 4·8·4·4) + 공통 2개 + 단계 연결 4개. 단계 연결 4개는 아직 판정 전</td></tr>
+<tr><td>온도 필수 시험</td><td class="n">5개</td><td>냉방 20°C 설정·30°C 설정·19°C 막힘·31°C 막힘, 난방 16°C 설정</td></tr>
+<tr><td>처음 TC의 필수 시험</td><td class="n">5개 중 3개</td><td>20°C 설정, 31°C 막힘 누락. 검토 AI·채점 AI 모두 만점</td></tr>
+<tr><td>규칙 추가 후</td><td class="n">8번 중 8번</td><td>온도 요청: 설계 반복 3번 + 3번, 전체 실행 2번 모두 필수 5개 포함</td></tr>
+<tr><td>복원 확인 누락</td><td class="n">4번 중 4번 → 3번 중 3번 포함</td><td>수정 전: 전체 실행 1 + 설계만 3번. 수정 후: 같은 분석 결과로 설계 3번</td></tr>
+<tr><td>사람 대조</td><td class="n">27개 중 23개 일치</td><td>처음 15개 중 4개 불일치(모두 AI가 후함) → 기준 수정 후 새 실행 결과 12개 모두 일치</td></tr>
+<tr><td>채점 모델 비교</td><td class="n">12개 기준</td><td>OpenAI 12/12, Claude 기본 10~11/12(흔들림), Claude 깊게 생각 12/12</td></tr>
+<tr><td>개선 기록</td><td class="n">18건</td><td>발견 → 맞는 감점인지 → 재발 확인 → 원인 수정 → 다시 실행 순서로 기록</td></tr>
+<tr><td>내부 자동 시험</td><td class="n">약 2,500개 · 약 1,000개</td><td>프로젝트1·프로젝트2 코드 자체를 검사하는 시험(제품 TC 수와 다름)</td></tr>
+<tr><td>실행 비용</td><td class="n">약 $1~1.6</td><td>대표 요청 1건을 분석부터 채점까지 실행했을 때(예: 모드 $1.18, 온도 $1.50)</td></tr>
+</tbody>
+</table>
+
+<h2 id="intro">자기소개·연결<small>실무 경험과 개인 프로젝트가 어떻게 이어지는지</small></h2>
+
+<details class="qa"><summary><span class="no">Q1</span>1분 자기소개를 해 주세요.</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>중앙제어 시스템의 기능·연동 검증을 하고 있는 QA 오세훈입니다. 변경 요구사항과 기존 TC를 비교해 검증 범위를 정하고, 화면·API·통신 상태가 맞는지 대조하고, 이슈를 Jira에 남겨 수정 버전에서 다시 확인하는 일을 해 왔습니다. 그 전에는 판매 데이터의 누락·이상값·매핑 오류를 검수하고 반복 조건을 Python·SQL·R로 자동화했습니다.</p>
+<p>실무에서 요구사항이 바뀔 때마다 TC를 검토하고 결과를 정리하는 일이 반복돼서, 개인 프로젝트로 이 흐름을 자동화해 봤습니다. 그리고 AI가 만든 결과를 그대로 믿을 수 없어서, 그 결과를 따로 평가하는 도구도 만들었습니다.</p>
+<span class="label warn">조심할 점</span>
+<ul><li>실무에서 테스트 전략을 주도했다고 말하지 않습니다. 맡은 범위(검증 범위 정리, 정합성 확인, 이슈 재검증, 일부 자동화)만 말합니다.</li></ul>
+</div></details>
+
+<details class="qa"><summary><span class="no">Q2</span>왜 이 프로젝트를 만들었나요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>실무에서는 요구사항이 바뀌면 영향받는 TC를 찾고, 시험을 추가하고, 결과를 정리하는 일이 매번 반복됐습니다. 이 반복 작업을 AI와 자동화에 맡기고, 사람은 변경이 맞는지와 결과 검토에 집중할 수 있는지 확인하고 싶었습니다.</p>
+<span class="label">근거</span>
+<ul><li>실제 회사 자료는 쓰지 않고, 가상 중앙제어 시스템과 예시 요구사항으로 만들었습니다.</li></ul>
+</div></details>
+
+<details class="qa"><summary><span class="no">Q3</span>데이터 QA에서 소프트웨어 QA로 옮긴 이유는요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>두 일 모두 "기준과 실제 결과가 맞는지 확인하고, 반복되는 확인은 자동화한다"는 점이 같았습니다. 데이터 검수에서는 누락·이상값·매핑을, 소프트웨어 검증에서는 화면·API·통신 상태의 정합성을 봤습니다. 개인 프로젝트도 같은 축에서 요구사항과 실행 결과를 연결한 것입니다.</p>
+</div></details>
+
+<h2 id="p1">프로젝트1 설계<small>왜 이렇게 나눴는지, 어디까지 자동화했는지</small></h2>
+
+<details class="qa"><summary><span class="no">Q4</span>전체 구조를 간단히 설명해 주세요.</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>입력은 변경 요청, 기존 SRS, 기존 TC입니다. Agent 1이 요구사항을 분석하고, Agent 2가 TC를 설계합니다. 이 두 단계는 AI가 하고, 결과는 프로그램이 원문 값과 대조합니다. Agent 3은 TC의 조작을 제품 연결표로 화면 요소에 연결해 Playwright로 시험하고 원래 상태로 되돌립니다. Agent 4는 규칙 기반으로 결과를 분류해 보고합니다. 마지막으로 공식 TC 등록 여부는 사람이 정합니다.</p>
+<span class="label">근거</span>
+<ul><li>분석·설계·근거 검토: OpenAI 모델(<code>gpt-6.1-sol</code>)</li><li>화면 요소 연결: 미리 만든 제품 연결표(AI 아님)</li><li>결과 분류: 제품 불일치 후보 / 판정 근거 부족 / 환경 문제 / 자동화 실행 문제 / 미실행</li></ul>
+</div></details>
+
+<details class="qa"><summary><span class="no">Q5</span>Agent 4는 AI를 안 쓰는데 왜 Agent라고 부르나요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>처음에는 단계별 담당을 Agent 1~4로 나눴습니다. 만들면서 결과 집계와 분류까지 생성형 AI에 맡기는 건 맞지 않다고 판단해 규칙 기반으로 바꿨습니다. 그래서 지금 'Agent'는 AI 모델이라기보다 단계별 책임 단위라는 뜻입니다. 페이지에도 'AI 미사용'이라고 표시했습니다.</p>
+<span class="label">근거</span>
+<ul><li>Agent 3도 화면 위치를 AI가 고르지 않습니다. 제품 연결표로 연결하고, 허용된 동작만 코드로 바꿉니다.</li></ul>
+</div></details>
+
+<details class="qa"><summary><span class="no">Q6</span>어디는 AI에게 맡기고, 어디는 프로그램으로 정했나요? 기준이 뭔가요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>문장을 읽고 해석해야 하는 일(요구사항 분석, TC 문장 작성)은 AI에게 맡겼습니다. 값·대상·판정 시점처럼 맞고 틀림이 분명한 것은 프로그램이 엄격하게 검사합니다. 결과 분류와 집계처럼 같은 입력이면 같은 답이 나와야 하는 일도 프로그램이 합니다.</p>
+<span class="label">근거</span>
+<ul><li>개발 중 같은 요구사항을 단계마다 다르게 읽는 문제가 있어서, 확정된 원문과 시험 내용은 다음 단계가 다시 쓰지 않고 프로그램이 그대로 넘기게 했습니다.</li><li>검토 AI가 너무 엄격해 정상 TC가 멈추는 문제도 있어서, 지적을 '치명'(멈춤)과 '경고'(기록하고 진행)로 나눴습니다.</li></ul>
+</div></details>
+
+<details class="qa"><summary><span class="no">Q7</span>정보 부족과 요구사항 불일치는 어떻게 구분하나요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>시험에 필요한 값이 요청이나 SRS에 없으면 '정보 부족'입니다. 이때는 기대값을 만들지 않고 질문을 남기고, 핵심 범위가 불명확하면 멈춥니다. 반대로 기대값이 원문에 있고, 정상적으로 실행했는데 실제 관찰이 다르면 '제품 불일치 후보'입니다.</p>
+<span class="label">근거</span>
+<ul><li>잠금 정책이 정해지지 않은 요청: 추측해서 시험하지 않고 질문을 남긴 뒤 멈췄습니다. 이건 실패가 아니라 정상 동작으로 평가했습니다.</li><li>알림 색상이 미정인 요청: 확정된 조건만 시험(2건 통과)하고, 색상은 사람 확인 항목으로 넘겼습니다.</li><li>잠금 후 온도 버튼이 계속 활성인 사례: 내부 locked 값은 true인데 버튼은 enabled → 불일치 후보로 보고. 결함 확정은 사람이 합니다.</li></ul>
+</div></details>
+
+<details class="qa"><summary><span class="no">Q8</span>실행하지 않은 TC는 결과에서 어떻게 처리하나요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>PASS로 세지 않습니다. 미실행·실행 오류·환경 문제는 제품 결과와 따로 분류합니다. 실행한 TC가 모두 통과해도 확인하지 못한 항목이 남으면 사람 검토로 넘깁니다.</p>
+<span class="label">근거</span>
+<ul><li>환경 점검에서 막혀 회귀 TC가 실행되지 않으면 '판정 근거 부족'으로 분류하고, 다시 실행하도록 보고합니다.</li></ul>
+</div></details>
+
+<details class="qa"><summary><span class="no">Q9</span>공식 TC 등록과 SRS 변경은 왜 사람에게 남겼나요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>자동 검사를 통과했다는 것과 공식 자산으로 등록해도 된다는 것은 다르기 때문입니다. 변경 요청이 승인된 내용인지, 기존 TC를 대체해도 되는지는 조직의 판단이라서 자동화하지 않았습니다. 시스템은 근거와 함께 후보를 만들고, 사람이 SRS 변경·TC 추가·대체·미등록·보류 중에서 고릅니다.</p>
+<span class="label">근거</span>
+<ul><li>승인되지 않은 변경 요청은 기존 SRS를 덮어쓰지 않습니다. 프로젝트에서는 변경 요청을 '승인 가능한 입력'으로 가정하고, SRS 개정은 제안으로만 만듭니다.</li></ul>
+</div></details>
+
+<details class="qa"><summary><span class="no">Q10</span>온도 요청의 필수 시험은 왜 5개인가요? 완전하다고 할 수 있나요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>완전한 정답은 아니고, 이번 평가에서 '꼭 있어야 한다'고 정한 최소 기준입니다. 범위가 바뀌면 양쪽 끝에서 안쪽 값은 설정되는지, 바로 바깥 값은 막히는지를 봐야 해서 냉방 4개가 나오고, 바뀌지 않은 난방은 영향이 없는지 1개를 봅니다.</p>
+<span class="label">근거</span>
+<ul><li>사람이 정한 규칙: T-1(바뀐 범위의 양 끝 적용), T-2(바로 바깥 값 차단 둘 다 필수, 바뀌지 않은 모드의 차단은 권장), T-5(정해지지 않은 전환 동작은 질문), T-7(한 모드의 경계는 한 TC에), T-8(차단 판정은 값이 그대로인지만).</li><li>실제 제품이라면 직접 입력, 저장 후 새로고침, 권한, 통신 지연 같은 시험이 더 필요합니다. 이번 범위는 버튼 조작과 값 확인입니다.</li></ul>
+<span class="label warn">조심할 점</span>
+<ul><li>'정답'이라는 말 대신 '이번 평가의 필수 시험', '사전에 정한 기대 결과'라고 말합니다.</li></ul>
+</div></details>
+
+<h2 id="cases">대표 사례<small>면접에서 먼저 꺼내기 좋은 순서: 사례 2 → 사례 1 → 언어</small></h2>
+
+<details class="qa"><summary><span class="no">Q11</span>가장 어려웠던 문제와 해결 과정을 말해 주세요. (복원 확인 누락)</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>온도 시험은 준비 단계에서 운전 모드를 냉방이나 난방으로 바꾸는데, TC의 시험 뒤 확인에는 설정 온도만 있고 모드를 되돌렸는지는 없었습니다. 요청서에 "바꾼 값은 원래대로 돌리고 확인한다"는 조건이 있었는데도 빠졌습니다. 바로 고치지 않고 먼저 같은 요청으로 여러 번 실행해 4번 중 4번 빠지는 것을 확인했습니다. 원인을 따라가 보니 TC 데이터 형식에 '준비 때 바꾼 값'의 복원 확인을 적을 칸 자체가 없어서, 지침에 한 줄을 더 넣는 것으로는 고칠 수 없었습니다. 칸을 추가하고 비어 있으면 자동 검사에서 막도록 바꿨더니, 같은 분석 결과로 설계를 3번 다시 해서 3번 모두 들어갔고, 실제 실행에서도 원래 상태로 돌아왔습니다.</p>
+<span class="label">근거</span>
+<ul><li>개선 기록 IMP-015. 수정 전: 전체 실행 1번 + 시험 설계만 3번, 모두 누락.</li><li>수정: P1 <code>RestoreConfirmation.precondition_indexes</code> 추가, 자동 검사 CP2-023에서 빠지면 차단.</li><li>수정 후: 설계 3번 모두 포함, 전체 실행에서 <code>RESTORE_STATUS: RESTORED</code>, Claude 채점 복원 기준 3점 → 4점.</li></ul>
+<span class="label ok">이 사례로 말하고 싶은 것</span>
+<ul><li>지침 문장만 고쳐서는 안 되는 문제였고, 반복 횟수를 먼저 확인한 뒤 데이터 형식과 검사 로직을 함께 고쳤다는 점.</li></ul>
+</div></details>
+
+<details class="qa"><summary><span class="no">Q12</span>AI가 놓친 경계값 시험은 어떻게 찾았나요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>"냉방은 20°C 아래로 못 내려가게, 난방은 그대로" 요청에서 AI가 만든 TC를 프로젝트1의 검토 AI와 평가 도구의 채점 AI가 모두 만점으로 통과시켰습니다. 제가 결과를 직접 검토해 보니, 아래쪽은 막히는지만, 위쪽은 설정되는지만 봐서 새 최저값 20°C가 실제로 설정되는지와 31°C가 막히는지가 빠져 있었습니다. 그래서 "범위 끝은 설정되는 값과 막히는 값을 각각 시험한다"는 규칙을 TC 작성 지침, 자동 검사, 평가 도구의 필수 시험 대조 세 곳에 넣었고, 이후 8번 모두 필수 시험 5개가 들어갔습니다.</p>
+<span class="label">근거</span>
+<ul><li>처음 TC(10-15 실행): 필수 5개 중 3개. 채점 AI 점수 5점 → 프로그램 대조로 바꾼 뒤 같은 TC가 2점.</li><li>필수 시험 목록은 이 누락을 찾은 뒤에 만들었습니다. 그 뒤 실행부터는 목록을 실행 전에 정해 두고 대조했습니다.</li></ul>
+<span class="label warn">조심할 점</span>
+<ul><li>처음 TC에 대해서는 "실행 전에 정한 기준"이라고 말하지 않습니다. 실행 뒤 사람이 검토하다 찾은 것입니다.</li></ul>
+</div></details>
+
+<details class="qa"><summary><span class="no">Q13</span>TC 제목이 중국어로 나온 건 어떻게 된 일인가요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>풍량 대표 실행에서 TC 제목이 중국어로 생성됐는데, 검토 AI와 채점 AI 모두 놓쳤고 제가 발견했습니다. 사람이 읽는 문장에 한자나 일본 문자가 섞이면 자동 검사에서 막고 다시 쓰게 했습니다. 요구사항 원문을 그대로 옮긴 부분은 예외로 둡니다.</p>
+<span class="label">근거</span>
+<ul><li>그 뒤 반복 실행 설계에서는 다른 언어가 섞인 경우가 없었습니다. 저장된 설계 8개를 새 검사로 다시 돌렸을 때 풍량만 걸렸습니다(오탐 0).</li><li>개선 기록 IMP-018: 검사 범위를 분석·설계 문장과 채점 이유까지 넓혔고, 새 실행에서의 확인은 아직 남아 있습니다.</li></ul>
+</div></details>
+
+<h2 id="p2">프로젝트2 평가<small>내가 만든 기준으로 내가 만든 시스템을 평가했다는 점을 정직하게</small></h2>
+
+<details class="qa"><summary><span class="no">Q14</span>프로젝트2는 왜 만들었나요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>프로젝트1이 한 번 잘 되는 것보다, 여러 요청에서 필요한 검사를 빠뜨리지 않는지가 중요했습니다. 그리고 시험이 실패한 것과 에이전트가 실수한 것은 다릅니다. 제품이 요구사항과 다르게 동작했는데 에이전트가 근거와 함께 보고했다면 잘한 것이고, 필요한 검사를 빠뜨리고 모두 PASS면 에이전트를 고쳐야 합니다. 평가 자료가 빠져 정상 결과가 낮게 나오면 평가 도구를 고쳐야 합니다. 이 셋을 구분하려고 만들었습니다.</p>
+<span class="label">근거</span>
+<ul><li>평가 도구 문제 사례(IMP-004): 복원 확인 원문이 평가 자료에 직접 전달되지 않아 정상 결과가 3점 → 전달 방식을 고친 뒤 5점.</li></ul>
+</div></details>
+
+<details class="qa"><summary><span class="no">Q15</span>26개 기준은 어떻게 만들었나요? 점수는 어떻게 매기나요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>프로젝트1의 결과물 네 가지(분석 결과, TC, 실행·복원 기록, 보고서)마다 "이 결과물이 지켜야 할 것"을 질문으로 만들었습니다. 역할별 20개, 모든 단계 공통 2개, 단계 사이 연결 4개입니다. 0~5점이고 4점 이상이 통과, 3점 이하는 실패입니다. 다룰 일이 없던 기준은 '해당 없음', 근거가 부족하면 '보류'로 두고 점수를 주지 않습니다.</p>
+<span class="label">근거</span>
+<ul><li>개수·값·기록 대조처럼 셀 수 있는 기준은 프로그램이 채점합니다(예: 필수 시험이 TC에 다 있는가, 보고서 개수가 실행 기록과 같은가).</li><li>단계 연결 기준 4개(E01~E04)는 아직 최종 판정 전이라 평균에서 뺐습니다.</li></ul>
+</div></details>
+
+<details class="qa"><summary><span class="no">Q16</span>기준마다 중요도가 다른데 같은 비중으로 평균 내도 되나요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>평균은 한눈에 보기 위한 요약이고, 실제 판단은 기준별 통과·실패로 봅니다. 예를 들어 온도 요청은 평균 4.86이지만, 복원 확인 1개가 실패(3점)로 남아 개선 대상이 됐습니다.</p>
+<span class="label ok">개선 방향으로 덧붙이면</span>
+<ul><li>필수 시험 누락, 실행하지 않은 항목의 PASS 처리처럼 하나라도 있으면 안 되는 기준은 '필수 관문'으로, 설명의 충분성 같은 기준은 '품질 점수'로 나누는 게 더 맞다고 봅니다. 지금은 나누지 않았습니다.</li></ul>
+</div></details>
+
+<details class="qa"><summary><span class="no">Q17</span>사람 기준을 혼자 만들었는데 객관적이라고 할 수 있나요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>객관적인 정답이라고 하지는 않습니다. 기준을 만든 제가 혼자 판단한 것이라, 이번 평가 범위의 기준선으로 썼습니다. 다른 QA와의 일치도는 확인하지 않았고, 이게 가장 큰 한계 중 하나입니다.</p>
+<span class="label">근거</span>
+<ul><li>대신 사람 판단도 기록으로 남겼습니다. 애매한 경우는 질문 목록으로 정리해 결정(H-1~H-6)을 남기고, 결정이 바뀌면 이전 실행과 직접 비교하지 않았습니다.</li></ul>
+<span class="label ok">실무라면</span>
+<ul><li>두 명 이상이 독립적으로 판단한 뒤 차이를 맞추는 과정을 넣겠습니다.</li></ul>
+</div></details>
+
+<details class="qa"><summary><span class="no">Q18</span>실행 뒤에 기준을 바꾼 적이 있나요? 그럼 점수는 어떻게 처리했나요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>있습니다. 온도 요청의 난방 시험을 사람 결정으로 두 번 바꿨습니다(H-5: 16°C에서 15°C 시도 → 막힘, H-6: 바뀌지 않은 난방은 16°C 설정 1개만). 점수는 그 실행 당시의 기준으로 매긴 그대로 두고, 기준이 바뀐 뒤의 실행과는 직접 비교하지 않았습니다.</p>
+<span class="label">근거</span>
+<ul><li>점수표의 온도 실행(10-23)은 당시 기준(H-5)으로 필수 5/5였고, 권장 시험(난방 31°C 막힘)이 없어 4점이었습니다.</li><li>처음 TC(10-15)는 필수 시험 목록이 생기기 전에 실행됐습니다. 지금 목록으로 보면 5개 중 3개인데, 이건 실행 뒤 비교라고 밝혀 두었습니다.</li></ul>
+<span class="label warn">조심할 점</span>
+<ul><li>"모든 기준을 실행 전에 정했다"고 말하지 않습니다.</li></ul>
+</div></details>
+
+<details class="qa"><summary><span class="no">Q19</span>점수가 거의 다 5점인데, 기준이 느슨한 것 아닌가요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>저도 그 점이 걱정이라 5점을 그대로 믿지 않았습니다. 처음 사람이 대조한 15개 중 4개가 AI가 후하게 준 점수였고, 그 4가지 유형을 고쳤습니다. 지금 점수표는 그렇게 고친 뒤의 결과입니다. 오히려 보여 드리고 싶은 건 점수보다 그 과정에서 찾은 누락과 오판입니다.</p>
+<span class="label">근거</span>
+<ul><li>후한 점수 4가지: 범위 한쪽 끝만 시험해도 만점 / 조작과 확인을 한 줄에 섞어도 만점 / 고쳐 쓸 기존 TC가 있는데 새로 만들어도 만점 / 다룰 일이 없던 기준에도 만점.</li></ul>
+</div></details>
+
+<details class="qa"><summary><span class="no">Q20</span>프로젝트2가 프로젝트1에 맞춰진(과적합된) 평가기는 아닌가요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>그 가능성은 남아 있습니다. 기준을 고친 뒤 새로 실행한 결과로 다시 확인했지만, 요청 종류는 처음과 같은 대표 요청 4개였습니다. 새로운 종류의 요청(여러 장비, 새 기능 추가)으로는 아직 확인하지 않았습니다. 그래서 '개선 후 같은 종류의 요청에서 다시 확인했다'까지만 말합니다.</p>
+</div></details>
+
+<h2 id="judge">평가 AI<small>채점 모델과 독립성</small></h2>
+
+<details class="qa"><summary><span class="no">Q21</span>채점 AI는 어떻게 골랐나요? 다른 회사 모델이면 독립적인가요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>같은 자료를 OpenAI와 Claude로 채점해 사람 판단 12개와 비교했습니다. OpenAI가 12/12, Claude 기본 설정은 같은 입력에서도 10~11/12로 흔들렸고, Claude를 깊게 생각하는 설정으로 바꾸니 12/12였습니다. 정확도만 보면 차이가 없어서, 생성과 같은 모델로 채점하면 같은 부분을 함께 놓칠 수 있다는 점을 고려해 Claude를 기본으로 정했습니다. 다만 회사가 다르다고 독립성이 보장되지는 않아서, 프로그램 대조와 사람 확인을 같이 씁니다.</p>
+<span class="label">근거</span>
+<ul><li>처음 경계값 누락을 놓친 원인을 확인해 보니, 같은 회사 모델이라서라기보다 채점 기준이 막연해서였습니다. 기준을 고친 지금의 OpenAI도 그 누락을 잡았습니다.</li><li>12개는 적은 수라서 모델 우열을 일반화하지 않습니다.</li></ul>
+<span class="label warn">꼭 먼저 말할 것</span>
+<ul><li>포트폴리오의 대표 요청 5개 점수표는 Claude로 바꾸기 전, 생성과 같은 OpenAI 모델(<code>gpt-6.1-sol</code>)로 채점한 결과입니다. 페이지에도 그렇게 밝혀 두었습니다.</li></ul>
+</div></details>
+
+<details class="qa"><summary><span class="no">Q22</span>채점 AI가 틀리면 최종 판정은 누가 하나요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>사람이 합니다. 채점 AI는 사람이 먼저 볼 곳을 찾는 도구로 씁니다. 점수만으로 합격을 정하지 않고, AI 점수가 원문과 맞는지 다시 확인해 틀리면 채점 기준을 고칩니다.</p>
+<span class="label">근거</span>
+<ul><li>Claude가 일부 기준에만 답하거나 이유를 한국어가 아닌 말로 쓰면 1번 다시 요청하고, 처음 실패도 기록에 남깁니다(IMP-017).</li></ul>
+</div></details>
+
+<h2 id="repeat">반복·안정성<small>몇 번을 돌렸고, 무엇이 같았는지</small></h2>
+
+<details class="qa"><summary><span class="no">Q23</span>3번, 8번 반복으로 안정적이라고 할 수 있나요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>통계적으로 안정적이라고는 하지 않습니다. 고친 문제가 다시 나오는지 확인하는 수준입니다. 도구 자체에도 "한 묶음의 반복이며 통계적 보장이 아님"이라고 남기게 했습니다.</p>
+<span class="label">근거</span>
+<ul><li>분석 결과는 그대로 두고, 결과가 달라지기 쉬운 TC 설계 단계만 요청별로 3번씩 다시 실행했습니다.</li><li>전원·풍량·모드: 3번 모두 필수 조건 충족. 온도: 고치기 전 3번 모두 복원 확인 누락 → 고친 뒤 3번 모두 포함.</li><li>온도 기존 TC 처리는 8번 중 1번 흔들려 지켜보는 중입니다(IMP-016).</li></ul>
+</div></details>
+
+<details class="qa"><summary><span class="no">Q24</span>반복할 때 조건은 같았나요? "같은 결과"는 문장까지 같다는 뜻인가요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>같은 요청, 같은 분석 결과, 같은 프로젝트1 버전으로 실행했고, 실행마다 새로 시작합니다. "같다"는 건 문장이 같다는 뜻이 아니라, 필수 시험이 다 있는지, 기존 TC를 맞게 처리했는지, 화면·카드·내부값 세 곳을 확인하는지, 바꾼 값마다 복원 확인이 있는지 같은 조건이 같다는 뜻입니다.</p>
+<span class="label">근거</span>
+<ul><li>첫 TC가 자동 검사에서 막혀 한 번 더 쓴 경우: 모드·온도(고치기 전) 6번 중 4번. 다시 쓴 TC는 모두 통과했습니다.</li></ul>
+</div></details>
+
+<h2 id="role">AI 활용·본인 역할<small>무엇을 직접 했는지 분명히</small></h2>
+
+<details class="qa"><summary><span class="no">Q25</span>코드는 직접 짰나요? 본인이 한 일은 뭔가요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>코드 구현은 AI 코딩 도구를 활용했습니다. 제가 직접 한 것은 요구사항과 검증 기준 정의, 범위 규칙과 사람 결정, 대표 시나리오 구성, 결과 검토와 누락 발견, 개선 방향 결정입니다. 만든 코드는 실행 결과와 자동 시험으로 확인했습니다.</p>
+<span class="label">근거</span>
+<ul><li>경계값 누락, 중국어 제목, 채점 AI의 후한 점수 4가지는 제가 결과를 검토하다 찾았습니다.</li><li>내부 자동 시험: 프로젝트1 약 2,500개, 프로젝트2 약 1,000개.</li></ul>
+<span class="label warn">조심할 점</span>
+<ul><li>AI 코딩 도구 사용을 숨기지 않습니다. 대신 "무엇을 확인하고 판단했는가"를 구체적인 사례로 답합니다.</li></ul>
+</div></details>
+
+<details class="qa"><summary><span class="no">Q26</span>비용은 얼마나 들었나요? 실무에 쓸 만한가요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<p>대표 요청 1건을 분석부터 채점까지 돌리면 약 1~1.6달러였습니다. 다만 사람의 검토 시간을 얼마나 줄였는지는 측정하지 않아서, 실무에서 비용 대비 효과가 있다고 말할 근거는 아직 없습니다.</p>
+</div></details>
+
+<h2 id="limits">한계·다음 단계<small>먼저 말하면 신뢰가 올라가는 부분</small></h2>
+
+<details class="qa"><summary><span class="no">Q27</span>이 프로젝트의 한계는 뭔가요?</summary><div class="body">
+<span class="label">짧은 답</span>
+<ul><li>가상 제품, 장비 1대, 기존 기능을 바꾸는 요청만 다뤘습니다.</li><li>필수 시험을 프로그램으로 대조하는 건 온도 범위 요청에만 있습니다.</li><li>단계 연결 기준 4개는 아직 판정 전입니다.</li><li>사람 대조는 27개로 적고, 저 혼자 판단했습니다.</li><li>새 종류의 요청으로 독립 검증을 하지 않았습니다.</li><li>대표 요청 점수는 생성과 같은 모델로 채점했습니다.</li></ul>
+</div></details>
+
+<details class="qa"><summary><span class="no">Q28</span>더 한다면 무엇을 하겠습니까?</summary><div class="body">
+<span class="label">짧은 답</span>
+<ul><li>대표 요청 5개를 Claude로 다시 채점하고 반복 측정해, 같은 모델 채점 문제와 반복 결과를 함께 정리하겠습니다.</li><li>장비 여러 대를 한 번에 제어하는 요청, 새 기능 추가 요청으로 범위를 넓혀 기준이 그대로 통하는지 보겠습니다.</li><li>필수 관문과 품질 점수를 나누고, 단계 연결 기준 4개를 판정하겠습니다.</li></ul>
+</div></details>
+
+<footer>
+<p>관련 페이지: <a href="../main.html">포트폴리오 메인</a> · <a href="../../qa-agent-pipeline-v2/project.html">프로젝트1</a> · <a href="../../agent-evaluation-framework/portfolio/index.html">프로젝트2</a> · <a href="../../agent-evaluation-framework/portfolio/report.html">평가 결과와 근거</a></p>
+</footer>
+</div>
+<script>
+document.getElementById('open-all').onclick=function(){document.querySelectorAll('details.qa').forEach(function(d){d.open=true})};
+document.getElementById('close-all').onclick=function(){document.querySelectorAll('details.qa').forEach(function(d){d.open=false})};
+</script>
+</body>
+</html>
