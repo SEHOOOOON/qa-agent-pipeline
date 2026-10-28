@@ -117,7 +117,7 @@ footer a{color:var(--accent)}
 <tbody>
 <tr><td>대표 요청</td><td class="n">5종</td><td>전원·풍량·모드·온도·잠금. 기능별로 1개씩, 실제 AI로 분석부터 보고까지 실행</td></tr>
 <tr><td>대상 환경</td><td class="n">가상 제품 1개 · 장비 1대</td><td>실제 회사 시스템·자료는 쓰지 않음</td></tr>
-<tr><td>평가 기준</td><td class="n">26개</td><td>역할별 20개(Agent 1~4 각 4·8·4·4) + 공통 2개 + 단계 연결 4개. 단계 연결 4개는 아직 판정 전</td></tr>
+<tr><td>평가 기준</td><td class="n">21개 채점 · 설계 26개</td><td>채점: 역할별 20개(Agent 1~4 각 4·8·4·4) + 공통 1개. 판정 전 5개: 역할을 넘는 지시(C02, 시험할 요청 없음) + 단계 연결 4개(채점 방법 미완성)</td></tr>
 <tr><td>온도 필수 시험</td><td class="n">5개</td><td>냉방 20°C 설정·30°C 설정·19°C 막힘·31°C 막힘, 난방 16°C 설정</td></tr>
 <tr><td>처음 TC의 필수 시험</td><td class="n">5개 중 3개</td><td>20°C 설정, 31°C 막힘 누락. 프로젝트1 검토 AI는 통과, 채점 AI는 5점</td></tr>
 <tr><td>규칙 추가 후</td><td class="n">8번 중 8번</td><td>온도 요청: 설계 반복 3번 + 3번, 전체 실행 2번 모두 필수 5개 포함</td></tr>
@@ -347,17 +347,19 @@ footer a{color:var(--accent)}
 <ul><li>IMP-004: 비교할 원문을 평가 자료에 직접 넣도록 수정(3점 → 5점).</li><li>IMP-017: Claude 채점이 일부 기준에만 답한 경우를 프로그램이 잡아 1번 다시 요청하고, 시도별 기록을 남기게 했습니다.</li><li>개선 절차의 두 번째 단계가 "맞는 감점인지 원본과 대조"입니다. 평가자가 잘못 판단한 것이면 평가 도구를 고칩니다.</li></ul>
 </div></details>
 
-<details class="qa"><summary><span class="no">Q19</span>26개 기준은 어떻게 만들었나요? 점수는 어떻게 매기나요?</summary><div class="body">
+<details class="qa"><summary><span class="no">Q19</span>평가 기준은 몇 개인가요? 26개라더니 5개는 왜 점수가 없나요?</summary><div class="body">
 <span class="label">짧은 답</span>
-<p>프로젝트1의 결과물 네 가지(분석 결과, TC, 실행·복원 기록, 보고서)마다 "이 결과물이 지켜야 할 것"을 질문으로 만들었습니다. 역할별 20개, 모든 단계 공통 2개, 단계 사이 연결 4개입니다. 0~5점이고 4점 이상이 통과, 3점 이하는 실패입니다. 다룰 일이 없던 기준은 '해당 없음', 근거가 부족하면 '보류'로 두고 점수를 주지 않습니다.</p>
+<p>기준은 26개를 설계했고, 대표 요청 5개에서 실제로 점수가 나온 건 21개입니다. 프로젝트1의 결과물 네 가지(분석 결과, TC, 실행·복원 기록, 보고서)마다 "이 결과물이 지켜야 할 것"을 질문으로 만들었습니다. 0~5점이고 4점 이상이 통과, 3점 이하는 실패입니다.</p><p>빈 5개는 이유가 다릅니다. C02 '역할을 넘는 지시를 따르지 않는가'는 대표 요청에 그런 지시가 없어서 시험할 상황이 없었습니다. 판정하려면 그런 지시를 일부러 넣은 요청을 만들어야 합니다. 단계 연결 4개는 요청 조건이 시험과 보고까지 끊기지 않는지 보는 기준인데, 프로젝트1의 핵심 주장과 직결돼 가장 중요하다고 보지만 채점 방법을 아직 완성하지 못했습니다. 그래서 지금 결과는 '단계별 품질은 확인, 단계 사이 연결은 아직'이라고 말합니다.</p>
 <figure class="fig">
-<div class="stack" role="img" aria-label="26개 기준 구성: 분석 4, 설계 8, 실행 4, 보고 4, 공통 2, 단계 연결 4(판정 전)">
-<span class="a" style="flex:4">분석 4</span><span class="a" style="flex:8">설계 8</span><span class="a" style="flex:4">실행 4</span><span class="a" style="flex:4">보고 4</span><span class="c" style="flex:2">공통 2</span><span class="e" style="flex:4">연결 4 · 판정 전</span>
+<div class="stack" role="img" aria-label="채점한 21개: 분석 4, 설계 8, 실행 4, 보고 4, 공통 1. 판정 전 5개: 역할 넘는 지시 1, 단계 연결 4">
+<span class="a" style="flex:4">분석 4</span><span class="a" style="flex:8">설계 8</span><span class="a" style="flex:4">실행 4</span><span class="a" style="flex:4">보고 4</span><span class="c" style="flex:1">공통 1</span><span class="e" style="flex:5">판정 전 5</span>
 </div>
-<figcaption>요청마다 해당하는 기준만 채점합니다. 잠금 요청은 분석 단계에서 멈추는 것이 맞는 동작이라 분석 기준 4개만 봤습니다.</figcaption>
+<figcaption>채점한 21개(파란색·초록색)와 판정 전 5개(빗금). 요청마다 해당하는 기준만 채점하고, 잠금 요청은 분석 단계에서 멈추는 것이 맞는 동작이라 분석 기준 4개만 봤습니다.</figcaption>
 </figure>
+<span class="label warn">조심할 점</span>
+<ul><li>"26개 기준으로 평가했다"고 말하지 않습니다. "21개로 채점했고, 5개는 이런 이유로 다음 단계"라고 먼저 말합니다.</li></ul>
 <span class="label">근거</span>
-<ul><li>개수·값·기록 대조처럼 셀 수 있는 기준은 프로그램이 채점합니다(예: 필수 시험이 TC에 다 있는가, 보고서 개수가 실행 기록과 같은가).</li><li>단계 연결 기준 4개(E01~E04)는 아직 최종 판정 전이라 평균에서 뺐습니다.</li></ul>
+<ul><li>개수·값·기록 대조처럼 셀 수 있는 기준은 프로그램이 채점합니다(예: 필수 시험이 TC에 다 있는가, 보고서 개수가 실행 기록과 같은가).</li><li>A4-02(실패 원인 분류)는 실패가 나온 온도 요청 1건에서만 판정됐습니다.</li></ul>
 </div></details>
 
 <details class="qa"><summary><span class="no">Q20</span>기준마다 중요도가 다른데 같은 비중으로 평균 내도 되나요?</summary><div class="body">
@@ -512,7 +514,7 @@ footer a{color:var(--accent)}
 
 <details class="qa"><summary><span class="no">Q34</span>이 프로젝트의 한계는 뭔가요?</summary><div class="body">
 <span class="label">짧은 답</span>
-<ul><li>가상 제품, 장비 1대, 기존 기능을 바꾸는 요청만 다뤘습니다.</li><li>필수 시험을 프로그램으로 대조하는 건 온도 범위 요청에만 있습니다.</li><li>단계 연결 기준 4개는 아직 판정 전입니다.</li><li>사람 대조는 27개로 적고, 저 혼자 판단했습니다.</li><li>새 종류의 요청으로 독립 검증을 하지 않았습니다.</li><li>대표 요청 점수는 생성과 같은 모델로 채점했습니다.</li></ul>
+<ul><li>가상 제품, 장비 1대, 기존 기능을 바꾸는 요청만 다뤘습니다.</li><li>필수 시험을 프로그램으로 대조하는 건 온도 범위 요청에만 있습니다.</li><li>설계한 26개 기준 중 5개는 아직 판정 전입니다(단계 연결 4개, 역할을 넘는 지시 1개).</li><li>사람 대조는 27개로 적고, 저 혼자 판단했습니다.</li><li>새 종류의 요청으로 독립 검증을 하지 않았습니다.</li><li>대표 요청 점수는 생성과 같은 모델로 채점했습니다.</li></ul>
 </div></details>
 
 <details class="qa"><summary><span class="no">Q35</span><span class="new">추가</span>그럼 실무에 바로 쓸 수 있나요?</summary><div class="body">
@@ -522,7 +524,7 @@ footer a{color:var(--accent)}
 
 <details class="qa"><summary><span class="no">Q36</span>더 한다면 무엇을 하겠습니까?</summary><div class="body">
 <span class="label">짧은 답</span>
-<ul><li>대표 요청 5개를 Claude로 다시 채점하고 반복 측정해, 같은 모델 채점 문제와 반복 결과를 함께 정리하겠습니다.</li><li>장비 여러 대를 한 번에 제어하는 요청, 새 기능 추가 요청으로 범위를 넓혀 기준이 그대로 통하는지 보겠습니다.</li><li>필수 관문과 품질 점수를 나누고, 단계 연결 기준 4개를 판정하겠습니다.</li></ul>
+<ul><li>대표 요청 5개를 Claude로 다시 채점하고 반복 측정해, 같은 모델 채점 문제와 반복 결과를 함께 정리하겠습니다.</li><li>장비 여러 대를 한 번에 제어하는 요청, 새 기능 추가 요청으로 범위를 넓혀 기준이 그대로 통하는지 보겠습니다.</li><li>필수 관문과 품질 점수를 나누고, 단계 연결 기준 4개를 판정하겠습니다. 역할을 넘는 지시를 일부러 넣은 요청도 만들어 C02를 시험하겠습니다.</li></ul>
 </div></details>
 
 <footer>
