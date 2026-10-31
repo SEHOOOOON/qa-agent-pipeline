@@ -6,8 +6,7 @@
 <meta name="robots" content="noindex">
 <title>면접 예상 질문과 답변</title>
 <style>
-:root{--bg:#0b0f15;--panel:#121821;--line:#232c39;--text:#dce6f3;--sub:#9aa8ba;--accent:#58a6ff;--warn:#f0b35a;--ok:#58c08a;--bad:#f2777a;--chip:#1a2330;--ai:rgba(88,166,255,.16);--pg:rgba(88,192,138,.16);--hu:rgba(240,179,90,.18);--badbg:rgba(242,119,122,.14)}
-@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#f7f8fa;--panel:#fff;--line:#e2e6ec;--text:#1b2430;--sub:#5b6878;--accent:#1f6feb;--warn:#a5650b;--ok:#1f8a4c;--bad:#c4373c;--chip:#eef2f7;--ai:rgba(31,111,235,.1);--pg:rgba(31,138,76,.1);--hu:rgba(165,101,11,.12);--badbg:rgba(196,55,60,.09)}}
+:root{color-scheme:dark;--bg:#0b1017;--panel:#111824;--line:#28344a;--text:#aeb8c6;--title:#e8eef6;--sub:#94a3b8;--accent:#58a6ff;--warn:#f0b35a;--ok:#58c08a;--bad:#f2777a;--chip:#0d131e;--ai:rgba(88,166,255,.16);--pg:rgba(88,192,138,.16);--hu:rgba(240,179,90,.18);--badbg:rgba(242,119,122,.14)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:16px/1.75 Pretendard,"Noto Sans KR",-apple-system,"Malgun Gothic",sans-serif;word-break:keep-all}
 .wrap{width:min(980px,calc(100% - 32px));margin:0 auto;padding:40px 0 80px}
@@ -92,12 +91,27 @@ footer{margin-top:56px;color:var(--sub);font-size:14px}
 footer a{color:var(--accent)}
 @media (max-width:640px){header h1{font-size:24px}h2{font-size:19px}.qa>summary{padding:12px 14px}.qa .body{padding:0 14px 14px}table{font-size:13.5px}th,td{padding:7px 6px}
 .flow{flex-direction:column}.flow .arrow{transform:rotate(90deg);align-self:center}.grid2,.grid3{grid-template-columns:1fr}.bars .row{grid-template-columns:96px 1fr 56px;font-size:12.5px}figure.fig{padding:10px}.stack{font-size:11px;height:46px}}
+/* 포트폴리오와 같은 규칙: 흰 글자는 제목에만, 카드 테두리는 한 색(의미는 라벨 글자색으로) */
+header h1,h2,.qa>summary,.note b,.flow .step b,.card h4,td.n,.decide .q{color:var(--title)}
+.card.good,.card.bad,.card.mid{border-color:var(--line)}
+.eyebrow{display:inline-flex;padding:7px 11px;border:1px solid rgba(88,166,255,.28);border-radius:999px;background:rgba(88,166,255,.098);color:var(--accent);font-size:12px;letter-spacing:.02em;margin-bottom:14px}
 @media print{.qa .body{display:block}.tools,nav.toc{display:none}}
+</style>
+<style id="pf-bar-style">
+.pf-bar{position:sticky;top:0;z-index:60;background:rgba(8,12,19,.94);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid #1c2533;font-family:Pretendard,"Noto Sans KR",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.pf-bar-in{width:min(var(--pf-w,1100px),calc(100% - 48px));margin:0 auto;height:62px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.pf-brand{color:var(--title);font-size:13px;font-weight:800;letter-spacing:.02em;text-decoration:none;white-space:nowrap}
+.pf-links{display:flex;gap:22px;font-size:12px;line-height:1}
+.pf-links a{color:#94a3b8;text-decoration:none;white-space:nowrap;padding:6px 0;border-bottom:2px solid transparent}
+.pf-links a:hover{color:var(--title)}
+@media(max-width:640px){.pf-bar-in{width:calc(100% - 28px);height:54px}.pf-brand{font-size:12px}.pf-links{gap:14px;font-size:11px}}
 </style>
 </head>
 <body>
+<nav class="pf-bar" aria-label="포트폴리오 메뉴" style="--pf-w:1100px"><div class="pf-bar-in"><a class="pf-brand" href="../main.html">OH SEHOON · QA</a><div class="pf-links"><a href="../main.html">메인</a><a href="../../qa-agent-pipeline-v2/project.html">프로젝트1</a><a href="../../agent-evaluation-framework/portfolio/index.html">프로젝트2</a><a href="../main.html#contact">Contact</a></div></div></nav>
 <div class="wrap">
 <header>
+<span class="eyebrow">면접 대비 · 프로젝트1·2</span>
 <h1>면접 예상 질문과 답변</h1>
 <p>프로젝트1(QA 에이전트 파이프라인)과 프로젝트2(에이전트 결과 검증)에 대해 나올 만한 질문을 모았습니다.</p>
 <p>답변의 숫자와 사례는 모두 실제 실행 기록과 개선 기록(IMP-001~018)에서 가져왔습니다.</p>
@@ -329,10 +343,10 @@ footer a{color:var(--accent)}
 
 <details class="qa"><summary><span class="no">Q17</span>프로젝트2는 왜 만들었나요?</summary><div class="body">
 <span class="label">짧은 답</span>
-<p>프로젝트1이 한 번 잘 되는 것보다, 여러 요청에서 필요한 검사를 빠뜨리지 않는지가 중요했습니다. 그리고 시험이 실패한 것과 에이전트가 실수한 것은 다릅니다. 이 셋을 구분하려고 만들었습니다.</p>
+<p>프로젝트1이 한 번 잘 되는 것보다, 여러 요청에서 필요한 검사를 빠뜨리지 않는지가 중요했습니다. 그리고 같은 FAIL이라도 제품이 틀린 것인지, 에이전트가 검사를 빠뜨린 것인지, 평가 도구가 잘못 본 것인지에 따라 고칠 곳이 다릅니다. 이 셋을 구분하려고 만들었습니다.</p>
 <figure class="fig">
 <div class="grid3">
-<div class="card good"><span class="who">에이전트는 잘한 것</span><h4>제품이 요구사항과 다름</h4>잠금했는데 온도 버튼이 눌림 → 근거와 함께 보고<br><b>고칠 곳: 제품</b></div>
+<div class="card good"><span class="who">제품을 고쳐야 함</span><h4>제품이 요구사항과 다름</h4>잠금했는데 온도 버튼이 눌림 → 근거와 함께 보고<br><b>고칠 곳: 제품</b></div>
 <div class="card bad"><span class="who">에이전트를 고쳐야 함</span><h4>필요한 검사를 빠뜨리고 통과</h4>20°C 설정을 시험하지 않음 → 모두 PASS여도 문제<br><b>고칠 곳: 프로젝트1</b></div>
 <div class="card mid"><span class="who">평가 도구를 고쳐야 함</span><h4>평가자가 근거를 못 받음</h4>복원 기록이 평가 자료에서 빠져 낮은 점수<br><b>고칠 곳: 프로젝트2</b></div>
 </div>
