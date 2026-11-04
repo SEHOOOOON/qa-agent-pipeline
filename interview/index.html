@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <title>면접 예상 질문과 답변</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <style>
 :root{color-scheme:dark;--bg:#0b1017;--panel:#111824;--line:#28344a;--text:#aeb8c6;--title:#e8eef6;--sub:#94a3b8;--accent:#58a6ff;--warn:#f0b35a;--ok:#58c08a;--bad:#f2777a;--chip:#0d131e;--ai:rgba(88,166,255,.16);--pg:rgba(88,192,138,.16);--hu:rgba(240,179,90,.18);--badbg:rgba(242,119,122,.14)}
 *{box-sizing:border-box}
@@ -113,7 +114,7 @@ header h1,h2,.qa>summary,.note b,.flow .step b,.card h4,td.n,.decide .q{color:va
 <header>
 <span class="eyebrow">면접 대비 · 프로젝트1·2</span>
 <h1>면접 예상 질문과 답변</h1>
-<p>프로젝트1(QA 에이전트 파이프라인)과 프로젝트2(에이전트 결과 검증)에 대해 나올 만한 질문을 모았습니다.</p>
+<p>프로젝트1(QA 에이전트 워크플로)과 프로젝트2(에이전트 결과 검증)에 대해 나올 만한 질문을 모았습니다.</p>
 <p>답변의 숫자와 사례는 모두 실제 실행 기록과 개선 기록(IMP-001~018)에서 가져왔습니다.</p>
 </header>
 
@@ -139,7 +140,7 @@ header h1,h2,.qa>summary,.note b,.flow .step b,.card h4,td.n,.decide .q{color:va
 <tr><td>사람 대조</td><td class="n">27개 중 23개 일치</td><td>처음 15개 중 4개 불일치(모두 AI가 후함) → 기준 수정 후 새 실행 결과 12개 모두 일치</td></tr>
 <tr><td>채점 모델 비교</td><td class="n">12개 기준</td><td>OpenAI 12/12, Claude 기본 10~11/12(흔들림), Claude 깊게 생각 12/12</td></tr>
 <tr><td>개선 기록</td><td class="n">18건</td><td>발견 → 맞는 감점인지 → 재발 확인 → 원인 수정 → 다시 실행 순서로 기록</td></tr>
-<tr><td>내부 자동 시험</td><td class="n">약 2,500개 · 약 1,000개</td><td>프로젝트1·프로젝트2 코드 자체를 검사하는 시험(제품 TC 수와 다름)</td></tr>
+<tr><td>내부 자동 시험</td><td class="n">약 2,550개 · 약 1,070개</td><td>프로젝트1·프로젝트2 코드 자체를 검사하는 시험(제품 TC 수와 다름)</td></tr>
 <tr><td>실행 비용</td><td class="n">약 $1~1.6 / 약 $2</td><td>대표 요청 1건을 분석부터 채점까지 실행했을 때. OpenAI로 채점하던 10-23 실행은 약 $1~1.6(예: 모드 $1.18, 온도 $1.50), 지금 설정(Claude 채점)은 약 $2(프로젝트1 약 $0.9 + 채점 약 $1.1, 추정)</td></tr>
 </tbody>
 </table>
@@ -151,7 +152,7 @@ header h1,h2,.qa>summary,.note b,.flow .step b,.card h4,td.n,.decide .q{color:va
 <p>중앙제어 시스템의 기능·연동 검증을 하고 있는 QA 오세훈입니다. 변경 요구사항과 기존 TC를 비교해 검증 범위를 정하고, 화면·API·통신 상태가 맞는지 대조하고, 이슈를 Jira에 남겨 수정 버전에서 다시 확인하는 일을 해 왔습니다. 그 전에는 판매 데이터의 누락·이상값·매핑 오류를 검수하고 반복 조건을 Python·SQL·R로 자동화했습니다.</p>
 <p>실무에서 요구사항이 바뀔 때마다 TC를 검토하고 결과를 정리하는 일이 반복돼서, 개인 프로젝트로 이 흐름을 자동화해 봤습니다. 그리고 AI가 만든 결과를 그대로 믿을 수 없어서, 그 결과를 따로 평가하는 도구도 만들었습니다.</p>
 <span class="label warn">조심할 점</span>
-<ul><li>실무에서 테스트 전략을 주도했다고 말하지 않습니다. 맡은 범위(검증 범위 정리, 정합성 확인, 이슈 재검증, 일부 자동화)만 말합니다.</li></ul>
+<ul><li>실무 경험은 실제로 맡은 일(기존 TC 재구성, 초기 검증 기준 마련, 검증 범위·우선순위 조정, 이슈 재검증, 일부 자동화)로 구체적으로 말하고, 회사 전체의 테스트 전략을 주도했다고 넓혀 말하지 않습니다.</li></ul>
 </div></details>
 
 <details class="qa"><summary><span class="no">Q2</span>왜 이 프로젝트를 만들었나요?</summary><div class="body">
@@ -498,16 +499,16 @@ header h1,h2,.qa>summary,.note b,.flow .step b,.card h4,td.n,.decide .q{color:va
 <span class="label">짧은 답</span>
 <p>코드 구현은 AI 코딩 도구를 활용했습니다. 제가 직접 한 것은 요구사항과 검증 기준 정의, 범위 규칙과 사람 결정, 대표 시나리오 구성, 결과 검토와 누락 발견, 개선 방향 결정입니다. 만든 코드는 실행 결과와 자동 시험으로 확인했습니다.</p>
 <span class="label">근거</span>
-<ul><li>경계값 누락, 중국어 제목, 채점 AI의 후한 점수 4가지는 제가 결과를 검토하다 찾았습니다.</li><li>내부 자동 시험: 프로젝트1 약 2,500개, 프로젝트2 약 1,000개.</li></ul>
+<ul><li>경계값 누락, 중국어 제목, 채점 AI의 후한 점수 4가지는 제가 결과를 검토하다 찾았습니다.</li><li>내부 자동 시험: 프로젝트1 약 2,550개, 프로젝트2 약 1,070개.</li></ul>
 <span class="label warn">조심할 점</span>
 <ul><li>AI 코딩 도구 사용을 숨기지 않습니다. 대신 "무엇을 확인하고 판단했는가"를 구체적인 사례로 답합니다.</li></ul>
 </div></details>
 
-<details class="qa"><summary><span class="no">Q31</span><span class="new">추가</span>내부 자동 시험 2,500개는 무엇을 검사하나요?</summary><div class="body">
+<details class="qa"><summary><span class="no">Q31</span><span class="new">추가</span>내부 자동 시험 약 2,550개는 무엇을 검사하나요?</summary><div class="body">
 <span class="label">짧은 답</span>
 <p>제품을 시험하는 TC가 아니라, 파이프라인 자체가 약속을 지키는지 검사하는 시험입니다. 예를 들어 미실행이나 자동화 불가 TC가 보고서에서 제품 FAIL과 섞이지 않는지, 제품 결과가 통과든 불일치든 복원 확인은 따로 판정되는지, 사람 승인 전에 SRS가 바뀌지 않는지, 잠금 화면 표시를 내부값에 기대지 않고 실제 화면에서 읽는지 같은 것들입니다.</p>
 <span class="label warn">조심할 점</span>
-<ul><li>"테스트 2,500개를 만들었다"보다 "파이프라인이 지켜야 할 규칙을 시험으로 고정했다"로 말합니다. 제품 TC 수와 섞지 않습니다.</li></ul>
+<ul><li>"테스트 약 2,550개를 만들었다"보다 "파이프라인이 지켜야 할 규칙을 시험으로 고정했다"로 말합니다. 제품 TC 수와 섞지 않습니다.</li></ul>
 </div></details>
 
 <details class="qa"><summary><span class="no">Q32</span><span class="new">추가</span>회사 자료를 외부 AI에 보내도 되나요? 보안은 어떻게 했나요?</summary><div class="body">
